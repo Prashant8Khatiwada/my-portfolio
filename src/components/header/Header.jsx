@@ -1,5 +1,7 @@
 import CTA from "./CTA";
 import ME from "../../assets/me.png";
+import "./header.css";
+import HeaderSocials from "./HeaderSocials";
 function Header() {
   return (
     <header>
@@ -8,7 +10,7 @@ function Header() {
         <h1>Prashant Khatiwada</h1>
         <h5 className="text-light">Frontend Developer</h5>
         <CTA />
-
+        <HeaderSocials /> 
         <div className="me">
           <img src={ME} alt="me" />
         </div>
