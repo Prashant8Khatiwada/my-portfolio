@@ -1,6 +1,5 @@
 import React from "react";
 import "./experience.css";
-import { BsPatchCheckFill } from "react-icons/bs";
 function Experience() {
   return (
     <section id="experience">
@@ -12,7 +11,7 @@ function Experience() {
           <h3>UI/UX Design</h3>
           <div className="experience_content">
             <article className="experience_details">
-              <p   className="text-light">
+              <p className="text-light">
                 Lorem ipsum dolor sit amet consectetur, adipisicing elit.
                 Dolore, eligendi! Lorem ipsum dolor sit amet consectetur,
                 adipisicing elit. Dolore, eligendi!
@@ -27,7 +26,7 @@ function Experience() {
           <h3>Product Design</h3>
           <div className="experience_content">
             <article className="experience_details">
-              <p  className="text-light">
+              <p className="text-light">
                 Lorem ipsum dolor sit amet consectetur, adipisicing elit.
                 Dolore, eligendi! Lorem ipsum dolor sit amet consectetur,
                 adipisicing elit. Dolore, eligendi!
