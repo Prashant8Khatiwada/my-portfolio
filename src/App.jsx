@@ -6,6 +6,7 @@ import Experience from "./components/experience/Experience";
 import Services from "./components/services/Services";
 import Portfolio from "./components/portfolio/Portfolio";
 import Testimonials from "./components/testimonials/Testimonials";
+import Contact from "./components/contact/Contact";
 // import { Route, Routes } from "react-router-dom";
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
       <Services />
       <Portfolio />
       <Testimonials />
+      <Contact/>
     </>
   );
 }
