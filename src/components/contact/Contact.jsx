@@ -39,8 +39,8 @@ function Contact() {
           <article className="contact_option">
             <MdOutlineEmail className="contact_option-icon" />
             <h4>Email</h4>
-            <h5>dummyname@gmail.com</h5>
-            <a href="mailto:dummyname@gmaail.com" target="_blank">
+            <h5>prashantkhatiwada554@gmail.com</h5>
+            <a href="mailto:prashantkhatiwada554@gmail.com" target="_blank">
               Send a Message
             </a>
           </article>
