@@ -4,6 +4,8 @@ import IMG1 from "../../assets/project-2.png";
 import IMG2 from "../../assets/project-1.png";
 import IMG3 from "../../assets/project-3.png";
 import IMG4 from "../../assets/project-4.png";
+import IMG5 from "../../assets/project-5.png";
+import IMG6 from "../../assets/project-6.png";
 
 const data = [
   {
@@ -38,19 +40,17 @@ const data = [
   },
   {
     id: 1,
-    Image: IMG1,
-    title: "Chat GPT",
-    github:
-      "https://github.com/Prashant8Khatiwada/50-project-javascript/tree/main/12_movieApp",
-    demo: "https://prashant8khatiwada.github.io/50-project-javascript/12_movieApp/",
+    Image: IMG5,
+    title: "Weather App",
+    github: "https://github.com/Prashant8Khatiwada/weather-app",
+    demo: "https://weamate.netlify.app/",
   },
   {
     id: 1,
-    Image: IMG4,
-    title: "Chat GPT",
-    github:
-      "https://github.com/Prashant8Khatiwada/50-project-javascript/tree/main/12_movieApp",
-    demo: "https://prashant8khatiwada.github.io/50-project-javascript/12_movieApp/",
+    Image: IMG6,
+    title: "ToDo list",
+    github: "https://github.com/Prashant8Khatiwada/Todo-App",
+    demo: "todonote-lists.netlify.app",
   },
 ];
 
