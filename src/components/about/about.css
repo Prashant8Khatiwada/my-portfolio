@@ -1,4 +1,4 @@
-#about{
+#about {
     text-align: center;
 }
 
@@ -37,9 +37,10 @@
 
 /* ========== About Cards ==========  */
 .about_cards {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
+    justify-content: center;
+    display: flex;
+    /* grid-template-columns: repeat(3, 1fr); */
+    gap: 2rem;
 }
 
 .about_card {
@@ -105,9 +106,9 @@
     }
 
     .about_cards {
-        grid-template-columns: 1fr 1fr;
-        gap: 1rem;
-
+        /* grid-template-columns: 1fr 1fr;
+        gap: 1rem; */
+        flex-direction: column;
     }
 
     .about_contents {

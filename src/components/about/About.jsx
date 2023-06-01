@@ -22,28 +22,28 @@ function About() {
             <article className="about_card">
               <FaAward className="about_icon" />
               <h5>Experience</h5>
-              <small>3+ Years Working</small>
+              <small>1+ Years Working</small>
             </article>
 
-            <article className="about_card">
+            {/* <article className="about_card">
               <FiUser className="about_icon" />
               <h5>Clients</h5>
               <small>50+ WorldWide</small>
-            </article>
+            </article> */}
 
             <article className="about_card">
               <VscFolderLibrary className="about_icon" />
               <h5>Projects</h5>
-              <small>50+ Completed</small>
+              <small>5+ Completed</small>
             </article>
           </div>
           <p>
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Veritatis
-            distinctio id rem quae aliquid! Sapiente rerum accusantium cumque
-            molestiae provident vero quod ipsum, assumenda, modi autem iste
-            obcaecati voluptates sit eveniet nulla amet, iure earum asperiores
-            impedit natus facilis? Voluptas a tempore vel ratione ipsum fugit
-            omnis minus optio nostrum!
+            I have a strong curiosity and creative mindset that drives me to
+            find innovative solutions and question the way things are done.
+            Passionate React developer skilled at creating polished and
+            effective web solutions. I am deeply committed to keeping up with
+            the latest advancements in the ever-changing React ecosystem and
+            continuously improving my skills.
           </p>
 
           <a href="#contact" className="btn btn-primary">
