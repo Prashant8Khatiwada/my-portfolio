@@ -48,10 +48,7 @@ function Contact() {
             <RiMessengerLine className="contact_option-icon" />
             <h4>Messanger</h4>
             <h5>Prashant Khatiwada</h5>
-            <a
-              href="https://m.me/profile.php?id=100079383163545"
-              target="_blank"
-            >
+            <a href="https://m.me/100079383163545" target="_blank">
               Send a Message
             </a>
           </article>
