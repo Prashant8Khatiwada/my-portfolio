@@ -49,7 +49,7 @@ const data = [
     Image: IMG6,
     title: "ToDo list",
     github: "https://github.com/Prashant8Khatiwada/Todo-App",
-    demo: "todonote-lists.netlify.app",
+    demo: "https://todonote-lists.netlify.app/",
   },
 ];
 
