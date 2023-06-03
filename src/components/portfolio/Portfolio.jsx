@@ -34,9 +34,8 @@ const data = [
     id: 4,
     Image: IMG4,
     title: "Movie App",
-    github:
-      "https://github.com/Prashant8Khatiwada/50-project-javascript/tree/main/12_movieApp",
-    demo: "https://prashant8khatiwada.github.io/50-project-javascript/12_movieApp/",
+    github: "git@github.com:Prashant8Khatiwada/movie.git",
+    demo: "https://web-movie-app.netlify.app/",
   },
   {
     id: 1,
