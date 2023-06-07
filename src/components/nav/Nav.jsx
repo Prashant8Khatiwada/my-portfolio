@@ -23,13 +23,13 @@ function Nav() {
       >
         <AiOutlineUser />
       </a>
-      <a
+      {/* <a
         href="#experience"
         onClick={() => setActiveNav("#experience")}
         className={activeNav === "#experience" ? "active" : ""}
       >
         <BiBook />
-      </a>
+      </a> */}
       <a
         href="#portfolio"
         onClick={() => setActiveNav("#portfolio")}
