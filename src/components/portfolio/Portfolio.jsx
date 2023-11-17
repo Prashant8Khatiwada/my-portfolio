@@ -38,18 +38,18 @@ const data = [
     demo: "https://web-movie-app.netlify.app/",
   },
   {
-    id: 1,
+    id: 5,
     Image: IMG5,
     title: "Weather App",
     github: "https://github.com/Prashant8Khatiwada/weather-app",
     demo: "https://weamate.netlify.app/",
   },
   {
-    id: 1,
+    id: 6,
     Image: IMG6,
-    title: "ToDo list",
-    github: "https://github.com/Prashant8Khatiwada/Todo-App",
-    demo: "https://todonote-lists.netlify.app/",
+    title: "Task-Management App",
+    github: "https://github.com/Prashant8Khatiwada/Task-Management",
+    demo: "https://my-task-managerapp.netlify.app/",
   },
 ];
 
