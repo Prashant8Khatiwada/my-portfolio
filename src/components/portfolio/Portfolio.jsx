@@ -25,10 +25,9 @@ const data = [
   {
     id: 3,
     Image: IMG3,
-    title: "Jokes Generator",
-    github:
-      "https://github.com/Prashant8Khatiwada/50-project-javascript/tree/main/09_dadJokes",
-    demo: "https://prashant8khatiwada.github.io/50-project-javascript/09_dadJokes",
+    title: "Pacman Game ",
+    github: "https://github.com/Prashant8Khatiwada/pacman",
+    demo: "https://prashant8khatiwada.github.io/pacman",
   },
   {
     id: 4,
