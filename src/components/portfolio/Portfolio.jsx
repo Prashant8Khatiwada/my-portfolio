@@ -25,9 +25,8 @@ const data = [
   {
     id: 3,
     Image: IMG3,
-    title: "Pacman Game ",
-    github: "https://github.com/Prashant8Khatiwada/pacman",
-    demo: "https://prashant8khatiwada.github.io/pacman",
+    title: "Tickticketing",
+    demo: "https://tickticketing.lancemeup.com/movies",
   },
   {
     id: 4,
@@ -39,16 +38,15 @@ const data = [
   {
     id: 5,
     Image: IMG5,
-    title: "Weather App",
-    github: "https://github.com/Prashant8Khatiwada/weather-app",
-    demo: "https://weamate.netlify.app/",
+    title: "Agriculture Development Bank",
+    demo: "https://adblform.peacenepal.com/en",
   },
   {
     id: 6,
     Image: IMG6,
-    title: "Task-Management App",
-    github: "https://github.com/Prashant8Khatiwada/Task-Management",
-    demo: "https://my-task-managerapp.netlify.app/",
+    title: "Weather App",
+    github: "https://github.com/Prashant8Khatiwada/weather-app",
+    demo: "https://weamate.netlify.app/",
   },
 ];
 
@@ -67,14 +65,16 @@ function Portfolio() {
               </div>
               <h3>{title}</h3>
               <div className="portfolio_item-cta">
-                <a
-                  href={github}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="btn"
-                >
-                  Github
-                </a>
+                {github && (
+                  <a
+                    href={github}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="btn"
+                  >
+                    Github
+                  </a>
+                )}
                 <a
                   href={demo}
                   target="_blank"
