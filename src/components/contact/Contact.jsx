@@ -12,13 +12,16 @@ function Contact() {
 
   const sendEmail = (e) => {
     e.preventDefault();
-    e.target.reset();
     emailjs
       .sendForm(
-        "service_dm3vq2o",
-        "template_218yy5n",
+        "service_6z8m6we",
+        // "service_dm3vq2o", //(prashant20600310@gmail.com)
+        "template_ljanetf",
+        // "template_218yy5n",
         form.current,
-        "1GAhb9nuvEBc-gMfR"
+        "tWtKYEDPBvF_bxa0G"
+        // form.current,
+        // "1GAhb9nuvEBc-gMfR"
       )
       .then(
         (result) => {
@@ -28,6 +31,7 @@ function Contact() {
           toast.error("Error sending email");
         }
       );
+    e.target.reset();
   };
 
   return (
@@ -51,7 +55,7 @@ function Contact() {
           </article>
           <article className="contact_option">
             <RiMessengerLine className="contact_option-icon" />
-            <h4>Messanger</h4>
+            <h4>Messenger</h4>
             <h5>Prashant Khatiwada</h5>
             <a
               href="https://m.me/100079383163545"
