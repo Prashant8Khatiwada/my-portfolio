@@ -9,11 +9,10 @@ import IMG6 from "../../assets/project-6.png";
 
 const data = [
   {
-    id: 1,
-    Image: IMG1,
-    title: "Chat GPT",
-    github: "https://github.com/Prashant8Khatiwada/Chat-GPT",
-    demo: "https://pk-chat-gpt.netlify.app/",
+    id: 6,
+    Image: IMG6,
+    title: "Abroad Institute",
+    demo: "https://weamate.netlify.app/",
   },
   {
     id: 2,
@@ -23,10 +22,10 @@ const data = [
     demo: "https://p-youtube-clone.netlify.app",
   },
   {
-    id: 3,
-    Image: IMG3,
-    title: "Tickticketing",
-    demo: "https://tickticketing.lancemeup.com/movies",
+    id: 1,
+    Image: IMG1,
+    title: "Wealth Pandit",
+    demo: "https://uat.wealthpandit.com",
   },
   {
     id: 4,
@@ -42,11 +41,10 @@ const data = [
     demo: "https://adblform.peacenepal.com/en",
   },
   {
-    id: 6,
-    Image: IMG6,
-    title: "Weather App",
-    github: "https://github.com/Prashant8Khatiwada/weather-app",
-    demo: "https://weamate.netlify.app/",
+    id: 3,
+    Image: IMG3,
+    title: "Tickticketing",
+    demo: "https://tickticketing.lancemeup.com/movies",
   },
 ];
 
