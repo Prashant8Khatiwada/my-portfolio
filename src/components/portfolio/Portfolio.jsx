@@ -2,10 +2,11 @@ import React from "react";
 import "./portfolio.css";
 import IMG1 from "../../assets/project-2.png";
 import IMG2 from "../../assets/project-1.png";
-import IMG3 from "../../assets/project-3.png";
+import IMG3 from "../../assets/nmb.png";
 import IMG4 from "../../assets/project-4.png";
-import IMG5 from "../../assets/project-5.png";
+// import IMG5 from "../../assets/project-5.png";
 import IMG6 from "../../assets/project-6.png";
+import IMG7 from "../../assets/kumari.png";
 
 const data = [
   {
@@ -36,15 +37,15 @@ const data = [
   },
   {
     id: 5,
-    Image: IMG5,
-    title: "Agriculture Development Bank",
-    demo: "https://adblform.peacenepal.com/en",
+    Image: IMG7,
+    title: "Kumari Bank",
+    demo: "https://www.kumaribank.com/en",
   },
   {
     id: 3,
     Image: IMG3,
-    title: "Tickticketing",
-    demo: "https://tickticketing.lancemeup.com/movies",
+    title: "NMB Bank",
+    demo: "https://nmb.com.np",
   },
 ];
 
