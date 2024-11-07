@@ -6,13 +6,17 @@ import { IoLogoTwitter } from "react-icons/io";
 function Footer() {
   return (
     <footer>
-      <a href="#" className="footer_logo">
-        Prashant
+      <a href="/" className="footer_logo">
+        {/* Prashant */}
+        <img
+          src={require("../../assets/logo.png")}
+          alt="logo"
+          style={{ width: "200px", height: "auto" }}
+        />
       </a>
-
       <ul className="permalinks">
         <li>
-          <a href="#">Home</a>
+          <a href="/">Home</a>
         </li>
         <li>
           <a href="#about">About</a>
@@ -45,10 +49,9 @@ function Footer() {
       </div>
 
       <div className="footer_copyright">
-        <small>&copy; PRASHANT's Portfolio. All rights reserved </small>
+        <small>© PRASHANT's Portfolio. All rights reserved </small>
       </div>
     </footer>
   );
 }
-
 export default Footer;

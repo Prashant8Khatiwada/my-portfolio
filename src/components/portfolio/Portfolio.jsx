@@ -1,51 +1,50 @@
 import React from "react";
 import "./portfolio.css";
-import IMG1 from "../../assets/project-2.png";
-import IMG2 from "../../assets/project-1.png";
-import IMG3 from "../../assets/nmb.png";
-import IMG4 from "../../assets/project-4.png";
-// import IMG5 from "../../assets/project-5.png";
-import IMG6 from "../../assets/project-6.png";
-import IMG7 from "../../assets/kumari.png";
+import WP from "../../assets/portfolio/wealthPandit.png";
+import YTClone from "../../assets/portfolio/youtube_clone.png";
+import PRB from "../../assets/portfolio/pacific.png";
+import movie from "../../assets/portfolio/movie.png";
+import Abroad from "../../assets/portfolio/abroadInstitute.png";
+import kumari from "../../assets/portfolio/kumari.png";
 
 const data = [
   {
-    id: 6,
-    Image: IMG6,
+    id: 1,
+    Image: Abroad,
     title: "Abroad Institute",
-    demo: "https://weamate.netlify.app/",
+    demo: "http://abroadinst.com",
   },
   {
     id: 2,
-    Image: IMG2,
-    title: "Youtube Clone",
-    github: "https://github.com/Prashant8Khatiwada/youtube-app",
-    demo: "https://p-youtube-clone.netlify.app",
+    Image: PRB,
+    title: "Pacific Regional Bank",
+    demo: "https://pacificbank.peacenepal.com",
   },
   {
-    id: 1,
-    Image: IMG1,
+    id: 3,
+    Image: WP,
     title: "Wealth Pandit",
     demo: "https://uat.wealthpandit.com",
   },
   {
     id: 4,
-    Image: IMG4,
-    title: "Movie App",
-    github: "git@github.com:Prashant8Khatiwada/movie.git",
-    demo: "https://web-movie-app.netlify.app/",
-  },
-  {
-    id: 5,
-    Image: IMG7,
+    Image: kumari,
     title: "Kumari Bank",
     demo: "https://www.kumaribank.com/en",
   },
   {
-    id: 3,
-    Image: IMG3,
-    title: "NMB Bank",
-    demo: "https://nmb.com.np",
+    id: 5,
+    Image: YTClone,
+    title: "Youtube Clone",
+    github: "https://github.com/Prashant8Khatiwada/youtube-app",
+    demo: "https://p-youtube-clone.netlify.app",
+  },
+  {
+    id: 6,
+    Image: movie,
+    title: "Movie App",
+    github: "git@github.com:Prashant8Khatiwada/movie.git",
+    demo: "https://web-movie-app.netlify.app/",
   },
 ];
 

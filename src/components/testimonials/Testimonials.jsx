@@ -9,10 +9,10 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 
-import BIBEK from "../../assets/bibek.jpg";
-import SUKLA from "../../assets/sukla.jpg";
-import NIRGUN from "../../assets/nirgun.jpg";
-import HIRA from "../../assets/hira.jpg";
+import BIBEK from "../../assets/testimonials/bibek.jpg";
+import SUKLA from "../../assets/testimonials/sukla.jpg";
+import NIRGUN from "../../assets/testimonials/nirgun.jpg";
+import HIRA from "../../assets/testimonials/hira.jpg";
 
 const data = [
   {
