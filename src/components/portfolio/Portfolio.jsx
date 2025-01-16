@@ -6,8 +6,15 @@ import PRB from "../../assets/portfolio/pacific.png";
 import movie from "../../assets/portfolio/movie.png";
 import Abroad from "../../assets/portfolio/abroadInstitute.png";
 import kumari from "../../assets/portfolio/kumari.png";
+import Enimto from "../../assets/portfolio/enimto.png";
 
 const data = [
+  {
+    id: 4,
+    Image: kumari,
+    title: "Kumari Bank",
+    demo: "https://www.kumaribank.com/en",
+  },
   {
     id: 1,
     Image: Abroad,
@@ -26,12 +33,7 @@ const data = [
     title: "Wealth Pandit",
     demo: "https://uat.wealthpandit.com",
   },
-  {
-    id: 4,
-    Image: kumari,
-    title: "Kumari Bank",
-    demo: "https://www.kumaribank.com/en",
-  },
+
   {
     id: 5,
     Image: YTClone,
@@ -41,10 +43,10 @@ const data = [
   },
   {
     id: 6,
-    Image: movie,
-    title: "Movie App",
-    github: "git@github.com:Prashant8Khatiwada/movie.git",
-    demo: "https://web-movie-app.netlify.app/",
+    Image: Enimto,
+    title: "E-nimto",
+    // github: "git@github.com:Prashant8Khatiwada/movie.git",
+    demo: "https://enimto.com/en",
   },
 ];
 

@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import CTA from "./CTA";
 import ME from "../../assets/me.png";
 import "./header.css";
@@ -10,10 +11,12 @@ function Header() {
         <h1>Prashant Khatiwada</h1>
         <h5 className="text-light">Frontend Developer</h5>
         <CTA />
-        <HeaderSocials /> 
-        <div className="me">
-          <img src={ME} alt="me" />
-        </div>
+        <HeaderSocials />
+        <Suspense fallback={<div>Loading...</div>}>
+          <div className="me">
+            <img src={ME} alt="me" />
+          </div>
+        </Suspense>
 
         <a href="#contact" className="scroll_down">
           Scroll Down

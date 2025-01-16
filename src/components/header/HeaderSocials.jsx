@@ -1,19 +1,20 @@
 import React from "react";
 import { BsLinkedin } from "react-icons/bs";
-import { FaGithub, FaTwitter } from "react-icons/fa";
+import { FaGithub, FaInstagram } from "react-icons/fa";
 function HeaderSocials() {
   return (
     <div className="header_socials">
-      <a href="https://linked.com" target="_blank">
+      <a
+        href="https://www.linkedin.com/in/prashant-khatiwada-a0b99a184/"
+        target="_blank"
+      >
         <BsLinkedin />
       </a>
-      <a href="https://github.com" target="_blank">
-        {" "}
-        <FaGithub />{" "}
+      <a href="https://github.com/prashant8Khatiwada/" target="_blank">
+        <FaGithub />
       </a>
-      <a href="https://twitter.com" target="_blank">
-        {" "}
-        <FaTwitter />
+      <a href="https://www.instagram.com/khatiwada_prashant/" target="_blank">
+        <FaInstagram />
       </a>
     </div>
   );
