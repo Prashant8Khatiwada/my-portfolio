@@ -1,1 +1,1 @@
-Portfolio link: prashantkhatiwada.netlify.app
+Portfolio link: khatiwadaprashant.com.np
