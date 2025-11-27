@@ -77,6 +77,7 @@ const projects = [
     image: WP,
     technologies: ["React", "Charts.js", "Finance"],
     demo: "https://uat.wealthpandit.com",
+    featured: true,
   },
   
 
@@ -137,7 +138,7 @@ function App() {
   const [activeTab, setActiveTab] = useState("featured");
 
   const filteredProjects = activeTab === "featured" ? projects.filter(p => p.featured) : projects;
-  const displayedProjects = showAllProjects ? filteredProjects : filteredProjects.slice(0, 6);
+  const displayedProjects = activeTab === "all" ? filteredProjects : (showAllProjects ? filteredProjects : filteredProjects.slice(0, 6));
 
   return (
     <ThemeProvider>
@@ -223,7 +224,7 @@ function App() {
               ))}
             </motion.div>
 
-            {filteredProjects.length > 6 && (
+            {activeTab !== "all" && filteredProjects.length > 6 && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ExternalLink, Github, Maximize2, X, Monitor, Smartphone } from "lucide-react";
+import { ExternalLink, Github, Maximize2, X, Monitor, Smartphone, Tablet } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { hoverLift } from "../../lib/animations";
 
@@ -133,6 +133,19 @@ export default function ProjectCard({ project }) {
                   <Monitor className="w-4 h-4" />
                   Desktop
                 </button>
+                    <button
+                  onClick={() => setViewMode("tablet")}
+                  className={cn(
+                    "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all",
+                    viewMode === "tablet"
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+                  )}
+                >
+                  <Tablet className="w-4 h-4" />
+                  Tablet
+                </button>
+
                 <button
                   onClick={() => setViewMode("mobile")}
                   className={cn(
@@ -163,7 +176,9 @@ export default function ProjectCard({ project }) {
             <div
               className={cn(
                 "bg-white rounded-lg shadow-2xl overflow-hidden transition-all duration-300",
-                viewMode === "desktop" ? "w-full h-full" : "w-[375px] h-[812px]"
+                 viewMode === "desktop" && "w-full h-full",
+                viewMode === "tablet" && "w-[768px] h-[1024px]",
+                viewMode === "mobile" && "w-[375px] h-[812px]"
               )}
             >
               <iframe
