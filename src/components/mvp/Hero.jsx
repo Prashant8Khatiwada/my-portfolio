@@ -1,7 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Download, Github, Linkedin, Mail } from "lucide-react";
-import { cn } from "../../lib/utils";
+import { ArrowRight,  Github, Linkedin, Mail } from "lucide-react";
 import { fadeIn, slideUp } from "../../lib/animations";
 import ME from "../../assets/me.png";
 

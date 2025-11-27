@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Home, User, Briefcase, Award, Mail } from "lucide-react";
+import { staggerContainer, staggerItem } from "../../lib/animations";
 
 const cn = (...classes) => classes.filter(Boolean).join(" ");
 
@@ -74,16 +75,24 @@ export default function BottomNav() {
   return (
 <motion.nav
   initial={{ y: 100, opacity: 0 }}
-  animate={{ 
+  animate={{
     y: isVisible ? 0 : 100,
     opacity: isVisible ? 1 : 0
   }}
   transition={{ type: "spring", stiffness: 300, damping: 30 }}
   className="fixed bottom-4 left-1/2 z-50 bg-background/70 backdrop-blur-lg border border-border shadow-lg rounded-full px-3 py-2"
-  style={{ x: "-50%" }} // centers nav horizontally
+  style={{
+    x: "-50%", // centers nav horizontally
+    willChange: "transform, opacity"
+  }}
 >
   <div className="relative">
-    <div className="flex items-center justify-center gap-1">
+    <motion.div
+      variants={staggerContainer}
+      initial="initial"
+      animate="animate"
+      className="flex items-center justify-center gap-1"
+    >
       {navItems.map((item) => {
         const Icon = item.icon;
         const isActive = activeSection === item.name.toLowerCase();
@@ -95,6 +104,12 @@ export default function BottomNav() {
             onClick={(e) => handleNavClick(e, item.href)}
             onMouseEnter={() => setHoveredItem(item.name)}
             onMouseLeave={() => setHoveredItem(null)}
+            variants={staggerItem}
+            whileHover={{
+              y: -4,
+              boxShadow: "0 0 20px hsla(var(--primary), 0.5)",
+              transition: { duration: 0.2 }
+            }}
             whileTap={{ scale: 0.95 }}
             className={cn(
               "relative flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-full transition-all duration-200",
@@ -110,23 +125,29 @@ export default function BottomNav() {
               animate={{
                 opacity: isActive ? 1 : isHovered ? 0.5 : 0,
                 scale: isActive ? 1 : isHovered ? 0.95 : 0.9,
+                boxShadow: isActive ? "0 0 15px hsla(var(--primary), 0.3)" : "none",
               }}
               transition={{ duration: 0.2 }}
               className="absolute inset-0 bg-primary/10 rounded-full"
             />
 
             {/* Icon */}
-            <Icon
-              className={cn(
-                "w-5 h-5 transition-all duration-200 relative z-10",
-                isActive 
-                  ? "text-primary" 
-                  : isHovered
-                  ? "text-foreground"
-                  : "text-muted-foreground"
-              )}
-              strokeWidth={isActive ? 2.5 : 2}
-            />
+            <motion.div
+              animate={{ scale: isActive ? 1.1 : 1 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Icon
+                className={cn(
+                  "w-5 h-5 transition-all duration-200 relative z-10",
+                  isActive
+                    ? "text-primary"
+                    : isHovered
+                    ? "text-foreground"
+                    : "text-muted-foreground"
+                )}
+                strokeWidth={isActive ? 2.5 : 2}
+              />
+            </motion.div>
 
             {/* Label */}
             <span
@@ -158,7 +179,7 @@ export default function BottomNav() {
           </motion.button>
         );
       })}
-    </div>
+    </motion.div>
   </div>
 </motion.nav>
 

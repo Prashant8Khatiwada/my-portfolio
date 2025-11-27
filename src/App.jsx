@@ -1,6 +1,7 @@
 import React from "react";
 import { ThemeProvider } from "./context/ThemeContext";
 import BottomNav from "./components/mvp/BottomNav";
+import ThemeToggle from "./components/mvp/ThemeToggle";
 import Hero from "./components/mvp/Hero";
 import ProjectCard from "./components/mvp/ProjectCard";
 import Timeline from "./components/mvp/Timeline";
@@ -113,6 +114,7 @@ function App() {
     <ThemeProvider>
       <div className="min-h-screen bg-background text-foreground">
         <BottomNav />
+        <ThemeToggle />
 
         {/* Hero Section */}
         <section id="home">
