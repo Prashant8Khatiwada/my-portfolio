@@ -1,6 +1,6 @@
 import React from "react";
 import { ThemeProvider } from "./context/ThemeContext";
-import Navbar from "./components/mvp/Navbar";
+import BottomNav from "./components/mvp/BottomNav";
 import Hero from "./components/mvp/Hero";
 import ProjectCard from "./components/mvp/ProjectCard";
 import Timeline from "./components/mvp/Timeline";
@@ -112,7 +112,7 @@ function App() {
   return (
     <ThemeProvider>
       <div className="min-h-screen bg-background text-foreground">
-        <Navbar />
+        <BottomNav />
 
         {/* Hero Section */}
         <section id="home">
