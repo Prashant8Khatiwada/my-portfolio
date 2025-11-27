@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { ThemeProvider } from "./context/ThemeContext";
 import BottomNav from "./components/mvp/BottomNav";
 import ThemeToggle from "./components/mvp/ThemeToggle";
@@ -11,6 +11,7 @@ import Footer from "./components/mvp/Footer";
 import About from "./components/mvp/About";
 import { motion } from "framer-motion";
 import { staggerContainer, staggerItem } from "./lib/animations";
+import { cn } from "./lib/utils";
 
 // Import Project Images
 import WP from "./assets/portfolio/wealthPandit.png";
@@ -19,16 +20,36 @@ import PRB from "./assets/portfolio/pacific.png";
 import Abroad from "./assets/portfolio/abroadInstitute.png";
 import kumari from "./assets/portfolio/kumari.png";
 import Enimto from "./assets/portfolio/enimto.png";
+import SawariExpertImage from "./assets/portfolio/sawari.png";
+import FotosFolioImage from "./assets/portfolio/fotosfolio.png";
 
 // Real Data
 const projects = [
+  {
+  title: "FotosFolio",
+  description:
+    "Portfolio platform for photographers and visual artists to showcase high-quality images, manage galleries, and share work with clients.",
+  image: FotosFolioImage, // replace with your imported image variable
+  technologies: ["React", "Next.js", "Cloud Storage"],
+  demo: "https://fotosfolio.com/",
+  featured: true,
+},
+{
+  title: "Sawari Expert",
+  description:
+    "Ride-hailing and transport management platform providing seamless booking, driver tracking, and customer support for urban commuters.",
+  image: SawariExpertImage, // replace with your imported image variable
+  technologies: ["React", "Node.js", "Google Maps API"],
+  demo: "https://sawariexpert.com/",
+  featured: true,
+},
   {
     title: "Kumari Bank",
     description:
       "Official website for Kumari Bank Limited, featuring secure banking services, account management, and financial tools.",
     image: kumari,
     technologies: ["React", "Banking API", "Security"],
-    demo: "https://www.kumaribank.com/en",
+    demo: "https://www.kumaribank.com/en/personal-banking",
     featured: true,
   },
   {
@@ -57,13 +78,15 @@ const projects = [
     technologies: ["React", "Charts.js", "Finance"],
     demo: "https://uat.wealthpandit.com",
   },
+  
+
   {
     title: "Youtube Clone",
     description:
       "A functional clone of YouTube built with React, featuring video playback, search, and channel pages.",
     image: YTClone,
     technologies: ["React", "YouTube API", "Material UI"],
-    github: "https://github.com/Prashant8Khatiwada/youtube-app",
+    // github: "https://github.com/Prashant8Khatiwada/youtube-app",
     demo: "https://p-youtube-clone.netlify.app",
   },
   {
@@ -110,6 +133,12 @@ const stats = [
 ];
 
 function App() {
+  const [showAllProjects, setShowAllProjects] = useState(false);
+  const [activeTab, setActiveTab] = useState("featured");
+
+  const filteredProjects = activeTab === "featured" ? projects.filter(p => p.featured) : projects;
+  const displayedProjects = showAllProjects ? filteredProjects : filteredProjects.slice(0, 6);
+
   return (
     <ThemeProvider>
       <div className="min-h-screen bg-background text-foreground">
@@ -143,10 +172,41 @@ function App() {
               <h2 className="text-4xl md:text-5xl font-bold mb-4">
                 My Recent Work
               </h2>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
                 A selection of my recent projects including banking portals and
                 educational platforms
               </p>
+
+              <div className="flex justify-center gap-2 mb-8">
+                <button
+                  onClick={() => {
+                    setActiveTab("featured");
+                    setShowAllProjects(false);
+                  }}
+                  className={cn(
+                    "px-6 py-2 rounded-lg text-sm font-medium transition-all",
+                    activeTab === "featured"
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted text-muted-foreground hover:bg-muted/80"
+                  )}
+                >
+                  Featured
+                </button>
+                <button
+                  onClick={() => {
+                    setActiveTab("all");
+                    setShowAllProjects(false);
+                  }}
+                  className={cn(
+                    "px-6 py-2 rounded-lg text-sm font-medium transition-all",
+                    activeTab === "all"
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted text-muted-foreground hover:bg-muted/80"
+                  )}
+                >
+                  All Projects
+                </button>
+              </div>
             </motion.div>
 
             <motion.div
@@ -156,12 +216,33 @@ function App() {
               viewport={{ once: true }}
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
             >
-              {projects.map((project, index) => (
+              {displayedProjects.map((project, index) => (
                 <motion.div key={index} variants={staggerItem}>
                   <ProjectCard project={project} />
                 </motion.div>
               ))}
             </motion.div>
+
+            {filteredProjects.length > 6 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="text-center mt-12"
+              >
+                <button
+                  onClick={() => setShowAllProjects(!showAllProjects)}
+                  className={cn(
+                    "px-8 py-3 rounded-lg font-medium transition-all",
+                    showAllProjects
+                      ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                      : "bg-muted text-muted-foreground hover:bg-muted/80"
+                  )}
+                >
+                  {showAllProjects ? "Show Less" : "View More Projects"}
+                </button>
+              </motion.div>
+            )}
           </div>
         </section>
 

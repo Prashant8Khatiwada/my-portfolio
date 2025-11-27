@@ -1,12 +1,35 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ExternalLink, Github } from "lucide-react";
+import { ExternalLink, Github, Maximize2, X, Monitor, Smartphone } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { hoverLift } from "../../lib/animations";
 
 export default function ProjectCard({ project }) {
-  const { title, description, image, technologies, github, demo, featured } =
-    project;
+  const { title, description, image, technologies, github, demo, featured } = project;
+
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [viewMode, setViewMode] = useState("desktop"); // desktop or mobile
+  const fullscreenRef = useRef(null);
+
+  useEffect(() => {
+    if (isFullscreen && fullscreenRef.current) {
+      fullscreenRef.current.requestFullscreen().catch(console.error);
+    } else if (document.fullscreenElement) {
+      document.exitFullscreen().catch(console.error);
+    }
+  }, [isFullscreen]);
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      if (!document.fullscreenElement) {
+        setIsFullscreen(false);
+        setViewMode("desktop");
+      }
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
 
   return (
     <motion.div
@@ -24,12 +47,14 @@ export default function ProjectCard({ project }) {
       )}
 
       {/* Project Image */}
-      <div className="relative overflow-hidden aspect-video bg-muted">
-        <img
-          src={image}
-          alt={title}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-        />
+      <div className="relative overflow-hidden aspect-[4/3] md:aspect-video bg-muted">
+        {image ? (
+          <img src={image} alt={title} className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-muted text-muted-foreground">
+            No image available
+          </div>
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </div>
 
@@ -54,6 +79,15 @@ export default function ProjectCard({ project }) {
 
         {/* Links */}
         <div className="flex gap-3">
+          {demo && (
+            <button
+              onClick={() => setIsFullscreen(true)}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-accent text-accent-foreground hover:bg-accent/80 transition-all text-sm font-medium"
+            >
+              <Maximize2 className="w-4 h-4" />
+              Full Screen
+            </button>
+          )}
           {github && (
             <a
               href={github}
@@ -79,10 +113,69 @@ export default function ProjectCard({ project }) {
         </div>
       </div>
 
-      {/* Glow effect on hover */}
-      <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-        <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary/20 to-secondary/20 blur-xl" />
-      </div>
+      {/* Fullscreen Overlay */}
+      {isFullscreen && (
+        <div ref={fullscreenRef} className="fixed inset-0 z-[9999] bg-background flex flex-col">
+          {/* Header */}
+          <div className="flex items-center justify-between h-16 px-6 border-b border-border bg-background">
+            <div className="flex items-center gap-4">
+              <h3 className="text-lg font-semibold">{title}</h3>
+              <div className="flex gap-2 ml-4">
+                <button
+                  onClick={() => setViewMode("desktop")}
+                  className={cn(
+                    "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all",
+                    viewMode === "desktop"
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted text-muted-foreground hover:bg-muted/80"
+                  )}
+                >
+                  <Monitor className="w-4 h-4" />
+                  Desktop
+                </button>
+                <button
+                  onClick={() => setViewMode("mobile")}
+                  className={cn(
+                    "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all",
+                    viewMode === "mobile"
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted text-muted-foreground hover:bg-muted/80"
+                  )}
+                >
+                  <Smartphone className="w-4 h-4" />
+                  Mobile
+                </button>
+              </div>
+            </div>
+            <button
+              onClick={() => {
+                setIsFullscreen(false);
+                setViewMode("desktop");
+              }}
+              className="p-2 bg-muted text-foreground rounded-lg hover:bg-muted/80 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Iframe */}
+          <div className="flex-1 flex items-center justify-center p-6 bg-muted/30">
+            <div
+              className={cn(
+                "bg-white rounded-lg shadow-2xl overflow-hidden transition-all duration-300",
+                viewMode === "desktop" ? "w-full h-full" : "w-[375px] h-[812px]"
+              )}
+            >
+              <iframe
+                src={demo}
+                title={`${title} fullscreen preview`}
+                className="w-full h-full border-0"
+                sandbox="allow-scripts allow-same-origin allow-forms"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </motion.div>
   );
 }

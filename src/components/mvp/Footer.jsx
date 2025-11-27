@@ -10,18 +10,11 @@ const socialLinks = [
 
 const footerLinks = {
   Product: [
-    { name: "Features", href: "#features" },
     { name: "Projects", href: "#projects" },
     { name: "About", href: "#about" },
   ],
   Resources: [
-    { name: "Blog", href: "/blog" },
-    { name: "Documentation", href: "/docs" },
     { name: "Contact", href: "#contact" },
-  ],
-  Legal: [
-    { name: "Privacy", href: "/privacy" },
-    { name: "Terms", href: "/terms" },
   ],
 };
 
