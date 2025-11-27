@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design System Components - Developer Portfolio</title>
+  <link rel="stylesheet" href="../src/index.css">
+  <style>
+    .demo-section {
+      margin-bottom: var(--space-16);
+      padding: var(--space-8);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+    }
+    
+    .demo-title {
+      font-size: var(--text-2xl);
+      font-weight: var(--font-bold);
+      margin-bottom: var(--space-6);
+      color: var(--color-primary);
+    }
+    
+    .demo-grid {
+      display: grid;
+      gap: var(--space-6);
+    }
+    
+    .theme-toggle {
+      position: fixed;
+      top: var(--space-4);
+      right: var(--space-4);
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+  <button class="btn btn-primary theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
+  
+  <div class="container" style="padding-top: var(--space-16); padding-bottom: var(--space-16);">
+    <h1 class="text-gradient text-center">Premium Design System Components</h1>
+    <p class="text-center text-secondary mb-16">A showcase of all available components and styles</p>
+
+    <!-- Typography Section -->
+    <section class="demo-section">
+      <h2 class="demo-title">Typography</h2>
+      <div class="demo-grid">
+        <div>
+          <h1>Heading 1 - Hero Title</h1>
+          <h2>Heading 2 - Section Title</h2>
+          <h3>Heading 3 - Subsection Title</h3>
+          <h4>Heading 4 - Card Title</h4>
+          <h5>Heading 5 - Small Heading</h5>
+          <h6>Heading 6 - Label Heading</h6>
+          <p>Body text with normal weight and comfortable line height for reading. This is how your paragraphs will look throughout the portfolio.</p>
+          <p class="text-gradient" style="font-size: var(--text-4xl); font-weight: var(--font-bold);">Gradient Text Effect</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Buttons Section -->
+    <section class="demo-section">
+      <h2 class="demo-title">Buttons</h2>
+      <div class="demo-grid">
+        <div class="flex gap-4" style="flex-wrap: wrap;">
+          <button class="btn btn-primary">Primary Button</button>
+          <button class="btn btn-secondary">Secondary Button</button>
+          <button class="btn btn-outline">Outline Button</button>
+          <button class="btn btn-ghost">Ghost Button</button>
+          <button class="btn btn-gradient">Gradient Button</button>
+          <button class="btn btn-primary" disabled>Disabled</button>
+        </div>
+        <div class="flex gap-4" style="flex-wrap: wrap; align-items: center;">
+          <button class="btn btn-primary btn-sm">Small</button>
+          <button class="btn btn-primary">Medium</button>
+          <button class="btn btn-primary btn-lg">Large</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cards Section -->
+    <section class="demo-section">
+      <h2 class="demo-title">Cards</h2>
+      <div class="grid-3">
+        <div class="card">
+          <h4>Basic Card</h4>
+          <p>A simple card with hover effect. Hover to see the lift animation.</p>
+        </div>
+        <div class="card card-interactive">
+          <h4>Interactive Card</h4>
+          <p>Card with gradient mesh background on hover. Try hovering over this card.</p>
+        </div>
+        <div class="card card-glass">
+          <h4>Glass Card</h4>
+          <p>Glassmorphism effect with backdrop blur. Modern and sleek.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Project Card Section -->
+    <section class="demo-section">
+      <h2 class="demo-title">Project Card</h2>
+      <div class="grid-auto">
+        <div class="project-card">
+          <img class="project-card-image" src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&h=450&fit=crop" alt="Project">
+          <div class="project-card-content">
+            <h4 class="project-card-title">E-Commerce Platform</h4>
+            <p class="project-card-description">A full-stack e-commerce solution with real-time inventory management and payment processing.</p>
+            <div class="project-card-tech">
+              <span class="tech-badge">React</span>
+              <span class="tech-badge">Node.js</span>
+              <span class="tech-badge">MongoDB</span>
+              <span class="tech-badge">Stripe</span>
+            </div>
+            <div class="project-card-links">
+              <button class="btn btn-outline btn-sm">GitHub</button>
+              <button class="btn btn-primary btn-sm">Live Demo</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="project-card">
+          <img class="project-card-image" src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=800&h=450&fit=crop" alt="Project">
+          <div class="project-card-content">
+            <h4 class="project-card-title">Analytics Dashboard</h4>
+            <p class="project-card-description">Real-time analytics dashboard with interactive charts and data visualization.</p>
+            <div class="project-card-tech">
+              <span class="tech-badge">TypeScript</span>
+              <span class="tech-badge">Next.js</span>
+              <span class="tech-badge">D3.js</span>
+              <span class="tech-badge">PostgreSQL</span>
+            </div>
+            <div class="project-card-links">
+              <button class="btn btn-outline btn-sm">GitHub</button>
+              <button class="btn btn-primary btn-sm">Live Demo</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Badges Section -->
+    <section class="demo-section">
+      <h2 class="demo-title">Badges & Tags</h2>
+      <div class="demo-grid">
+        <div class="flex gap-2" style="flex-wrap: wrap;">
+          <span class="badge">Primary Badge</span>
+          <span class="badge-secondary">Secondary Badge</span>
+          <span class="badge-outline">Outline Badge</span>
+        </div>
+        <div class="flex gap-2" style="flex-wrap: wrap;">
+          <span class="tech-badge">JavaScript</span>
+          <span class="tech-badge">TypeScript</span>
+          <span class="tech-badge">React</span>
+          <span class="tech-badge">Node.js</span>
+          <span class="tech-badge">Python</span>
+          <span class="tech-badge">Docker</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Form Elements Section -->
+    <section class="demo-section">
+      <h2 class="demo-title">Form Elements</h2>
+      <div class="demo-grid" style="max-width: 600px;">
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="input" placeholder="you@example.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Message</label>
+          <textarea class="textarea" placeholder="Your message here..."></textarea>
+        </div>
+        <div>
+          <button class="btn btn-primary">Submit Form</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Timeline Section -->
+    <section class="demo-section">
+      <h2 class="demo-title">Timeline</h2>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-date">2023 - Present</div>
+          <h4 class="timeline-title">Senior Full-Stack Developer</h4>
+          <p class="timeline-description">Leading development of scalable web applications using modern tech stack. Mentoring junior developers and architecting cloud-native solutions.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">2021 - 2023</div>
+          <h4 class="timeline-title">Full-Stack Developer</h4>
+          <p class="timeline-description">Developed and maintained multiple client projects. Specialized in React, Node.js, and cloud infrastructure.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">2019 - 2021</div>
+          <h4 class="timeline-title">Frontend Developer</h4>
+          <p class="timeline-description">Built responsive web applications with focus on user experience and performance optimization.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="demo-section">
+      <h2 class="demo-title">Stats Widget</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value">5+</div>
+          <div class="stat-label">Years Experience</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">50+</div>
+          <div class="stat-label">Projects Completed</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">30+</div>
+          <div class="stat-label">Happy Clients</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">15+</div>
+          <div class="stat-label">Technologies</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Utility Classes Section -->
+    <section class="demo-section">
+      <h2 class="demo-title">Hover Effects</h2>
+      <div class="grid-3">
+        <div class="card hover-lift">
+          <h4>Hover Lift</h4>
+          <p>This card lifts up on hover</p>
+        </div>
+        <div class="card hover-glow">
+          <h4>Hover Glow</h4>
+          <p>This card glows on hover</p>
+        </div>
+        <div class="card hover-scale">
+          <h4>Hover Scale</h4>
+          <p>This card scales on hover</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Animations Section -->
+    <section class="demo-section">
+      <h2 class="demo-title">Animations</h2>
+      <div class="grid-3">
+        <div class="card animate-fade-in">
+          <h4>Fade In</h4>
+          <p>Fades in smoothly</p>
+        </div>
+        <div class="card animate-slide-up">
+          <h4>Slide Up</h4>
+          <p>Slides up from below</p>
+        </div>
+        <div class="card animate-scale-in">
+          <h4>Scale In</h4>
+          <p>Scales in from center</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Color Palette Section -->
+    <section class="demo-section">
+      <h2 class="demo-title">Color Palette</h2>
+      <div class="demo-grid">
+        <div>
+          <h5 class="mb-4">Primary Colors</h5>
+          <div class="flex gap-4" style="flex-wrap: wrap;">
+            <div style="width: 100px; height: 100px; background: var(--color-primary); border-radius: var(--radius-lg);"></div>
+            <div style="width: 100px; height: 100px; background: var(--color-secondary); border-radius: var(--radius-lg);"></div>
+            <div style="width: 100px; height: 100px; background: var(--color-accent); border-radius: var(--radius-lg);"></div>
+          </div>
+        </div>
+        <div>
+          <h5 class="mb-4">Status Colors</h5>
+          <div class="flex gap-4" style="flex-wrap: wrap;">
+            <div style="width: 100px; height: 100px; background: var(--color-success); border-radius: var(--radius-lg);"></div>
+            <div style="width: 100px; height: 100px; background: var(--color-info); border-radius: var(--radius-lg);"></div>
+            <div style="width: 100px; height: 100px; background: var(--color-warning); border-radius: var(--radius-lg);"></div>
+            <div style="width: 100px; height: 100px; background: var(--color-error); border-radius: var(--radius-lg);"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+    }
+
+    // Load saved theme
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+  </script>
+</body>
+</html>
