@@ -1,16 +1,17 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { ArrowRight,  Github, Linkedin, Mail } from "lucide-react";
+import { ArrowRight, Github, Linkedin, Mail } from "lucide-react";
 import { fadeIn, slideUp } from "../../lib/animations";
 import ME from "../../assets/me.png";
+import DotMorphButton from "./DotMorphButton";
 
 export default function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-primary/5 pt-20 md:pt-0">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-background pt-20 md:pt-0">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/10 rounded-full blur-3xl animate-pulse delay-1000" />
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/5 rounded-full blur-3xl animate-pulse delay-1000" />
       </div>
 
       <div className="container relative z-10 px-6 py-12 mx-auto">
@@ -18,17 +19,8 @@ export default function Hero() {
           {/* Text Content */}
           <div className="flex-1 text-center md:text-left">
             {/* Badge */}
-            <motion.div
-              {...fadeIn}
-              className="inline-flex items-center gap-2 px-4 py-2 mb-8 rounded-full bg-primary/10 border border-primary/20"
-            >
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-              </span>
-              <span className="text-sm font-medium">
-                Available for freelance work
-              </span>
+            <motion.div {...fadeIn} className="inline-block mb-8">
+              <DotMorphButton label="Available for freelance work" />
             </motion.div>
 
             {/* Main heading */}
@@ -36,7 +28,7 @@ export default function Hero() {
               <h2 className="text-xl md:text-2xl font-medium text-muted-foreground mb-2">
                 Hello I'm
               </h2>
-              <h1 className="text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-foreground via-primary to-secondary bg-clip-text text-transparent">
+              <h1 className="text-5xl md:text-7xl font-bold mb-4 text-foreground">
                 Prashant Khatiwada
               </h1>
               <h3 className="text-2xl md:text-3xl font-semibold text-primary mb-6">
@@ -62,14 +54,14 @@ export default function Hero() {
             >
               <a
                 href="#contact"
-                className="group inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition-all hover:scale-105 hover:shadow-lg hover:shadow-primary/50"
+                className="group inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition-all hover:scale-105 hover:shadow-lg hover:shadow-primary/20"
               >
                 Let's Talk
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </a>
               <a
                 href="#portfolio"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-secondary/10 text-secondary border border-secondary/20 rounded-lg font-semibold hover:bg-secondary/20 transition-all hover:scale-105"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-card text-foreground border-2 border-border rounded-lg font-semibold hover:border-primary hover:bg-primary/5 transition-all hover:scale-105"
               >
                 View Work
               </a>
@@ -113,7 +105,7 @@ export default function Hero() {
             transition={{ duration: 0.5 }}
             className="flex-1 relative max-w-md mx-auto md:max-w-none"
           >
-            <div className="relative z-10 w-full aspect-square rounded-full overflow-hidden border-4 border-primary/20 bg-gradient-to-b from-primary to-transparent">
+            <div className="relative z-10 w-full aspect-square rounded-full overflow-hidden border-4 border-primary/20 bg-gradient-to-b from-primary/10 to-transparent">
               <img
                 src={ME}
                 alt="Prashant Khatiwada"
@@ -121,11 +113,10 @@ export default function Hero() {
               />
             </div>
             {/* Decorative circles */}
-            <div className="absolute inset-0 -z-10 bg-gradient-to-tr from-primary/20 to-secondary/20 rounded-full blur-2xl transform scale-110" />
+            <div className="absolute inset-0 -z-10 bg-gradient-to-tr from-primary/10 to-accent/10 rounded-full blur-2xl transform scale-110" />
           </motion.div>
         </div>
       </div>
-
     </section>
   );
 }

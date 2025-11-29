@@ -11,7 +11,7 @@ export default function About() {
         <div className="flex flex-col md:flex-row items-center gap-16">
           {/* Image */}
           <motion.div {...fadeIn} className="w-full md:w-1/2">
-            <div className="relative aspect-square max-w-md mx-auto rounded-2xl overflow-hidden border-4 border-primary/20 bg-gradient-to-br from-primary/10 to-secondary/10">
+            <div className="relative aspect-square max-w-md mx-auto rounded-2xl overflow-hidden border-4 border-primary/30 bg-gradient-to-br from-primary/5 to-accent/5">
               <img
                 src={ME}
                 alt="About Me"
@@ -45,7 +45,7 @@ export default function About() {
 
             <a
               href="#contact"
-              className="inline-flex items-center gap-2 px-8 py-3 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition-all hover:scale-105"
+              className="inline-flex items-center gap-2 px-8 py-3 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition-all hover:scale-105 hover:shadow-lg hover:shadow-primary/20"
             >
               Let's Talk
               <ArrowRight className="w-4 h-4" />

@@ -31,26 +31,26 @@
   }
 
   .dark {
-    /* Dark theme colors */
-    --background: 240 10% 8%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 11%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 11%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 250 84% 60%;
-    --primary-foreground: 240 10% 10%;
-    --secondary: 200 98% 50%;
-    --secondary-foreground: 240 10% 10%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 340 82% 58%;
-    --accent-foreground: 240 10% 10%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 250 84% 60%;
+    /* Dark theme colors - Comfortable, easy on the eyes */
+    --background: 220 15% 10%;
+    --foreground: 210 20% 92%;
+    --card: 220 15% 13%;
+    --card-foreground: 210 20% 92%;
+    --popover: 220 15% 13%;
+    --popover-foreground: 210 20% 92%;
+    --primary: 250 50% 55%;
+    --primary-foreground: 210 20% 98%;
+    --secondary: 195 45% 50%;
+    --secondary-foreground: 210 20% 98%;
+    --muted: 220 15% 20%;
+    --muted-foreground: 220 10% 60%;
+    --accent: 335 45% 52%;
+    --accent-foreground: 210 20% 98%;
+    --destructive: 0 60% 55%;
+    --destructive-foreground: 210 20% 98%;
+    --border: 220 15% 22%;
+    --input: 220 15% 20%;
+    --ring: 250 50% 55%;
   }
 }
 
@@ -107,10 +107,10 @@
 
   0%,
   100% {
-    box-shadow: 0 0 20px hsla(250, 84%, 54%, 0.3);
+    box-shadow: 0 0 20px hsla(250, 50%, 55%, 0.3);
   }
 
   50% {
-    box-shadow: 0 0 40px hsla(250, 84%, 54%, 0.6);
+    box-shadow: 0 0 40px hsla(250, 50%, 55%, 0.6);
   }
 }

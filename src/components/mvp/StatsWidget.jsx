@@ -66,10 +66,10 @@ function StatCard({ stat, index }) {
     <motion.div
       ref={ref}
       variants={staggerItem}
-      className="relative p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all group"
+      className="relative p-6 rounded-xl bg-card border border-border hover:border-primary/40 hover:shadow-xl hover:shadow-primary/10 transition-all group"
     >
       <div className="text-center">
-        <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-2">
+        <div className="text-4xl md:text-5xl font-bold text-primary mb-2">
           {count}
           {stat.suffix || "+"}
         </div>
@@ -80,7 +80,7 @@ function StatCard({ stat, index }) {
 
       {/* Glow effect */}
       <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-        <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary/10 to-secondary/10 blur-xl" />
+        <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary/5 to-primary/5 blur-xl" />
       </div>
     </motion.div>
   );

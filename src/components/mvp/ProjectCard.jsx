@@ -1,11 +1,20 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ExternalLink, Github, Maximize2, X, Monitor, Smartphone, Tablet } from "lucide-react";
+import {
+  ExternalLink,
+  Github,
+  Maximize2,
+  X,
+  Monitor,
+  Smartphone,
+  Tablet,
+} from "lucide-react";
 import { cn } from "../../lib/utils";
 import { hoverLift } from "../../lib/animations";
 
 export default function ProjectCard({ project }) {
-  const { title, description, image, technologies, github, demo, featured } = project;
+  const { title, description, image, technologies, github, demo, featured } =
+    project;
 
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [viewMode, setViewMode] = useState("desktop"); // desktop or mobile
@@ -27,8 +36,9 @@ export default function ProjectCard({ project }) {
       }
     };
 
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () =>
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
   }, []);
 
   return (
@@ -36,12 +46,12 @@ export default function ProjectCard({ project }) {
       {...hoverLift}
       className={cn(
         "group relative overflow-hidden rounded-2xl bg-card border border-border transition-all duration-300",
-        "hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/20"
+        "hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/10"
       )}
     >
       {/* Featured Badge */}
       {featured && (
-        <div className="absolute top-4 right-4 z-10 px-3 py-1 rounded-full bg-primary text-primary-foreground text-xs font-semibold">
+        <div className="absolute top-4 right-4 z-10 px-3 py-1 rounded-full bg-primary text-primary-foreground text-xs font-semibold shadow-lg shadow-primary/20">
           Featured
         </div>
       )}
@@ -82,7 +92,7 @@ export default function ProjectCard({ project }) {
           {demo && (
             <button
               onClick={() => setIsFullscreen(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-accent text-accent-foreground hover:bg-accent/80 transition-all text-sm font-medium"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-accent text-accent-foreground hover:bg-accent/90 transition-all text-sm font-medium shadow-sm hover:shadow-md hover:shadow-accent/20"
             >
               <Maximize2 className="w-4 h-4" />
               Full Screen
@@ -93,7 +103,7 @@ export default function ProjectCard({ project }) {
               href={github}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary/10 text-secondary border border-secondary/20 hover:bg-secondary/20 transition-all text-sm font-medium"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-card text-foreground border-2 border-border hover:border-secondary hover:bg-secondary/5 transition-all text-sm font-medium"
             >
               <Github className="w-4 h-4" />
               Code
@@ -104,7 +114,7 @@ export default function ProjectCard({ project }) {
               href={demo}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-all text-sm font-medium"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-all text-sm font-medium shadow-sm hover:shadow-md hover:shadow-primary/20"
             >
               <ExternalLink className="w-4 h-4" />
               Live Demo
@@ -115,7 +125,10 @@ export default function ProjectCard({ project }) {
 
       {/* Fullscreen Overlay */}
       {isFullscreen && (
-        <div ref={fullscreenRef} className="fixed inset-0 z-[9999] bg-background flex flex-col">
+        <div
+          ref={fullscreenRef}
+          className="fixed inset-0 z-[9999] bg-background flex flex-col"
+        >
           {/* Header */}
           <div className="flex items-center justify-between h-16 px-6 border-b border-border bg-background">
             <div className="flex items-center gap-4">
@@ -175,9 +188,11 @@ export default function ProjectCard({ project }) {
             <div
               className={cn(
                 "bg-white rounded-lg shadow-2xl overflow-hidden transition-all duration-300",
-                viewMode === "desktop" ? "w-full h-full" :
-                viewMode === "tablet" ? "w-[768px] h-[1024px]" :
-                "w-[375px] h-[812px]"
+                viewMode === "desktop"
+                  ? "w-full h-full"
+                  : viewMode === "tablet"
+                  ? "w-[768px] h-[1024px]"
+                  : "w-[375px] h-[812px]"
               )}
             >
               <iframe

@@ -26,23 +26,23 @@ import FotosFolioImage from "./assets/portfolio/fotosfolio.png";
 // Real Data
 const projects = [
   {
-  title: "FotosFolio",
-  description:
-    "Portfolio platform for photographers and visual artists to showcase high-quality images, manage galleries, and share work with clients.",
-  image: FotosFolioImage, // replace with your imported image variable
-  technologies: ["React", "Next.js", "Cloud Storage"],
-  demo: "https://fotosfolio.com/",
-  featured: true,
-},
-{
-  title: "Sawari Expert",
-  description:
-    "Ride-hailing and transport management platform providing seamless booking, driver tracking, and customer support for urban commuters.",
-  image: SawariExpertImage, // replace with your imported image variable
-  technologies: ["React", "Node.js", "Google Maps API"],
-  demo: "https://sawariexpert.com/",
-  featured: true,
-},
+    title: "FotosFolio",
+    description:
+      "Portfolio platform for photographers and visual artists to showcase high-quality images, manage galleries, and share work with clients.",
+    image: FotosFolioImage, // replace with your imported image variable
+    technologies: ["React", "Next.js", "Cloud Storage"],
+    demo: "https://fotosfolio.com/",
+    featured: true,
+  },
+  {
+    title: "Sawari Expert",
+    description:
+      "Ride-hailing and transport management platform providing seamless booking, driver tracking, and customer support for urban commuters.",
+    image: SawariExpertImage, // replace with your imported image variable
+    technologies: ["React", "Node.js", "Google Maps API"],
+    demo: "https://sawariexpert.com/",
+    featured: true,
+  },
   {
     title: "Kumari Bank",
     description:
@@ -79,7 +79,6 @@ const projects = [
     demo: "https://uat.wealthpandit.com",
     featured: true,
   },
-  
 
   {
     title: "Youtube Clone",
@@ -137,8 +136,14 @@ function App() {
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [activeTab, setActiveTab] = useState("featured");
 
-  const filteredProjects = activeTab === "featured" ? projects.filter(p => p.featured) : projects;
-  const displayedProjects = activeTab === "all" ? filteredProjects : (showAllProjects ? filteredProjects : filteredProjects.slice(0, 6));
+  const filteredProjects =
+    activeTab === "featured" ? projects.filter((p) => p.featured) : projects;
+  const displayedProjects =
+    activeTab === "all"
+      ? filteredProjects
+      : showAllProjects
+      ? filteredProjects
+      : filteredProjects.slice(0, 6);
 
   return (
     <ThemeProvider>
@@ -187,8 +192,8 @@ function App() {
                   className={cn(
                     "px-6 py-2 rounded-lg text-sm font-medium transition-all",
                     activeTab === "featured"
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted text-muted-foreground hover:bg-muted/80"
+                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                      : "bg-card text-muted-foreground border border-border hover:border-primary hover:bg-primary/5"
                   )}
                 >
                   Featured
@@ -201,8 +206,8 @@ function App() {
                   className={cn(
                     "px-6 py-2 rounded-lg text-sm font-medium transition-all",
                     activeTab === "all"
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted text-muted-foreground hover:bg-muted/80"
+                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                      : "bg-card text-muted-foreground border border-border hover:border-primary hover:bg-primary/5"
                   )}
                 >
                   All Projects
@@ -233,10 +238,10 @@ function App() {
                 <button
                   onClick={() => setShowAllProjects(!showAllProjects)}
                   className={cn(
-                    "px-8 py-3 rounded-lg font-medium transition-all",
+                    "px-8 py-3 rounded-lg font-medium transition-all hover:scale-105",
                     showAllProjects
-                      ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                      : "bg-muted text-muted-foreground hover:bg-muted/80"
+                      ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20"
+                      : "bg-card text-foreground border-2 border-border hover:border-primary hover:bg-primary/5"
                   )}
                 >
                   {showAllProjects ? "Show Less" : "View More Projects"}

@@ -73,115 +73,116 @@ export default function BottomNav() {
   };
 
   return (
-<motion.nav
-  initial={{ y: 100, opacity: 0 }}
-  animate={{
-    y: isVisible ? 0 : 100,
-    opacity: isVisible ? 1 : 0
-  }}
-  transition={{ type: "spring", stiffness: 300, damping: 30 }}
-  className="fixed bottom-4 left-1/2 z-50 bg-background/70 backdrop-blur-lg border border-border shadow-lg rounded-full px-3 py-2"
-  style={{
-    x: "-50%", // centers nav horizontally
-    willChange: "transform, opacity"
-  }}
->
-  <div className="relative">
-    <motion.div
-      variants={staggerContainer}
-      initial="initial"
-      animate="animate"
-      className="flex items-center justify-center gap-1"
+    <motion.nav
+      initial={{ y: 100, opacity: 0 }}
+      animate={{
+        y: isVisible ? 0 : 100,
+        opacity: isVisible ? 1 : 0,
+      }}
+      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+      className="fixed bottom-4 left-1/2 z-50 bg-card/80 backdrop-blur-xl border border-border shadow-2xl shadow-primary/5 rounded-full px-3 py-2"
+      style={{
+        x: "-50%", // centers nav horizontally
+        willChange: "transform, opacity",
+      }}
     >
-      {navItems.map((item) => {
-        const Icon = item.icon;
-        const isActive = activeSection === item.name.toLowerCase();
-        const isHovered = hoveredItem === item.name;
+      <div className="relative">
+        <motion.div
+          variants={staggerContainer}
+          initial="initial"
+          animate="animate"
+          className="flex items-center justify-center gap-1"
+        >
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeSection === item.name.toLowerCase();
+            const isHovered = hoveredItem === item.name;
 
-        return (
-          <motion.button
-            key={item.name}
-            onClick={(e) => handleNavClick(e, item.href)}
-            onMouseEnter={() => setHoveredItem(item.name)}
-            onMouseLeave={() => setHoveredItem(null)}
-            variants={staggerItem}
-            whileHover={{
-              y: -4,
-              boxShadow: "0 0 20px hsla(var(--primary), 0.5)",
-              transition: { duration: 0.2 }
-            }}
-            whileTap={{ scale: 0.95 }}
-            className={cn(
-              "relative flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-full transition-all duration-200",
-              "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
-              "min-w-[70px]"
-            )}
-            aria-label={`Navigate to ${item.name} section`}
-            aria-current={isActive ? "page" : undefined}
-          >
-            {/* Background highlight for active/hover */}
-            <motion.div
-              initial={false}
-              animate={{
-                opacity: isActive ? 1 : isHovered ? 0.5 : 0,
-                scale: isActive ? 1 : isHovered ? 0.95 : 0.9,
-                boxShadow: isActive ? "0 0 15px hsla(var(--primary), 0.3)" : "none",
-              }}
-              transition={{ duration: 0.2 }}
-              className="absolute inset-0 bg-primary/10 rounded-full"
-            />
-
-            {/* Icon */}
-            <motion.div
-              animate={{ scale: isActive ? 1.1 : 1 }}
-              transition={{ duration: 0.2 }}
-            >
-              <Icon
-                className={cn(
-                  "w-5 h-5 transition-all duration-200 relative z-10",
-                  isActive
-                    ? "text-primary"
-                    : isHovered
-                    ? "text-foreground"
-                    : "text-muted-foreground"
-                )}
-                strokeWidth={isActive ? 2.5 : 2}
-              />
-            </motion.div>
-
-            {/* Label */}
-            <span
-              className={cn(
-                "text-[11px] font-medium transition-all duration-200 relative z-10 whitespace-nowrap",
-                isActive 
-                  ? "text-primary" 
-                  : isHovered
-                  ? "text-foreground"
-                  : "text-muted-foreground"
-              )}
-            >
-              {item.name}
-            </span>
-
-            {/* Active indicator dot */}
-            {isActive && (
-              <motion.div
-                layoutId="activeIndicator"
-                className="absolute -bottom-1 left-1/2 w-1 h-1 bg-primary rounded-full"
-                style={{ x: "-50%" }} // replaces -translate-x-1/2
-                transition={{ 
-                  type: "spring", 
-                  stiffness: 500, 
-                  damping: 30 
+            return (
+              <motion.button
+                key={item.name}
+                onClick={(e) => handleNavClick(e, item.href)}
+                onMouseEnter={() => setHoveredItem(item.name)}
+                onMouseLeave={() => setHoveredItem(null)}
+                variants={staggerItem}
+                whileHover={{
+                  y: -4,
+                  boxShadow: "0 0 20px hsla(var(--primary), 0.5)",
+                  transition: { duration: 0.2 },
                 }}
-              />
-            )}
-          </motion.button>
-        );
-      })}
-    </motion.div>
-  </div>
-</motion.nav>
+                whileTap={{ scale: 0.95 }}
+                className={cn(
+                  "relative flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-full transition-all duration-200",
+                  "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+                  "min-w-[70px]"
+                )}
+                aria-label={`Navigate to ${item.name} section`}
+                aria-current={isActive ? "page" : undefined}
+              >
+                {/* Background highlight for active/hover */}
+                <motion.div
+                  initial={false}
+                  animate={{
+                    opacity: isActive ? 1 : isHovered ? 0.5 : 0,
+                    scale: isActive ? 1 : isHovered ? 0.95 : 0.9,
+                    boxShadow: isActive
+                      ? "0 0 15px hsla(var(--primary), 0.3)"
+                      : "none",
+                  }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute inset-0 bg-primary/10 rounded-full"
+                />
 
+                {/* Icon */}
+                <motion.div
+                  animate={{ scale: isActive ? 1.1 : 1 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Icon
+                    className={cn(
+                      "w-5 h-5 transition-all duration-200 relative z-10",
+                      isActive
+                        ? "text-primary"
+                        : isHovered
+                        ? "text-foreground"
+                        : "text-muted-foreground"
+                    )}
+                    strokeWidth={isActive ? 2.5 : 2}
+                  />
+                </motion.div>
+
+                {/* Label */}
+                <span
+                  className={cn(
+                    "text-[11px] font-medium transition-all duration-200 relative z-10 whitespace-nowrap",
+                    isActive
+                      ? "text-primary"
+                      : isHovered
+                      ? "text-foreground"
+                      : "text-muted-foreground"
+                  )}
+                >
+                  {item.name}
+                </span>
+
+                {/* Active indicator dot */}
+                {isActive && (
+                  <motion.div
+                    layoutId="activeIndicator"
+                    className="absolute -bottom-1 left-1/2 w-1 h-1 bg-primary rounded-full"
+                    style={{ x: "-50%" }} // replaces -translate-x-1/2
+                    transition={{
+                      type: "spring",
+                      stiffness: 500,
+                      damping: 30,
+                    }}
+                  />
+                )}
+              </motion.button>
+            );
+          })}
+        </motion.div>
+      </div>
+    </motion.nav>
   );
 }

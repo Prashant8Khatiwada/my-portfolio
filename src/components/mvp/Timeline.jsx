@@ -27,7 +27,7 @@ export default function Timeline({ items, type = "experience" }) {
         >
           {/* Timeline dot */}
           <div className="absolute left-0 md:left-1/2 transform md:-translate-x-1/2 flex items-center justify-center">
-            <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center border-4 border-background shadow-lg shadow-primary/50">
+            <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center border-4 border-background shadow-lg shadow-primary/20">
               <Icon className="w-5 h-5 text-primary-foreground" />
             </div>
           </div>
@@ -43,7 +43,7 @@ export default function Timeline({ items, type = "experience" }) {
                 index % 2 === 0 ? "md:mr-8" : "md:ml-8"
               }`}
             >
-              <div className="bg-card border border-border rounded-xl p-6 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all">
+              <div className="bg-card border border-border rounded-xl p-6 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/10 transition-all">
                 <span className="text-sm text-muted-foreground font-medium">
                   {item.date}
                 </span>
@@ -58,7 +58,7 @@ export default function Timeline({ items, type = "experience" }) {
                     {item.technologies.map((tech, i) => (
                       <span
                         key={i}
-                        className="px-2 py-1 text-xs rounded-md bg-primary/10 text-primary"
+                        className="px-2 py-1 text-xs rounded-md bg-primary/10 text-primary border border-primary/20"
                       >
                         {tech}
                       </span>

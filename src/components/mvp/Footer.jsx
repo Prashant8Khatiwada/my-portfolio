@@ -13,9 +13,7 @@ const footerLinks = {
     { name: "Projects", href: "#projects" },
     { name: "About", href: "#about" },
   ],
-  Resources: [
-    { name: "Contact", href: "#contact" },
-  ],
+  Resources: [{ name: "Contact", href: "#contact" }],
 };
 
 export default function Footer() {
@@ -25,9 +23,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           {/* Brand */}
           <div className="md:col-span-1">
-            <h3 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
-              Portfolio
-            </h3>
+            <h3 className="text-2xl font-bold text-primary mb-4">Portfolio</h3>
             <p className="text-muted-foreground text-sm mb-4">
               Building amazing web experiences with modern technologies.
             </p>
@@ -40,7 +36,7 @@ export default function Footer() {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-2 rounded-lg bg-background border border-border hover:border-primary hover:bg-primary/10 transition-all"
+                    className="p-2 rounded-lg bg-card border border-border hover:border-primary hover:bg-primary/10 transition-all hover:scale-110 hover:shadow-lg hover:shadow-primary/20"
                     aria-label={social.label}
                   >
                     <Icon className="w-4 h-4" />
