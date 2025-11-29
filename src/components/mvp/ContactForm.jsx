@@ -40,7 +40,12 @@ export default function ContactForm() {
       className="max-w-2xl mx-auto space-y-6"
     >
       {/* Name */}
-      <div>
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.1 }}
+      >
         <label htmlFor="name" className="block text-sm font-medium mb-2">
           Name
         </label>
@@ -54,10 +59,15 @@ export default function ContactForm() {
           className="w-full px-4 py-3 rounded-lg bg-card border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
           placeholder="Your name"
         />
-      </div>
+      </motion.div>
 
       {/* Email */}
-      <div>
+      <motion.div
+        initial={{ opacity: 0, x: 20 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.2 }}
+      >
         <label htmlFor="email" className="block text-sm font-medium mb-2">
           Email
         </label>
@@ -71,10 +81,15 @@ export default function ContactForm() {
           className="w-full px-4 py-3 rounded-lg bg-card border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
           placeholder="your@email.com"
         />
-      </div>
+      </motion.div>
 
       {/* Message */}
-      <div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.3 }}
+      >
         <label htmlFor="message" className="block text-sm font-medium mb-2">
           Message
         </label>
@@ -88,7 +103,7 @@ export default function ContactForm() {
           className="w-full px-4 py-3 rounded-lg bg-card border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all resize-none"
           placeholder="Your message..."
         />
-      </div>
+      </motion.div>
 
       {/* Submit Button */}
       <button

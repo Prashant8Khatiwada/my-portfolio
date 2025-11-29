@@ -1,12 +1,21 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { Home, User, Briefcase, Award, Mail } from "lucide-react";
+import {
+  Home,
+  User,
+  Briefcase,
+  Award,
+  Mail,
+  Sparkles,
+  MessageSquareQuote,
+} from "lucide-react";
 
 const navItems = [
   { name: "Home", href: "#home", icon: Home },
   { name: "About", href: "#about", icon: User },
+  { name: "Services", href: "#services", icon: Sparkles },
   { name: "Projects", href: "#portfolio", icon: Briefcase },
-  { name: "Experience", href: "#experience", icon: Award },
+  { name: "Testimonials", href: "#testimonials", icon: MessageSquareQuote },
   { name: "Contact", href: "#contact", icon: Mail },
 ];
 

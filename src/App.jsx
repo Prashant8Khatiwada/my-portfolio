@@ -9,6 +9,8 @@ import StatsWidget from "./components/mvp/StatsWidget";
 import ContactForm from "./components/mvp/ContactForm";
 import Footer from "./components/mvp/Footer";
 import About from "./components/mvp/About";
+import Services from "./components/mvp/Services";
+import Testimonials from "./components/mvp/Testimonials";
 import { motion } from "framer-motion";
 import { staggerContainer, staggerItem } from "./lib/animations";
 import { cn } from "./lib/utils";
@@ -166,6 +168,9 @@ function App() {
         {/* About Section */}
         <About />
 
+        {/* Services Section */}
+        <Services />
+
         {/* Projects Section */}
         <section id="portfolio" className="py-24">
           <div className="container mx-auto px-6">
@@ -272,6 +277,9 @@ function App() {
             <Timeline items={experience} type="experience" />
           </div>
         </section>
+
+        {/* Testimonials Section */}
+        <Testimonials />
 
         {/* Contact Section */}
         <section id="contact" className="py-24">
