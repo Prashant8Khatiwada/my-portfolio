@@ -4,7 +4,6 @@ import {
   Home,
   User,
   Briefcase,
-  Award,
   Mail,
   Sparkles,
   MessageSquareQuote,
