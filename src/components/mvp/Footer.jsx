@@ -1,5 +1,7 @@
 import React from "react";
 import { Github, Linkedin, Mail, Twitter } from "lucide-react";
+import { motion } from "framer-motion";
+import { slideUp } from "../../lib/animations";
 import Magnetic from "./Magnetic";
 
 const socialLinks = [
@@ -20,7 +22,13 @@ const footerLinks = {
 export default function Footer() {
   return (
     <footer className="relative border-t border-border bg-card/50">
-      <div className="container mx-auto px-6 py-12">
+      <motion.div
+        initial={slideUp.initial}
+        whileInView={slideUp.animate}
+        viewport={{ once: true }}
+        transition={slideUp.transition}
+        className="container mx-auto px-6 py-12"
+      >
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           {/* Brand */}
           <div className="md:col-span-1">
@@ -79,7 +87,7 @@ export default function Footer() {
             </p>
           </div>
         </div>
-      </div>
+      </motion.div>
     </footer>
   );
 }

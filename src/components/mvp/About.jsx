@@ -10,7 +10,13 @@ export default function About() {
       <div className="container mx-auto px-6">
         <div className="flex flex-col md:flex-row items-center gap-16">
           {/* Image */}
-          <motion.div {...fadeIn} className="w-full md:w-1/2">
+          <motion.div
+            initial={fadeIn.initial}
+            whileInView={fadeIn.animate}
+            viewport={{ once: true }}
+            transition={fadeIn.transition}
+            className="w-full md:w-1/2"
+          >
             <div className="relative aspect-square max-w-md mx-auto rounded-2xl overflow-hidden border-4 border-primary/30 bg-gradient-to-br from-primary/5 to-accent/5">
               <img
                 src={ME}
@@ -22,7 +28,10 @@ export default function About() {
 
           {/* Content */}
           <motion.div
-            {...slideUp}
+            initial={slideUp.initial}
+            whileInView={slideUp.animate}
+            viewport={{ once: true }}
+            transition={slideUp.transition}
             className="w-full md:w-1/2 text-center md:text-left"
           >
             <h2 className="text-sm font-bold text-primary tracking-widest uppercase mb-2">

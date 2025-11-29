@@ -218,7 +218,8 @@ function App() {
             <motion.div
               variants={staggerContainer}
               initial="initial"
-              animate="animate"
+              whileInView="animate"
+              viewport={{ once: true, margin: "-100px" }}
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
             >
               {displayedProjects.map((project, index) => (

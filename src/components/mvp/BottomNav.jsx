@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { Home, User, Briefcase, Award, Mail } from "lucide-react";
-import { staggerContainer, staggerItem } from "../../lib/animations";
-
-const cn = (...classes) => classes.filter(Boolean).join(" ");
 
 const navItems = [
   { name: "Home", href: "#home", icon: Home },
@@ -13,10 +10,96 @@ const navItems = [
   { name: "Contact", href: "#contact", icon: Mail },
 ];
 
+// Dock Item Component with magnification effect
+function DockIcon({ mouseX, item, isActive, onClick }) {
+  const ref = useRef(null);
+
+  const distance = useTransform(mouseX, (val) => {
+    const bounds = ref.current?.getBoundingClientRect() ?? { x: 0, width: 0 };
+    return val - bounds.x - bounds.width / 2;
+  });
+
+  const widthSync = useTransform(distance, [-150, 0, 150], [48, 80, 48]);
+  const width = useSpring(widthSync, {
+    mass: 0.1,
+    stiffness: 150,
+    damping: 12,
+  });
+
+  const Icon = item.icon;
+
+  return (
+    <motion.button
+      ref={ref}
+      onClick={onClick}
+      style={{ width }}
+      whileHover={{ y: -8 }}
+      whileTap={{ scale: 0.9 }}
+      transition={{
+        type: "spring",
+        stiffness: 400,
+        damping: 17,
+      }}
+      className="aspect-square relative flex items-center justify-center rounded-2xl group"
+      aria-label={`Navigate to ${item.name} section`}
+      aria-current={isActive ? "page" : undefined}
+    >
+      {/* Background glow for active state */}
+      {isActive && (
+        <motion.div
+          layoutId="activeDockItem"
+          className="absolute inset-0 bg-gradient-to-br from-primary/30 to-primary/10 rounded-2xl blur-sm"
+          transition={{
+            type: "spring",
+            stiffness: 380,
+            damping: 30,
+          }}
+        />
+      )}
+
+      {/* Icon background */}
+      <motion.div
+        className="absolute inset-1 rounded-xl bg-gradient-to-br from-background/80 to-background/40 backdrop-blur-md"
+        style={{
+          boxShadow: isActive
+            ? "0 4px 20px rgba(0, 0, 0, 0.1), inset 0 0 20px rgba(var(--primary-rgb), 0.1)"
+            : "0 2px 8px rgba(0, 0, 0, 0.1)",
+        }}
+      />
+
+      {/* Icon */}
+      <Icon
+        className={`relative z-10 transition-colors duration-200 ${
+          isActive
+            ? "text-primary"
+            : "text-muted-foreground group-hover:text-foreground"
+        }`}
+        size={24}
+        strokeWidth={isActive ? 2.5 : 2}
+      />
+
+      {/* Tooltip on hover */}
+      <motion.div
+        initial={{ opacity: 0, y: 10, scale: 0.8 }}
+        whileHover={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{
+          type: "spring",
+          stiffness: 500,
+          damping: 25,
+        }}
+        className="absolute -top-12 bg-background/95 backdrop-blur-md px-3 py-1.5 rounded-lg text-xs font-medium text-foreground shadow-lg border border-border pointer-events-none"
+      >
+        {item.name}
+        <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-background/95 border-r border-b border-border rotate-45" />
+      </motion.div>
+    </motion.button>
+  );
+}
+
 export default function BottomNav() {
   const [activeSection, setActiveSection] = useState("home");
   const [isVisible, setIsVisible] = useState(true);
-  const [hoveredItem, setHoveredItem] = useState(null);
+  const mouseX = useMotionValue(Infinity);
   const observerRefs = useRef([]);
 
   useEffect(() => {
@@ -79,109 +162,51 @@ export default function BottomNav() {
         y: isVisible ? 0 : 100,
         opacity: isVisible ? 1 : 0,
       }}
-      transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      className="fixed bottom-4 left-1/2 z-50 bg-card/80 backdrop-blur-xl border border-border shadow-2xl shadow-primary/5 rounded-full px-3 py-2"
-      style={{
-        x: "-50%", // centers nav horizontally
-        willChange: "transform, opacity",
+      transition={{
+        type: "spring",
+        stiffness: 260,
+        damping: 20,
       }}
+      className="fixed bottom-6 left-0 right-0 z-50 flex justify-center pointer-events-none"
     >
-      <div className="relative">
+      <div
+        className="pointer-events-auto relative"
+        onMouseMove={(e) => mouseX.set(e.pageX)}
+        onMouseLeave={() => mouseX.set(Infinity)}
+      >
+        {/* Dock Container */}
         <motion.div
-          variants={staggerContainer}
-          initial="initial"
-          animate="animate"
-          className="flex items-center justify-center gap-1"
+          className="flex items-end gap-2 px-3 pb-3 pt-2 rounded-[24px] border border-border/50"
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(255,255,255,0.08), rgba(255,255,255,0.03))",
+            backdropFilter: "blur(20px) saturate(180%)",
+            WebkitBackdropFilter: "blur(20px) saturate(180%)",
+            boxShadow:
+              "0 10px 40px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
+          }}
         >
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = activeSection === item.name.toLowerCase();
-            const isHovered = hoveredItem === item.name;
-
-            return (
-              <motion.button
-                key={item.name}
-                onClick={(e) => handleNavClick(e, item.href)}
-                onMouseEnter={() => setHoveredItem(item.name)}
-                onMouseLeave={() => setHoveredItem(null)}
-                variants={staggerItem}
-                whileHover={{
-                  y: -4,
-                  boxShadow: "0 0 20px hsla(var(--primary), 0.5)",
-                  transition: { duration: 0.2 },
-                }}
-                whileTap={{ scale: 0.95 }}
-                className={cn(
-                  "relative flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-full transition-all duration-200",
-                  "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
-                  "min-w-[70px]"
-                )}
-                aria-label={`Navigate to ${item.name} section`}
-                aria-current={isActive ? "page" : undefined}
-              >
-                {/* Background highlight for active/hover */}
-                <motion.div
-                  initial={false}
-                  animate={{
-                    opacity: isActive ? 1 : isHovered ? 0.5 : 0,
-                    scale: isActive ? 1 : isHovered ? 0.95 : 0.9,
-                    boxShadow: isActive
-                      ? "0 0 15px hsla(var(--primary), 0.3)"
-                      : "none",
-                  }}
-                  transition={{ duration: 0.2 }}
-                  className="absolute inset-0 bg-primary/10 rounded-full"
-                />
-
-                {/* Icon */}
-                <motion.div
-                  animate={{ scale: isActive ? 1.1 : 1 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <Icon
-                    className={cn(
-                      "w-5 h-5 transition-all duration-200 relative z-10",
-                      isActive
-                        ? "text-primary"
-                        : isHovered
-                        ? "text-foreground"
-                        : "text-muted-foreground"
-                    )}
-                    strokeWidth={isActive ? 2.5 : 2}
-                  />
-                </motion.div>
-
-                {/* Label */}
-                <span
-                  className={cn(
-                    "text-[11px] font-medium transition-all duration-200 relative z-10 whitespace-nowrap",
-                    isActive
-                      ? "text-primary"
-                      : isHovered
-                      ? "text-foreground"
-                      : "text-muted-foreground"
-                  )}
-                >
-                  {item.name}
-                </span>
-
-                {/* Active indicator dot */}
-                {isActive && (
-                  <motion.div
-                    layoutId="activeIndicator"
-                    className="absolute -bottom-1 left-1/2 w-1 h-1 bg-primary rounded-full"
-                    style={{ x: "-50%" }} // replaces -translate-x-1/2
-                    transition={{
-                      type: "spring",
-                      stiffness: 500,
-                      damping: 30,
-                    }}
-                  />
-                )}
-              </motion.button>
-            );
-          })}
+          {navItems.map((item) => (
+            <DockIcon
+              key={item.name}
+              mouseX={mouseX}
+              item={item}
+              isActive={activeSection === item.name.toLowerCase()}
+              onClick={(e) => handleNavClick(e, item.href)}
+            />
+          ))}
         </motion.div>
+
+        {/* Dock Reflection Effect (like macOS) */}
+        <div
+          className="absolute inset-x-0 -bottom-2 h-8 rounded-[24px] opacity-30"
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(255,255,255,0.05), transparent)",
+            filter: "blur(4px)",
+            transform: "scaleY(-1)",
+          }}
+        />
       </div>
     </motion.nav>
   );

@@ -32,7 +32,10 @@ export default function ContactForm() {
 
   return (
     <motion.form
-      {...slideUp}
+      initial={slideUp.initial}
+      whileInView={slideUp.animate}
+      viewport={{ once: true }}
+      transition={slideUp.transition}
       onSubmit={handleSubmit}
       className="max-w-2xl mx-auto space-y-6"
     >

@@ -56,12 +56,16 @@ export default function Timeline({ items, type = "experience" }) {
                 {item.technologies && (
                   <div className="flex flex-wrap gap-2 mt-4">
                     {item.technologies.map((tech, i) => (
-                      <span
+                      <motion.span
                         key={i}
-                        className="px-2 py-1 text-xs rounded-md bg-primary/10 text-primary border border-primary/20"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: i * 0.05, duration: 0.3 }}
+                        whileHover={{ scale: 1.1, y: -2 }}
+                        className="px-2 py-1 text-xs rounded-md bg-primary/10 text-primary border border-primary/20 cursor-default"
                       >
                         {tech}
-                      </span>
+                      </motion.span>
                     ))}
                   </div>
                 )}
