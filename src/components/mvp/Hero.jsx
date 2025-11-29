@@ -4,6 +4,7 @@ import { ArrowRight, Github, Linkedin, Mail } from "lucide-react";
 import { fadeIn, slideUp } from "../../lib/animations";
 import ME from "../../assets/me.png";
 import DotMorphButton from "./DotMorphButton";
+import Magnetic from "./Magnetic";
 
 export default function Hero() {
   return (
@@ -70,31 +71,30 @@ export default function Hero() {
             {/* Social Links */}
             <motion.div
               {...fadeIn}
-              transition={{ delay: 0.6 }}
               className="flex gap-4 justify-center md:justify-start"
             >
-              <a
-                href="https://github.com/Prashant8Khatiwada"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-3 rounded-lg bg-card border border-border hover:border-primary hover:bg-primary/10 transition-all"
-              >
-                <Github className="w-5 h-5" />
-              </a>
-              <a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-3 rounded-lg bg-card border border-border hover:border-primary hover:bg-primary/10 transition-all"
-              >
-                <Linkedin className="w-5 h-5" />
-              </a>
-              <a
-                href="mailto:your@email.com"
-                className="p-3 rounded-lg bg-card border border-border hover:border-primary hover:bg-primary/10 transition-all"
-              >
-                <Mail className="w-5 h-5" />
-              </a>
+              {[
+                { icon: Github, href: "https://github.com/Prashant8Khatiwada" },
+                {
+                  icon: Linkedin,
+                  href: "https://www.linkedin.com/in/prashant-khatiwada-70405126a/",
+                },
+                { icon: Mail, href: "mailto:prashantkhatiwada21@gmail.com" },
+              ].map((social, index) => {
+                const Icon = social.icon;
+                return (
+                  <Magnetic key={index}>
+                    <a
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-3 rounded-full bg-card border border-border hover:border-primary hover:bg-primary/10 transition-all hover:scale-110 hover:shadow-lg hover:shadow-primary/20 block"
+                    >
+                      <Icon className="w-5 h-5" />
+                    </a>
+                  </Magnetic>
+                );
+              })}
             </motion.div>
           </div>
 

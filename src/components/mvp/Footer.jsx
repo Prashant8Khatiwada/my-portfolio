@@ -1,5 +1,6 @@
 import React from "react";
 import { Github, Linkedin, Mail, Twitter } from "lucide-react";
+import Magnetic from "./Magnetic";
 
 const socialLinks = [
   { icon: Github, href: "https://github.com", label: "GitHub" },
@@ -31,16 +32,17 @@ export default function Footer() {
               {socialLinks.map((social) => {
                 const Icon = social.icon;
                 return (
-                  <a
-                    key={social.label}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2 rounded-lg bg-card border border-border hover:border-primary hover:bg-primary/10 transition-all hover:scale-110 hover:shadow-lg hover:shadow-primary/20"
-                    aria-label={social.label}
-                  >
-                    <Icon className="w-4 h-4" />
-                  </a>
+                  <Magnetic key={social.label}>
+                    <a
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2 rounded-lg bg-card border border-border hover:border-primary hover:bg-primary/10 transition-all hover:scale-110 hover:shadow-lg hover:shadow-primary/20 block"
+                      aria-label={social.label}
+                    >
+                      <Icon className="w-4 h-4" />
+                    </a>
+                  </Magnetic>
                 );
               })}
             </div>
