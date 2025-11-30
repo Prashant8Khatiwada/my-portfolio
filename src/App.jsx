@@ -128,24 +128,27 @@ const experience = [
 ];
 
 const stats = [
-  { value: "2", suffix: "+", label: "Years Experience" },
+  { value: "3", suffix: "+", label: "Years Experience" },
   { value: "10", suffix: "+", label: "Projects Completed" },
-  { value: "50", suffix: "+", label: "Happy Clients" },
-  { value: "15", suffix: "+", label: "Technologies" },
+  { value: "20", suffix: "+", label: "Happy Clients" },
+  { value: "10", suffix: "+", label: "Technologies" },
 ];
 
 function App() {
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [activeTab, setActiveTab] = useState("featured");
 
+  // Filter projects based on active tab
   const filteredProjects =
     activeTab === "featured" ? projects.filter((p) => p.featured) : projects;
+
+  // Determine which projects to display
   const displayedProjects =
     activeTab === "all"
-      ? filteredProjects
+      ? projects // Always show all projects when "All Projects" is selected
       : showAllProjects
-      ? filteredProjects
-      : filteredProjects.slice(0, 6);
+      ? filteredProjects // Show all filtered projects
+      : filteredProjects.slice(0, 6); // Show first 6 filtered projects
 
   return (
     <ThemeProvider>

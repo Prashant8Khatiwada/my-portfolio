@@ -13,18 +13,30 @@ import { cn } from "../../lib/utils";
 import { hoverLift } from "../../lib/animations";
 
 export default function ProjectCard({ project }) {
-  const { title, description, image, technologies, github, demo, featured } =
-    project;
+  const {
+    title,
+    description,
+    image,
+    technologies = [],
+    github,
+    demo,
+    featured,
+  } = project || {};
 
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [viewMode, setViewMode] = useState("desktop"); // desktop or mobile
+  const [viewMode, setViewMode] = useState("desktop"); // desktop | tablet | mobile
   const fullscreenRef = useRef(null);
 
   useEffect(() => {
     if (isFullscreen && fullscreenRef.current) {
-      fullscreenRef.current.requestFullscreen().catch(console.error);
-    } else if (document.fullscreenElement) {
-      document.exitFullscreen().catch(console.error);
+      // request fullscreen on overlay element
+      fullscreenRef.current
+        .requestFullscreen()
+        .catch((err) => console.warn("requestFullscreen failed:", err));
+    } else if (!isFullscreen && document.fullscreenElement) {
+      document
+        .exitFullscreen()
+        .catch((err) => console.warn("exitFullscreen:", err));
     }
   }, [isFullscreen]);
 
@@ -35,7 +47,6 @@ export default function ProjectCard({ project }) {
         setViewMode("desktop");
       }
     };
-
     document.addEventListener("fullscreenchange", handleFullscreenChange);
     return () =>
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
@@ -49,14 +60,12 @@ export default function ProjectCard({ project }) {
         "hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/10"
       )}
     >
-      {/* Featured Badge */}
       {featured && (
         <div className="absolute top-4 right-4 z-10 px-3 py-1 rounded-full bg-primary text-primary-foreground text-xs font-semibold shadow-lg shadow-primary/20">
           Featured
         </div>
       )}
 
-      {/* Project Image */}
       <div className="relative overflow-hidden aspect-[4/3] md:aspect-video bg-muted">
         {image ? (
           <img src={image} alt={title} className="w-full h-full object-cover" />
@@ -68,14 +77,12 @@ export default function ProjectCard({ project }) {
         <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </div>
 
-      {/* Content */}
       <div className="p-6">
         <h3 className="text-2xl font-bold mb-2 group-hover:text-primary transition-colors">
           {title}
         </h3>
         <p className="text-muted-foreground mb-4 line-clamp-2">{description}</p>
 
-        {/* Tech Stack */}
         <div className="flex flex-wrap gap-2 mb-4">
           {technologies.map((tech, index) => (
             <span
@@ -87,12 +94,11 @@ export default function ProjectCard({ project }) {
           ))}
         </div>
 
-        {/* Links */}
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-2">
           {demo && (
             <button
               onClick={() => setIsFullscreen(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-accent text-accent-foreground hover:bg-accent/90 transition-all text-sm font-medium shadow-sm hover:shadow-md hover:shadow-accent/20"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-accent text-accent-foreground hover:bg-accent/90 transition-all text-sm font-medium shadow-sm hover:shadow-md hover:shadow-accent/20"
             >
               <Maximize2 className="w-4 h-4" />
               Full Screen
@@ -103,7 +109,7 @@ export default function ProjectCard({ project }) {
               href={github}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-card text-foreground border-2 border-border hover:border-secondary hover:bg-secondary/5 transition-all text-sm font-medium"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-card text-foreground border-2 border-border hover:border-secondary hover:bg-secondary/5 transition-all text-sm font-medium"
             >
               <Github className="w-4 h-4" />
               Code
@@ -114,7 +120,7 @@ export default function ProjectCard({ project }) {
               href={demo}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-all text-sm font-medium shadow-sm hover:shadow-md hover:shadow-primary/20"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-all text-sm font-medium shadow-sm hover:shadow-md hover:shadow-primary/20"
             >
               <ExternalLink className="w-4 h-4" />
               Live Demo
@@ -123,7 +129,6 @@ export default function ProjectCard({ project }) {
         </div>
       </div>
 
-      {/* Fullscreen Overlay */}
       {isFullscreen && (
         <div
           ref={fullscreenRef}
@@ -146,6 +151,7 @@ export default function ProjectCard({ project }) {
                   <Monitor className="w-4 h-4" />
                   Desktop
                 </button>
+
                 <button
                   onClick={() => setViewMode("tablet")}
                   className={cn(
@@ -158,6 +164,7 @@ export default function ProjectCard({ project }) {
                   <Tablet className="w-4 h-4" />
                   Tablet
                 </button>
+
                 <button
                   onClick={() => setViewMode("mobile")}
                   className={cn(
@@ -172,6 +179,7 @@ export default function ProjectCard({ project }) {
                 </button>
               </div>
             </div>
+
             <button
               onClick={() => {
                 setIsFullscreen(false);
@@ -183,17 +191,27 @@ export default function ProjectCard({ project }) {
             </button>
           </div>
 
-          {/* Iframe */}
-          <div className="flex-1 flex items-center justify-center p-6 bg-muted/30">
+          {/* Iframe wrapper */}
+          <div className="flex-1 overflow-auto flex items-center justify-center p-6 bg-muted/30">
+            {/* responsive preview container */}
             <div
               className={cn(
-                "bg-white rounded-lg shadow-2xl overflow-hidden transition-all duration-300",
+                "bg-white rounded-lg shadow-2xl overflow-hidden transition-all duration-300 mx-auto",
+                // width classes (desktop uses full width)
                 viewMode === "desktop"
-                  ? "w-full h-full"
+                  ? "w-full h-full max-h-[90vh]"
                   : viewMode === "tablet"
-                  ? "w-[768px] h-[1024px]"
-                  : "w-[375px] h-[812px]"
+                  ? "w-[768px] max-w-full max-h-[90vh]"
+                  : "w-[375px] max-w-full max-h-[90vh]"
               )}
+              // inline styles to ensure the preview doesn't exceed viewport height and keeps intended device pixel height when possible
+              style={
+                viewMode === "tablet"
+                  ? { height: "min(90vh, 1024px)" }
+                  : viewMode === "mobile"
+                  ? { height: "min(90vh, 812px)" }
+                  : { height: "100%" }
+              }
             >
               <iframe
                 src={demo}
