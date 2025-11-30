@@ -110,7 +110,8 @@ function DockIcon({ mouseX, item, isActive, onClick }) {
 
 export default function BottomNav() {
   const [activeSection, setActiveSection] = useState("home");
-  const [isVisible, setIsVisible] = useState(true);
+  const [isHiddenByScroll, setIsHiddenByScroll] = useState(false);
+  const [isHoveringBottom, setIsHoveringBottom] = useState(false);
   const mouseX = useMotionValue(Infinity);
   const observerRefs = useRef([]);
 
@@ -148,13 +149,27 @@ export default function BottomNav() {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       const scrollingDown = currentScrollY > lastScrollY;
-      setIsVisible(!scrollingDown || currentScrollY < 100);
+      // Hide if scrolling down AND not at top
+      setIsHiddenByScroll(scrollingDown && currentScrollY > 100);
       lastScrollY = currentScrollY;
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      // Show if cursor is within bottom 100px of viewport
+      const isBottom = window.innerHeight - e.clientY < 100;
+      setIsHoveringBottom(isBottom);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
+
+  const isVisible = !isHiddenByScroll || isHoveringBottom;
 
   const handleNavClick = (e, href) => {
     e.preventDefault();
