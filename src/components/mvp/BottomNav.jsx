@@ -7,13 +7,17 @@ import {
   Mail,
   Sparkles,
   MessageSquareQuote,
+  Folder,
+  Cpu,
 } from "lucide-react";
 
 const navItems = [
   { name: "Home", href: "#home", icon: Home },
   { name: "About", href: "#about", icon: User },
   { name: "Services", href: "#services", icon: Sparkles },
-  { name: "Projects", href: "#portfolio", icon: Briefcase },
+  { name: "Projects", href: "#portfolio", icon: Folder },
+  { name: "Experience", href: "#experience", icon: Briefcase },
+  { name: "Skills", href: "#skills", icon: Cpu },
   { name: "Testimonials", href: "#testimonials", icon: MessageSquareQuote },
   { name: "Contact", href: "#contact", icon: Mail },
 ];

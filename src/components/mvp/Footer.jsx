@@ -5,18 +5,32 @@ import { slideUp } from "../../lib/animations";
 import Magnetic from "./Magnetic";
 
 const socialLinks = [
-  { icon: Github, href: "https://github.com", label: "GitHub" },
-  { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
+  {
+    icon: Github,
+    href: "https://github.com/Prashant8Khatiwada",
+    label: "GitHub",
+  },
+  {
+    icon: Linkedin,
+    href: "https://www.linkedin.com/in/prashant-khatiwada-70405126a/",
+    label: "LinkedIn",
+  },
   { icon: Twitter, href: "https://twitter.com", label: "Twitter" },
-  { icon: Mail, href: "mailto:your@email.com", label: "Email" },
+  { icon: Mail, href: "mailto:prashantkhatiwada554@gmail.com", label: "Email" },
 ];
 
 const footerLinks = {
-  Product: [
-    { name: "Projects", href: "#projects" },
+  Explore: [
     { name: "About", href: "#about" },
+    { name: "Services", href: "#services" },
+    { name: "Projects", href: "#portfolio" },
+    { name: "Experience", href: "#experience" },
   ],
-  Resources: [{ name: "Contact", href: "#contact" }],
+  Connect: [
+    { name: "Skills", href: "#skills" },
+    { name: "Testimonials", href: "#testimonials" },
+    { name: "Contact", href: "#contact" },
+  ],
 };
 
 export default function Footer() {
@@ -32,7 +46,9 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           {/* Brand */}
           <div className="md:col-span-1">
-            <h3 className="text-2xl font-bold text-primary mb-4">Portfolio</h3>
+            <h3 className="text-2xl font-bold text-primary mb-4">
+              Prashant Khatiwada
+            </h3>
             <p className="text-muted-foreground text-sm mb-4">
               Building amazing web experiences with modern technologies.
             </p>
@@ -80,7 +96,8 @@ export default function Footer() {
         <div className="pt-8 border-t border-border">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} Portfolio. All rights reserved.
+              © {new Date().getFullYear()} Prashant Khatiwada. All rights
+              reserved.
             </p>
             <p className="text-sm text-muted-foreground">
               Built with React, TailwindCSS & Framer Motion
