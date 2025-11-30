@@ -102,28 +102,126 @@ const projects = [
 
 const experience = [
   {
-    date: "2+ Years",
-    title: "Frontend Developer",
-    company: "Experience",
+    date: "Jan 2025 – Sept 2025",
+    title: "Mid-level Developer",
+    company: "Blueneontech",
     description:
-      "Specialized in building responsive, user-friendly web applications using React ecosystem.",
-    technologies: ["React", "Redux", "Tailwind", "JavaScript"],
+      "Built Fotosfolio platform with Next.js and TypeScript. Implemented galleries with lazy loading and Cloudinary integration, achieving 45% faster load times. Developed vehicle service booking system with real-time calendar and dashboard.",
+    technologies: [
+      "Next.js",
+      "TypeScript",
+      "Tailwind",
+      "React",
+      "Mantine UI",
+      "Cloudinary",
+    ],
   },
   {
-    date: "Projects",
-    title: "10+ Completed",
-    company: "Portfolio",
+    date: "Jan 2024 – Dec 2024",
+    title: "Junior Developer",
+    company: "Peace Nepal",
     description:
-      "Successfully delivered over 10 web projects ranging from banking portals to educational platforms.",
-    technologies: ["Web Development", "UI/UX Implementation"],
+      "Developed KYC forms for ADBL and Pacific Regional Bank using React, Formik, and Context API. Led CIVI app development with location mapping (Leaflet) and Firebase storage. Implemented secure API integrations with Yup and Zod validation.",
+    technologies: [
+      "React",
+      "Formik",
+      "Context API",
+      "Leaflet",
+      "Firebase",
+      "Yup",
+      "Zod",
+    ],
   },
   {
-    date: "Skills",
-    title: "UI/UX & Frontend",
+    date: "Mar 2023 – Nov 2023",
+    title: "Junior Developer",
+    company: "Lancemeup",
+    description:
+      "Worked on WealthPandit and multiple client projects. Built advanced calendar component with CSS Grid, date-fns, and Google Calendar sync. Optimized frontend performance with incremental updates.",
+    technologies: ["React", "CSS Grid", "date-fns", "Google Calendar API"],
+  },
+  {
+    date: "Dec 2022 – Mar 2023",
+    title: "Frontend Intern",
+    company: "Lancemeup",
+    description:
+      "Built responsive WealthPandit website using React Query for optimized data fetching. Contributed to TickTicketing platform with performance fixes and feature enhancements.",
+    technologies: ["React", "React Query", "Performance Optimization"],
+  },
+];
+
+const skills = [
+  {
+    date: "Frontend",
+    title: "Core Technologies",
     company: "Expertise",
     description:
-      "Strong focus on creating polished, interactive user interfaces with modern design principles.",
-    technologies: ["Figma", "CSS3", "HTML5", "Responsive Design"],
+      "Proficient in modern frontend frameworks and libraries for building scalable, performant web applications.",
+    technologies: [
+      "React.js",
+      "Next.js",
+      "TypeScript",
+      "JavaScript (ES6+)",
+      "HTML5",
+      "CSS3",
+    ],
+  },
+  {
+    date: "State Management",
+    title: "Data Flow",
+    company: "Expertise",
+    description:
+      "Experienced in various state management solutions for complex application architectures.",
+    technologies: ["Redux", "Context API", "Zustand", "React Query"],
+  },
+  {
+    date: "Styling",
+    title: "UI Frameworks",
+    company: "Expertise",
+    description:
+      "Skilled in modern CSS frameworks and component libraries for creating beautiful, responsive interfaces.",
+    technologies: [
+      "Tailwind CSS",
+      "SCSS",
+      "ShadCN",
+      "Mantine UI",
+      "Material UI",
+      "Styled Components",
+    ],
+  },
+  {
+    date: "Backend & DB",
+    title: "Full Stack",
+    company: "Knowledge",
+    description:
+      "Familiar with backend technologies and databases for full-stack development capabilities.",
+    technologies: [
+      "Node.js",
+      "PostgreSQL",
+      "MongoDB",
+      "MySQL",
+      "Prisma",
+      "NestJS",
+      "Firebase",
+    ],
+  },
+  {
+    date: "Cloud & Tools",
+    title: "DevOps",
+    company: "Expertise",
+    description:
+      "Experienced with modern development tools, version control, and cloud deployment platforms.",
+    technologies: [
+      "Git",
+      "GitHub",
+      "Docker",
+      "CI/CD",
+      "Postman",
+      "Swagger",
+      "AWS",
+      "Vercel",
+      "Netlify",
+    ],
   },
 ];
 
@@ -270,14 +368,35 @@ function App() {
               className="text-center mb-16"
             >
               <h2 className="text-4xl md:text-5xl font-bold mb-4">
-                Experience & Skills
+                Work Experience
               </h2>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                My professional journey and technical expertise
+                My professional journey in web development
               </p>
             </motion.div>
 
             <Timeline items={experience} type="experience" />
+          </div>
+        </section>
+
+        {/* Skills Section */}
+        <section id="skills" className="py-24">
+          <div className="container mx-auto px-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-16"
+            >
+              <h2 className="text-4xl md:text-5xl font-bold mb-4">
+                Technical Skills
+              </h2>
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                Technologies and tools I work with
+              </p>
+            </motion.div>
+
+            <Timeline items={skills} type="skills" />
           </div>
         </section>
 
