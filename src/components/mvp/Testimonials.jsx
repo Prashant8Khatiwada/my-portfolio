@@ -6,6 +6,7 @@ import { Quote } from "lucide-react";
 import NirgunImage from "../../assets/testimonials/nirgun.png";
 import BibekImage from "../../assets/testimonials/bibek.jpg";
 import AayushImage from "../../assets/testimonials/ayush.png";
+import ShuklaImage from "../../assets/testimonials/shukla.png";
 
 const testimonials = [
   {
@@ -33,6 +34,15 @@ const testimonials = [
     content:
       "Prashant was efficient and precise in implementing UI features that aligned smoothly with our backend systems. He understands API logic well, catches edge-cases early, and ensures the frontend remains stable and optimized. His collaboration and communication made integration work straightforward.",
     image: AayushImage,
+    status: "draft - needs approval",
+  },
+  {
+    name: "Mritunjay Sukla",
+    role: "QA Engineer",
+    company: "—",
+    content:
+      "I’ve worked with Prashant on several projects where his frontend delivery ensured a smooth and predictable QA process. His stable React and TypeScript implementations were consistent and easy to test, significantly reducing regression issues and enhancing overall release quality. He communicates clearly, responds promptly to feedback, and collaborates effectively during debugging and validation.",
+    image: ShuklaImage,
     status: "draft - needs approval",
   },
 ];

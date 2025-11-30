@@ -194,7 +194,7 @@ export default function BottomNav() {
         stiffness: 260,
         damping: 20,
       }}
-      className="fixed bottom-6 left-0 right-0 z-50 flex justify-center pointer-events-none"
+      className="fixed bottom-6 left-0 right-0 z-50 hidden lg:flex justify-center pointer-events-none"
     >
       <div
         className="pointer-events-auto relative"
