@@ -11,10 +11,6 @@ export default function Hero() {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-background pt-20 md:pt-0">
       {/* Animated background elements */}
       {/* Background elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/5 rounded-full blur-3xl" />
-      </div>
 
       <div className="container relative z-10 px-6 py-12 mx-auto">
         <div className="flex flex-col md:flex-row items-center justify-between gap-12">

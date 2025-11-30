@@ -133,7 +133,7 @@ export default function ProjectCard({ project }) {
           <div className="flex items-center justify-between h-16 px-6 border-b border-border bg-background">
             <div className="flex items-center gap-4">
               <h3 className="text-lg font-semibold">{title}</h3>
-              <div className="flex gap-2 ml-4">
+              <div className="hidden md:flex gap-2 ml-4">
                 <button
                   onClick={() => setViewMode("desktop")}
                   className={cn(
