@@ -1,8 +1,8 @@
 # Prashant Khatiwada - Portfolio Website
 
 🌐 **Live Site**: [khatiwadaprashant.com.np](https://khatiwadaprashant.com.np)  
-📧 **Contact**: [Your Email]  
-💼 **LinkedIn**: [Your LinkedIn]  
+📧 **Contact**: prashantkhatiwada554@gmail.com 
+💼 **LinkedIn**: [Prashant Khatiwada](https://www.linkedin.com/in/prashant-khatiwada-a0b99a184/)  
 🐙 **GitHub**: [Prashant8Khatiwada](https://github.com/Prashant8Khatiwada)
 
 ---
@@ -265,8 +265,8 @@ This project is open source and available under the [MIT License](LICENSE).
 
 **Prashant Khatiwada**
 - Website: [khatiwadaprashant.com.np](https://khatiwadaprashant.com.np)
-- Email: [Your Email]
-- LinkedIn: [Your LinkedIn]
+- Email: prashantkhatiwada554@gmail.com
+- LinkedIn: [Prashant Khatiwada](https://www.linkedin.com/in/prashant-khatiwada-a0b99a184/)
 - GitHub: [@Prashant8Khatiwada](https://github.com/Prashant8Khatiwada)
 
 ---
