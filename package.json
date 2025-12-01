@@ -26,9 +26,10 @@
   },
   "scripts": {
     "start": "craco start",
-    "build": "cross-env CI=false craco build",
+    "build": "cross-env CI=false craco build && npm run generate-sitemap",
     "test": "craco test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "generate-sitemap": "node scripts/generate-sitemap.js"
   },
   "eslintConfig": {
     "extends": [

@@ -11,6 +11,7 @@ import Footer from "./components/mvp/Footer";
 import About from "./components/mvp/About";
 import Services from "./components/mvp/Services";
 import Testimonials from "./components/mvp/Testimonials";
+import SEO from "./components/mvp/SEO";
 import { motion } from "framer-motion";
 import { staggerContainer, staggerItem } from "./lib/animations";
 import { cn } from "./lib/utils";
@@ -250,180 +251,183 @@ function App() {
 
   return (
     <ThemeProvider>
+      <SEO />
       <div className="min-h-screen bg-background text-foreground">
         <BottomNav />
         <ThemeToggle />
 
-        {/* Hero Section */}
-        <section id="home">
-          <Hero />
-        </section>
+        <main role="main" aria-label="Main content">
+          {/* Hero Section */}
+          <section id="home" aria-labelledby="hero-heading">
+            <Hero />
+          </section>
 
-        {/* Stats Section */}
-        <section id="stats" className="py-24 bg-card/30">
-          <div className="container mx-auto px-6">
-            <StatsWidget stats={stats} />
-          </div>
-        </section>
+          {/* Stats Section */}
+          <section id="stats" className="py-24 bg-card/30">
+            <div className="container mx-auto px-6">
+              <StatsWidget stats={stats} />
+            </div>
+          </section>
 
-        {/* About Section */}
-        <About />
+          {/* About Section */}
+          <About />
 
-        {/* Services Section */}
-        <Services />
+          {/* Services Section */}
+          <Services />
 
-        {/* Projects Section */}
-        <section id="portfolio" className="py-24">
-          <div className="container mx-auto px-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-16"
-            >
-              <h2 className="text-4xl md:text-5xl font-bold mb-4">
-                My Recent Work
-              </h2>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-                A selection of my recent projects including banking portals and
-                educational platforms
-              </p>
-
-              <div className="flex justify-center gap-2 mb-8">
-                <button
-                  onClick={() => {
-                    setActiveTab("featured");
-                    setShowAllProjects(false);
-                  }}
-                  className={cn(
-                    "px-6 py-2 rounded-lg text-sm font-medium transition-all",
-                    activeTab === "featured"
-                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
-                      : "bg-card text-muted-foreground border border-border hover:border-primary hover:bg-primary/5"
-                  )}
-                >
-                  Featured
-                </button>
-                <button
-                  onClick={() => {
-                    setActiveTab("all");
-                    setShowAllProjects(false);
-                  }}
-                  className={cn(
-                    "px-6 py-2 rounded-lg text-sm font-medium transition-all",
-                    activeTab === "all"
-                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
-                      : "bg-card text-muted-foreground border border-border hover:border-primary hover:bg-primary/5"
-                  )}
-                >
-                  All Projects
-                </button>
-              </div>
-            </motion.div>
-
-            <motion.div
-              variants={staggerContainer}
-              initial="initial"
-              whileInView="animate"
-              viewport={{ once: true, margin: "-100px" }}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-            >
-              {displayedProjects.map((project, index) => (
-                <motion.div key={index} variants={staggerItem}>
-                  <ProjectCard project={project} />
-                </motion.div>
-              ))}
-            </motion.div>
-
-            {activeTab !== "all" && filteredProjects.length > 6 && (
+          {/* Projects Section */}
+          <section id="portfolio" className="py-24">
+            <div className="container mx-auto px-6">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="text-center mt-12"
+                className="text-center mb-16"
               >
-                <button
-                  onClick={() => setShowAllProjects(!showAllProjects)}
-                  className={cn(
-                    "px-8 py-3 rounded-lg font-medium transition-all hover:scale-105",
-                    showAllProjects
-                      ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20"
-                      : "bg-card text-foreground border-2 border-border hover:border-primary hover:bg-primary/5"
-                  )}
-                >
-                  {showAllProjects ? "Show Less" : "View More Projects"}
-                </button>
+                <h2 className="text-4xl md:text-5xl font-bold mb-4">
+                  My Recent Work
+                </h2>
+                <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
+                  A selection of my recent projects including banking portals
+                  and educational platforms
+                </p>
+
+                <div className="flex justify-center gap-2 mb-8">
+                  <button
+                    onClick={() => {
+                      setActiveTab("featured");
+                      setShowAllProjects(false);
+                    }}
+                    className={cn(
+                      "px-6 py-2 rounded-lg text-sm font-medium transition-all",
+                      activeTab === "featured"
+                        ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                        : "bg-card text-muted-foreground border border-border hover:border-primary hover:bg-primary/5"
+                    )}
+                  >
+                    Featured
+                  </button>
+                  <button
+                    onClick={() => {
+                      setActiveTab("all");
+                      setShowAllProjects(false);
+                    }}
+                    className={cn(
+                      "px-6 py-2 rounded-lg text-sm font-medium transition-all",
+                      activeTab === "all"
+                        ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                        : "bg-card text-muted-foreground border border-border hover:border-primary hover:bg-primary/5"
+                    )}
+                  >
+                    All Projects
+                  </button>
+                </div>
               </motion.div>
-            )}
-          </div>
-        </section>
 
-        {/* Experience Section */}
-        <section id="experience" className="py-24 bg-card/30">
-          <div className="container mx-auto px-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-16"
-            >
-              <h2 className="text-4xl md:text-5xl font-bold mb-4">
-                Work Experience
-              </h2>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                My professional journey in web development
-              </p>
-            </motion.div>
+              <motion.div
+                variants={staggerContainer}
+                initial="initial"
+                whileInView="animate"
+                viewport={{ once: true, margin: "-100px" }}
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+              >
+                {displayedProjects.map((project, index) => (
+                  <motion.div key={index} variants={staggerItem}>
+                    <ProjectCard project={project} />
+                  </motion.div>
+                ))}
+              </motion.div>
 
-            <Timeline items={experience} type="experience" />
-          </div>
-        </section>
+              {activeTab !== "all" && filteredProjects.length > 6 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  className="text-center mt-12"
+                >
+                  <button
+                    onClick={() => setShowAllProjects(!showAllProjects)}
+                    className={cn(
+                      "px-8 py-3 rounded-lg font-medium transition-all hover:scale-105",
+                      showAllProjects
+                        ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20"
+                        : "bg-card text-foreground border-2 border-border hover:border-primary hover:bg-primary/5"
+                    )}
+                  >
+                    {showAllProjects ? "Show Less" : "View More Projects"}
+                  </button>
+                </motion.div>
+              )}
+            </div>
+          </section>
 
-        {/* Skills Section */}
-        <section id="skills" className="py-24">
-          <div className="container mx-auto px-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-16"
-            >
-              <h2 className="text-4xl md:text-5xl font-bold mb-4">
-                Technical Skills
-              </h2>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Technologies and tools I work with
-              </p>
-            </motion.div>
+          {/* Experience Section */}
+          <section id="experience" className="py-24 bg-card/30">
+            <div className="container mx-auto px-6">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="text-center mb-16"
+              >
+                <h2 className="text-4xl md:text-5xl font-bold mb-4">
+                  Work Experience
+                </h2>
+                <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                  My professional journey in web development
+                </p>
+              </motion.div>
 
-            <Timeline items={skills} type="skills" />
-          </div>
-        </section>
+              <Timeline items={experience} type="experience" />
+            </div>
+          </section>
 
-        {/* Testimonials Section */}
-        <Testimonials />
+          {/* Skills Section */}
+          <section id="skills" className="py-24">
+            <div className="container mx-auto px-6">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="text-center mb-16"
+              >
+                <h2 className="text-4xl md:text-5xl font-bold mb-4">
+                  Technical Skills
+                </h2>
+                <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                  Technologies and tools I work with
+                </p>
+              </motion.div>
 
-        {/* Contact Section */}
-        <section id="contact" className="py-24">
-          <div className="container mx-auto px-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-16"
-            >
-              <h2 className="text-4xl md:text-5xl font-bold mb-4">
-                Get In Touch
-              </h2>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Have a project in mind? Let's work together to create something
-                amazing
-              </p>
-            </motion.div>
+              <Timeline items={skills} type="skills" />
+            </div>
+          </section>
 
-            <ContactForm />
-          </div>
-        </section>
+          {/* Testimonials Section */}
+          <Testimonials />
+
+          {/* Contact Section */}
+          <section id="contact" className="py-24">
+            <div className="container mx-auto px-6">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="text-center mb-16"
+              >
+                <h2 className="text-4xl md:text-5xl font-bold mb-4">
+                  Get In Touch
+                </h2>
+                <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                  Have a project in mind? Let's work together to create
+                  something amazing
+                </p>
+              </motion.div>
+
+              <ContactForm />
+            </div>
+          </section>
+        </main>
 
         <Footer />
       </div>
