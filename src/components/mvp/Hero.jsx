@@ -74,7 +74,7 @@ export default function Hero() {
                 { icon: Github, href: "https://github.com/Prashant8Khatiwada" },
                 {
                   icon: Linkedin,
-                  href: "https://www.linkedin.com/in/prashant-khatiwada-70405126a/",
+                  href: "https://www.linkedin.com/in/prashant-khatiwada-a0b99a184/",
                 },
                 { icon: Mail, href: "mailto:prashantkhatiwada21@gmail.com" },
               ].map((social, index) => {

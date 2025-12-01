@@ -12,7 +12,7 @@ const socialLinks = [
   },
   {
     icon: Linkedin,
-    href: "https://www.linkedin.com/in/prashant-khatiwada-70405126a/",
+    href: "https://www.linkedin.com/in/prashant-khatiwada-a0b99a184/",
     label: "LinkedIn",
   },
   { icon: Twitter, href: "https://twitter.com", label: "Twitter" },
