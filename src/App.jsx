@@ -12,219 +12,13 @@ import About from "./components/mvp/About";
 import Services from "./components/mvp/Services";
 import Testimonials from "./components/mvp/Testimonials";
 import SEO from "./components/mvp/SEO";
+import { useAnalytics } from "./hooks/useAnalytics";
+import { useProjects } from "./hooks/useProjects";
+import { useTimeline } from "./hooks/useTimeline";
+import { useSkills } from "./hooks/useSkills";
 import { motion } from "framer-motion";
 import { staggerContainer, staggerItem } from "./lib/animations";
 import { cn } from "./lib/utils";
-
-// Import Project Images
-import WP from "./assets/portfolio/wealthPandit.png";
-import YTClone from "./assets/portfolio/youtube_clone.png";
-import PRB from "./assets/portfolio/pacific.png";
-import Abroad from "./assets/portfolio/abroadInstitute.png";
-import kumari from "./assets/portfolio/kumari.png";
-import Enimto from "./assets/portfolio/enimto.png";
-import SawariExpertImage from "./assets/portfolio/sawari.png";
-import FotosFolioImage from "./assets/portfolio/fotosfolio.png";
-
-// Real Data
-const projects = [
-  {
-    title: "FotosFolio",
-    description:
-      "Portfolio platform for photographers and visual artists to showcase high-quality images, manage galleries, and share work with clients.",
-    image: FotosFolioImage, // replace with your imported image variable
-    technologies: ["React", "Next.js", "Cloud Storage"],
-    demo: "https://fotosfolio.com/",
-    featured: true,
-  },
-  {
-    title: "Sawari Expert",
-    description:
-      "Ride-hailing and transport management platform providing seamless booking, driver tracking, and customer support for urban commuters.",
-    image: SawariExpertImage, // replace with your imported image variable
-    technologies: ["React", "Node.js", "Google Maps API"],
-    demo: "https://sawariexpert.com/",
-    featured: true,
-  },
-  {
-    title: "Kumari Bank",
-    description:
-      "Official website for Kumari Bank Limited, featuring secure banking services, account management, and financial tools.",
-    image: kumari,
-    technologies: ["React", "Banking API", "Security"],
-    demo: "https://www.kumaribank.com/en/personal-banking",
-    featured: true,
-  },
-  {
-    title: "Abroad Institute",
-    description:
-      "Educational consultancy platform helping students pursue studies abroad with course finder and application tracking.",
-    image: Abroad,
-    technologies: ["React", "Node.js", "MongoDB"],
-    demo: "http://abroadinst.com",
-    featured: true,
-  },
-  {
-    title: "Pacific Regional Bank",
-    description:
-      "Digital banking platform for Pacific Regional Bank offering online account opening and transaction services.",
-    image: PRB,
-    technologies: ["React", "FinTech", "Secure Auth"],
-    demo: "https://pacificbank.peacenepal.com",
-    featured: true,
-  },
-  {
-    title: "Wealth Pandit",
-    description:
-      "Financial advisory and wealth management platform for personalized investment strategies.",
-    image: WP,
-    technologies: ["React", "Charts.js", "Finance"],
-    demo: "https://uat.wealthpandit.com",
-    featured: true,
-  },
-
-  {
-    title: "Youtube Clone",
-    description:
-      "A functional clone of YouTube built with React, featuring video playback, search, and channel pages.",
-    image: YTClone,
-    technologies: ["React", "YouTube API", "Material UI"],
-    // github: "https://github.com/Prashant8Khatiwada/youtube-app",
-    demo: "https://p-youtube-clone.netlify.app",
-  },
-  {
-    title: "E-nimto",
-    description: "Digital invitation platform for events and celebrations.",
-    image: Enimto,
-    technologies: ["React", "Firebase", "Social"],
-    demo: "https://enimto.com/en",
-  },
-];
-
-const experience = [
-  {
-    date: "Jan 2025 – Sept 2025",
-    title: "Mid-level Developer",
-    company: "Blueneontech",
-    description:
-      "Built Fotosfolio platform with Next.js and TypeScript. Implemented galleries with lazy loading and Cloudinary integration, achieving 45% faster load times. Developed vehicle service booking system with real-time calendar and dashboard.",
-    technologies: [
-      "Next.js",
-      "TypeScript",
-      "Tailwind",
-      "React",
-      "Mantine UI",
-      "Cloudinary",
-    ],
-  },
-  {
-    date: "Jan 2024 – Dec 2024",
-    title: "Junior Developer",
-    company: "Peace Nepal",
-    description:
-      "Developed KYC forms for ADBL and Pacific Regional Bank using React, Formik, and Context API. Led CIVI app development with location mapping (Leaflet) and Firebase storage. Implemented secure API integrations with Yup and Zod validation.",
-    technologies: [
-      "React",
-      "Formik",
-      "Context API",
-      "Leaflet",
-      "Firebase",
-      "Yup",
-      "Zod",
-    ],
-  },
-  {
-    date: "Mar 2023 – Nov 2023",
-    title: "Junior Developer",
-    company: "Lancemeup",
-    description:
-      "Worked on WealthPandit and multiple client projects. Built advanced calendar component with CSS Grid, date-fns, and Google Calendar sync. Optimized frontend performance with incremental updates.",
-    technologies: ["React", "CSS Grid", "date-fns", "Google Calendar API"],
-  },
-  {
-    date: "Dec 2022 – Mar 2023",
-    title: "Frontend Intern",
-    company: "Lancemeup",
-    description:
-      "Built responsive WealthPandit website using React Query for optimized data fetching. Contributed to TickTicketing platform with performance fixes and feature enhancements.",
-    technologies: ["React", "React Query", "Performance Optimization"],
-  },
-];
-
-const skills = [
-  {
-    date: "Frontend",
-    title: "Core Technologies",
-    company: "Expertise",
-    description:
-      "Proficient in modern frontend frameworks and libraries for building scalable, performant web applications.",
-    technologies: [
-      "React.js",
-      "Next.js",
-      "TypeScript",
-      "JavaScript (ES6+)",
-      "HTML5",
-      "CSS3",
-    ],
-  },
-  {
-    date: "State Management",
-    title: "Data Flow",
-    company: "Expertise",
-    description:
-      "Experienced in various state management solutions for complex application architectures.",
-    technologies: ["Redux", "Context API", "Zustand", "React Query"],
-  },
-  {
-    date: "Styling",
-    title: "UI Frameworks",
-    company: "Expertise",
-    description:
-      "Skilled in modern CSS frameworks and component libraries for creating beautiful, responsive interfaces.",
-    technologies: [
-      "Tailwind CSS",
-      "SCSS",
-      "ShadCN",
-      "Mantine UI",
-      "Material UI",
-      "Styled Components",
-    ],
-  },
-  {
-    date: "Backend & DB",
-    title: "Full Stack",
-    company: "Knowledge",
-    description:
-      "Familiar with backend technologies and databases for full-stack development capabilities.",
-    technologies: [
-      "Node.js",
-      "PostgreSQL",
-      "MongoDB",
-      "MySQL",
-      "Prisma",
-      "NestJS",
-      "Firebase",
-    ],
-  },
-  {
-    date: "Cloud & Tools",
-    title: "DevOps",
-    company: "Expertise",
-    description:
-      "Experienced with modern development tools, version control, and cloud deployment platforms.",
-    technologies: [
-      "Git",
-      "GitHub",
-      "Docker",
-      "CI/CD",
-      "Postman",
-      "Swagger",
-      "AWS",
-      "Vercel",
-      "Netlify",
-    ],
-  },
-];
 
 const stats = [
   { value: "3", suffix: "+", label: "Years Experience" },
@@ -234,20 +28,52 @@ const stats = [
 ];
 
 function App() {
+  useAnalytics();
+  const { projects, loading: projectsLoading } = useProjects();
+  const { timeline, loading: timelineLoading } = useTimeline();
+  const { skills, loading: skillsLoading } = useSkills();
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [activeTab, setActiveTab] = useState("featured");
 
+  const mappedProjects = projects.map((project) => ({
+    title: project.title,
+    description: project.description,
+    image: project.image_url,
+    technologies: project.tags || [],
+    github: project.github_url,
+    demo: project.live_url,
+    featured: project.featured,
+  }));
+
+  const experience = timeline
+    .filter((item) => item.type === "work")
+    .map((item) => ({
+      date: item.year,
+      title: item.title,
+      company: item.company,
+      description: item.description,
+    }));
+
+  const skillItems = skills.map((item) => ({
+    date: item.category || "Skill",
+    title: item.name,
+    company: `Proficiency ${item.proficiency ?? 80}%`,
+    description: item.description || "",
+  }));
+
   // Filter projects based on active tab
   const filteredProjects =
-    activeTab === "featured" ? projects.filter((p) => p.featured) : projects;
+    activeTab === "featured"
+      ? mappedProjects.filter((p) => p.featured)
+      : mappedProjects;
 
   // Determine which projects to display
   const displayedProjects =
     activeTab === "all"
-      ? projects // Always show all projects when "All Projects" is selected
+      ? mappedProjects // Always show all projects when "All Projects" is selected
       : showAllProjects
-      ? filteredProjects // Show all filtered projects
-      : filteredProjects.slice(0, 6); // Show first 6 filtered projects
+        ? filteredProjects // Show all filtered projects
+        : filteredProjects.slice(0, 6); // Show first 6 filtered projects
 
   return (
     <ThemeProvider>
@@ -302,7 +128,7 @@ function App() {
                       "px-6 py-2 rounded-lg text-sm font-medium transition-all",
                       activeTab === "featured"
                         ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
-                        : "bg-card text-muted-foreground border border-border hover:border-primary hover:bg-primary/5"
+                        : "bg-card text-muted-foreground border border-border hover:border-primary hover:bg-primary/5",
                     )}
                   >
                     Featured
@@ -316,7 +142,7 @@ function App() {
                       "px-6 py-2 rounded-lg text-sm font-medium transition-all",
                       activeTab === "all"
                         ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
-                        : "bg-card text-muted-foreground border border-border hover:border-primary hover:bg-primary/5"
+                        : "bg-card text-muted-foreground border border-border hover:border-primary hover:bg-primary/5",
                     )}
                   >
                     All Projects
@@ -331,11 +157,15 @@ function App() {
                 viewport={{ once: true, margin: "-100px" }}
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
               >
-                {displayedProjects.map((project, index) => (
-                  <motion.div key={index} variants={staggerItem}>
-                    <ProjectCard project={project} />
-                  </motion.div>
-                ))}
+                {projectsLoading ? (
+                  <p className="text-muted-foreground">Loading projects...</p>
+                ) : (
+                  displayedProjects.map((project, index) => (
+                    <motion.div key={index} variants={staggerItem}>
+                      <ProjectCard project={project} />
+                    </motion.div>
+                  ))
+                )}
               </motion.div>
 
               {activeTab !== "all" && filteredProjects.length > 6 && (
@@ -351,7 +181,7 @@ function App() {
                       "px-8 py-3 rounded-lg font-medium transition-all hover:scale-105",
                       showAllProjects
                         ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20"
-                        : "bg-card text-foreground border-2 border-border hover:border-primary hover:bg-primary/5"
+                        : "bg-card text-foreground border-2 border-border hover:border-primary hover:bg-primary/5",
                     )}
                   >
                     {showAllProjects ? "Show Less" : "View More Projects"}
@@ -378,7 +208,11 @@ function App() {
                 </p>
               </motion.div>
 
-              <Timeline items={experience} type="experience" />
+              {timelineLoading ? (
+                <p className="text-muted-foreground">Loading experience...</p>
+              ) : (
+                <Timeline items={experience} type="experience" />
+              )}
             </div>
           </section>
 
@@ -399,7 +233,11 @@ function App() {
                 </p>
               </motion.div>
 
-              <Timeline items={skills} type="skills" />
+              {skillsLoading ? (
+                <p className="text-muted-foreground">Loading skills...</p>
+              ) : (
+                <Timeline items={skillItems} type="skills" />
+              )}
             </div>
           </section>
 
