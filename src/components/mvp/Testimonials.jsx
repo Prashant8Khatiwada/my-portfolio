@@ -28,7 +28,7 @@ export default function Testimonials() {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [isPaused]);
+  }, [isPaused, testimonials.length]);
 
   const goToSlide = (index) => {
     setActiveIndex(index);
