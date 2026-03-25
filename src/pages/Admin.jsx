@@ -94,6 +94,39 @@ const LEGACY_DATA = {
       featured: true,
       display_order: 5,
     },
+    {
+      title: "ADBL KYC Portal",
+      description:
+        "Know Your Customer portal for Agricultural Development Bank providing secure identity verification and customer onboarding.",
+      tags: ["React", "Security", "Blockchain"],
+      live_url: "https://adbl.com.np",
+      github_url: null,
+      image_url: null,
+      featured: true,
+      display_order: 6,
+    },
+    {
+      title: "Student Management System",
+      description:
+        "Comprehensive system for educational institutions to manage student records, attendance, and performance tracking.",
+      tags: ["React", "Node.js", "PostgreSQL"],
+      live_url: null,
+      github_url: "https://github.com/example/student-management",
+      image_url: null,
+      featured: false,
+      display_order: 7,
+    },
+    {
+      title: "Task Collaboration App",
+      description:
+        "Real-time task management and team collaboration tool with notifications and progress tracking.",
+      tags: ["React", "Firebase", "Tailwind CSS"],
+      live_url: null,
+      github_url: "https://github.com/example/task-collab",
+      image_url: null,
+      featured: false,
+      display_order: 8,
+    },
   ],
   testimonials: [
     {
@@ -129,6 +162,17 @@ const LEGACY_DATA = {
       display_order: 2,
       active: true,
     },
+    {
+      name: "Suresh Lamichhane",
+      role: "Project Manager",
+      company: "Peace Nepal",
+      avatar_url: null,
+      content:
+        "Working with Prashant was a pleasure. His attention to detail and problem-solving skills made project delivery smooth and on time.",
+      rating: 5,
+      display_order: 3,
+      active: true,
+    },
   ],
   timeline: [
     {
@@ -147,6 +191,24 @@ const LEGACY_DATA = {
       type: "work",
       display_order: 1,
     },
+    {
+      year: "Sept 2023 - Dec 2023",
+      title: "Frontend Developer Intern",
+      company: "Blueneon Technology",
+      description:
+        "Learned React fundamentals and contributed to UI components.",
+      type: "work",
+      display_order: 2,
+    },
+    {
+      year: "2023",
+      title: "Self-taught Development",
+      company: "Self Learning",
+      description:
+        "Built portfolio projects and completed online courses in React and JavaScript.",
+      type: "work",
+      display_order: 3,
+    },
   ],
   skills: [
     {
@@ -157,11 +219,33 @@ const LEGACY_DATA = {
       display_order: 0,
     },
     {
-      name: "Data Flow",
+      name: "State Management",
       category: "State Management",
       proficiency: 90,
       description: "Redux, Context API, Zustand, React Query",
       display_order: 1,
+    },
+    {
+      name: "Styling & Animation",
+      category: "Frontend",
+      proficiency: 90,
+      description:
+        "Tailwind CSS, Styled Components, Framer Motion, CSS Animations",
+      display_order: 2,
+    },
+    {
+      name: "Backend Development",
+      category: "Backend",
+      proficiency: 75,
+      description: "Node.js, Express, PostgreSQL, MongoDB, REST APIs",
+      display_order: 3,
+    },
+    {
+      name: "Tools & Deployment",
+      category: "DevOps",
+      proficiency: 80,
+      description: "Git, Docker, Vercel, Netlify, GitHub Actions, Firebase",
+      display_order: 4,
     },
   ],
   services: [
@@ -178,6 +262,34 @@ const LEGACY_DATA = {
         "Creating intuitive and visually appealing user interfaces that provide seamless user experiences across all devices.",
       icon: "Palette",
       display_order: 1,
+    },
+    {
+      title: "Performance Optimization",
+      description:
+        "Optimizing web applications for speed and efficiency through code splitting, lazy loading, and advanced caching strategies.",
+      icon: "Zap",
+      display_order: 2,
+    },
+    {
+      title: "API Integration",
+      description:
+        "Seamless integration of third-party APIs and services to extend application functionality and enhance user capabilities.",
+      icon: "Globe",
+      display_order: 3,
+    },
+    {
+      title: "Mobile Responsive Design",
+      description:
+        "Ensuring flawless functionality and stunning visuals across all devices with responsive and adaptive design principles.",
+      icon: "Smartphone",
+      display_order: 4,
+    },
+    {
+      title: "SEO Optimization",
+      description:
+        "Implementing SEO best practices for improved search visibility and organic traffic growth to your web applications.",
+      icon: "Search",
+      display_order: 5,
     },
   ],
 };
