@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Bar,
   BarChart,
@@ -58,7 +58,7 @@ export default function Admin() {
     [messages],
   );
 
-  const loadProjects = async () => {
+  const loadProjects = useCallback(async () => {
     setProjectLoading(true);
     const { data } = await supabase
       .from("projects")
@@ -66,7 +66,7 @@ export default function Admin() {
       .order("display_order", { ascending: true });
     setProjects(data || []);
     setProjectLoading(false);
-  };
+  }, []);
 
   const uploadImage = async (file) => {
     const path = `projects/${Date.now()}-${file.name}`;
@@ -157,7 +157,7 @@ export default function Admin() {
     await loadProjects();
   };
 
-  const refetchVisitorCount = async () => {
+  const refetchVisitorCount = useCallback(async () => {
     const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
     const { count } = await supabase
       .from("visitors")
@@ -165,9 +165,9 @@ export default function Admin() {
       .gte("last_seen", fiveMinutesAgo);
 
     setLiveVisitors(count || 0);
-  };
+  }, []);
 
-  const loadAnalytics = async () => {
+  const loadAnalytics = useCallback(async () => {
     setAnalyticsLoading(true);
 
     const [
@@ -217,9 +217,9 @@ export default function Admin() {
     setDailyViews(sortedDays);
     await refetchVisitorCount();
     setAnalyticsLoading(false);
-  };
+  }, [refetchVisitorCount]);
 
-  const loadMessages = async () => {
+  const loadMessages = useCallback(async () => {
     setMessageLoading(true);
     const { data } = await supabase
       .from("messages")
@@ -228,7 +228,7 @@ export default function Admin() {
 
     setMessages(data || []);
     setMessageLoading(false);
-  };
+  }, []);
 
   const markMessageRead = async (id) => {
     const { error } = await supabase
@@ -248,8 +248,6 @@ export default function Admin() {
     window.location.href = "/admin/login";
   };
 
-  // Initial admin bootstrap should run once on mount.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     loadProjects();
     loadAnalytics();
@@ -269,7 +267,7 @@ export default function Admin() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [loadProjects, loadAnalytics, loadMessages, refetchVisitorCount]);
 
   return (
     <div className="min-h-screen bg-background text-foreground p-6">

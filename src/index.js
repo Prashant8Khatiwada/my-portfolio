@@ -16,7 +16,7 @@ root.render(
         <Route path="/" element={<App />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route
-          path="/admin"
+          path="/admin/*"
           element={
             <AdminRoute>
               <Admin />
