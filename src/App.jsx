@@ -17,7 +17,7 @@ import { useProjects } from "./hooks/useProjects";
 import { useTimeline } from "./hooks/useTimeline";
 import { useSkills } from "./hooks/useSkills";
 import { motion } from "framer-motion";
-import { staggerContainer, staggerItem } from "./lib/animations";
+import { staggerContainer } from "./lib/animations";
 import { cn } from "./lib/utils";
 
 const stats = [
@@ -36,6 +36,7 @@ function App() {
   const [activeTab, setActiveTab] = useState("featured");
 
   const mappedProjects = projects.map((project) => ({
+    id: project.id,
     title: project.title,
     description: project.description,
     image: project.image_url,
@@ -159,9 +160,21 @@ function App() {
               >
                 {projectsLoading ? (
                   <p className="text-muted-foreground">Loading projects...</p>
+                ) : displayedProjects.length === 0 ? (
+                  <p className="text-muted-foreground">
+                    No projects found yet. Import content from admin dashboard.
+                  </p>
                 ) : (
                   displayedProjects.map((project, index) => (
-                    <motion.div key={index} variants={staggerItem}>
+                    <motion.div
+                      key={project.id || `${project.title}-${index}`}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 0.35,
+                        delay: Math.min(index * 0.03, 0.2),
+                      }}
+                    >
                       <ProjectCard project={project} />
                     </motion.div>
                   ))
