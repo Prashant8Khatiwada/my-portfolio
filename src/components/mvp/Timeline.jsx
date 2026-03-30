@@ -36,7 +36,7 @@ export default function Timeline({ items, type = "experience" }) {
                 isEven ? "md:text-right" : "md:text-left"
               } pl-16 md:pl-0`}
             >
-              <div className={`inline-block ${isEven ? "md:mr-8" : "md:ml-8"}`}>
+              <div className="w-full">
                 <div className="bg-card border border-border rounded-xl p-6 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/10 transition-all">
                   <span className="text-sm text-muted-foreground font-medium">
                     {item.date}

@@ -27,6 +27,28 @@ const stats = [
   { value: "10", suffix: "+", label: "Technologies" },
 ];
 
+const EXPERIENCE_TECH_STACK = {
+  "Mid-level Developer": [
+    "Next.js",
+    "TypeScript",
+    "Tailwind",
+    "React",
+    "Mantine UI",
+    "Cloudinary",
+  ],
+  "Junior Developer": [
+    "React",
+    "Formik",
+    "Context API",
+    "Leaflet",
+    "Firebase",
+    "Yup",
+    "Zod",
+  ],
+  "Frontend Developer Intern": ["React", "JavaScript", "CSS", "Git"],
+  "Frontend Intern": ["React Query", "Responsive UI", "Performance"],
+};
+
 function App() {
   useAnalytics();
   const { projects, loading: projectsLoading } = useProjects();
@@ -53,6 +75,15 @@ function App() {
       title: item.title,
       company: item.company,
       description: item.description,
+      technologies: Array.isArray(item.technologies)
+        ? item.technologies
+        : typeof item.technologies === "string" &&
+            item.technologies.trim().length > 0
+          ? item.technologies
+              .split(",")
+              .map((tech) => tech.trim())
+              .filter(Boolean)
+          : EXPERIENCE_TECH_STACK[item.title] || [],
     }));
 
   const skillItems = skills.map((item) => ({
