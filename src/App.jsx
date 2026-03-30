@@ -210,6 +210,10 @@ function App() {
 
               {timelineLoading ? (
                 <p className="text-muted-foreground">Loading experience...</p>
+              ) : experience.length === 0 ? (
+                <p className="text-muted-foreground text-center">
+                  No work experience entries found yet.
+                </p>
               ) : (
                 <Timeline items={experience} type="experience" />
               )}
@@ -235,6 +239,10 @@ function App() {
 
               {skillsLoading ? (
                 <p className="text-muted-foreground">Loading skills...</p>
+              ) : skillItems.length === 0 ? (
+                <p className="text-muted-foreground text-center">
+                  No technical skills found yet.
+                </p>
               ) : (
                 <Timeline items={skillItems} type="skills" />
               )}

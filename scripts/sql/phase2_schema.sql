@@ -42,6 +42,7 @@ create table skills (
   name text not null,
   category text,
   proficiency int default 80,
+  description text,
   display_order int default 0
 );
 

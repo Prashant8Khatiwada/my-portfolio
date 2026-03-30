@@ -587,7 +587,7 @@ export default function Admin() {
     if (!ok) return;
 
     try {
-      await Promise.all([
+      const deletes = await Promise.all([
         supabase.from("projects").delete().not("id", "is", null),
         supabase.from("testimonials").delete().not("id", "is", null),
         supabase.from("timeline").delete().not("id", "is", null),
@@ -595,13 +595,43 @@ export default function Admin() {
         supabase.from("services").delete().not("id", "is", null),
       ]);
 
-      await Promise.all([
+      const deleteErrors = deletes
+        .map((result, index) => ({
+          table: ["projects", "testimonials", "timeline", "skills", "services"][
+            index
+          ],
+          error: result.error,
+        }))
+        .filter((item) => item.error);
+
+      if (deleteErrors.length > 0) {
+        throw new Error(
+          `Delete failed for ${deleteErrors[0].table}: ${deleteErrors[0].error.message}`,
+        );
+      }
+
+      const inserts = await Promise.all([
         supabase.from("projects").insert(LEGACY_DATA.projects),
         supabase.from("testimonials").insert(LEGACY_DATA.testimonials),
         supabase.from("timeline").insert(LEGACY_DATA.timeline),
         supabase.from("skills").insert(LEGACY_DATA.skills),
         supabase.from("services").insert(LEGACY_DATA.services),
       ]);
+
+      const insertErrors = inserts
+        .map((result, index) => ({
+          table: ["projects", "testimonials", "timeline", "skills", "services"][
+            index
+          ],
+          error: result.error,
+        }))
+        .filter((item) => item.error);
+
+      if (insertErrors.length > 0) {
+        throw new Error(
+          `Insert failed for ${insertErrors[0].table}: ${insertErrors[0].error.message}`,
+        );
+      }
 
       await refreshAllCms();
       setStatusMessage(
