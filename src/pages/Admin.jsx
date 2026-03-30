@@ -10,6 +10,18 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import {
+  BarChart3,
+  Briefcase,
+  Inbox,
+  Layers,
+  FolderKanban,
+  MessageSquare,
+  RefreshCw,
+  Sparkles,
+  Wrench,
+} from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 
 function parseTags(value) {
@@ -297,7 +309,8 @@ const LEGACY_DATA = {
 };
 
 export default function Admin() {
-  const [tab, setTab] = useState("projects");
+  const location = useLocation();
+  const navigate = useNavigate();
   const [statusMessage, setStatusMessage] = useState("");
 
   const [projects, setProjects] = useState([]);
@@ -358,6 +371,9 @@ export default function Admin() {
   const [editingServiceId, setEditingServiceId] = useState(null);
 
   const [analyticsLoading, setAnalyticsLoading] = useState(true);
+  const [analyticsError, setAnalyticsError] = useState("");
+  const [analyticsRangeDays, setAnalyticsRangeDays] = useState(30);
+  const [analyticsLastUpdated, setAnalyticsLastUpdated] = useState(null);
   const [totalViews, setTotalViews] = useState(0);
   const [uniqueVisitors, setUniqueVisitors] = useState(0);
   const [liveVisitors, setLiveVisitors] = useState(0);
@@ -367,10 +383,42 @@ export default function Admin() {
   const [messages, setMessages] = useState([]);
   const [messageLoading, setMessageLoading] = useState(true);
 
+  const uiInput =
+    "px-3.5 py-2.5 rounded-xl border border-border/60 bg-background/70 shadow-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/20";
+  const uiTextarea =
+    "px-3.5 py-2.5 rounded-xl border border-border/60 bg-background/70 shadow-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/20";
+  const uiSelect =
+    "px-3.5 py-2.5 rounded-xl border border-border/60 bg-background/70 shadow-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/20";
+  const uiPrimaryBtn =
+    "px-4 py-2.5 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm hover:shadow-md transition-all";
+  const uiSecondaryBtn =
+    "px-4 py-2.5 rounded-xl border border-border/70 bg-background/50 hover:bg-card transition-all";
+  const uiSmallBtn =
+    "px-2.5 py-1.5 rounded-lg border border-border/70 bg-background/60 hover:bg-card text-xs font-medium transition-all";
+  const uiSmallDangerBtn =
+    "px-2.5 py-1.5 rounded-lg border border-red-400/70 text-red-500 hover:bg-red-500/10 text-xs font-medium transition-all";
+  const uiDangerBtn =
+    "px-3 py-1.5 rounded-lg border border-red-400/70 text-red-500 hover:bg-red-500/10 transition-all";
+
   const unreadMessages = useMemo(
     () => messages.filter((message) => !message.read),
     [messages],
   );
+
+  const tabRouteMap = {
+    analytics: "analytics",
+    projects: "projects",
+    testimonials: "testimonials",
+    timeline: "timeline",
+    skills: "skills",
+    services: "services",
+    messages: "messages",
+  };
+  const pathToTabMap = Object.fromEntries(
+    Object.entries(tabRouteMap).map(([tabKey, path]) => [path, tabKey]),
+  );
+  const pathSegment = location.pathname.split("/")[2] || "";
+  const tab = pathToTabMap[pathSegment] || "analytics";
 
   const uploadImage = async (file) => {
     const path = `projects/${Date.now()}-${file.name}`;
@@ -446,55 +494,89 @@ export default function Admin() {
 
   const loadAnalytics = useCallback(async () => {
     setAnalyticsLoading(true);
+    setAnalyticsError("");
 
-    const [
-      { count: total },
-      { count: visitorsCount },
-      { data: pageRows },
-      { data: dailyRows },
-    ] = await Promise.all([
-      supabase.from("page_views").select("*", { count: "exact", head: true }),
-      supabase.from("visitors").select("*", { count: "exact", head: true }),
-      supabase.from("page_views").select("path").limit(500),
-      supabase
-        .from("page_views")
-        .select("created_at")
-        .gte(
-          "created_at",
-          new Date(Date.now() - 30 * 86400 * 1000).toISOString(),
-        ),
-    ]);
+    const fromIso = new Date(
+      Date.now() - analyticsRangeDays * 86400 * 1000,
+    ).toISOString();
 
-    setTotalViews(total || 0);
-    setUniqueVisitors(visitorsCount || 0);
+    try {
+      const [
+        { count: total, error: totalError },
+        { count: visitorsCount, error: visitorsError },
+        { data: pageRows, error: pageRowsError },
+        { data: dailyRows, error: dailyRowsError },
+        { data: sessionRows, error: sessionRowsError },
+      ] = await Promise.all([
+        supabase.from("page_views").select("*", { count: "exact", head: true }),
+        supabase.from("visitors").select("*", { count: "exact", head: true }),
+        supabase
+          .from("page_views")
+          .select("path")
+          .gte("created_at", fromIso)
+          .limit(5000),
+        supabase
+          .from("page_views")
+          .select("created_at")
+          .gte("created_at", fromIso),
+        supabase
+          .from("page_views")
+          .select("session_id")
+          .not("session_id", "is", null)
+          .gte("created_at", fromIso)
+          .limit(5000),
+      ]);
 
-    const groupedPages = (pageRows || []).reduce((acc, row) => {
-      const key = row.path || "/";
-      acc[key] = (acc[key] || 0) + 1;
-      return acc;
-    }, {});
-    setTopPages(
-      Object.entries(groupedPages)
-        .map(([path, views]) => ({ path, views }))
-        .sort((a, b) => b.views - a.views)
-        .slice(0, 7),
-    );
+      const firstError =
+        totalError ||
+        visitorsError ||
+        pageRowsError ||
+        dailyRowsError ||
+        sessionRowsError;
 
-    const groupedDaily = (dailyRows || []).reduce((acc, row) => {
-      const day = row.created_at.slice(0, 10);
-      acc[day] = (acc[day] || 0) + 1;
-      return acc;
-    }, {});
+      if (firstError) {
+        throw firstError;
+      }
 
-    setDailyViews(
-      Object.entries(groupedDaily)
-        .map(([day, views]) => ({ day, views, label: formatDateLabel(day) }))
-        .sort((a, b) => (a.day > b.day ? 1 : -1)),
-    );
+      setTotalViews(total || 0);
 
-    await refetchVisitorCount();
-    setAnalyticsLoading(false);
-  }, [refetchVisitorCount]);
+      const uniqueSessions = new Set(
+        (sessionRows || []).map((row) => row.session_id).filter(Boolean),
+      ).size;
+      setUniqueVisitors(visitorsCount || uniqueSessions || 0);
+
+      const groupedPages = (pageRows || []).reduce((acc, row) => {
+        const key = row.path || "/";
+        acc[key] = (acc[key] || 0) + 1;
+        return acc;
+      }, {});
+      setTopPages(
+        Object.entries(groupedPages)
+          .map(([path, views]) => ({ path, views }))
+          .sort((a, b) => b.views - a.views)
+          .slice(0, 7),
+      );
+
+      const groupedDaily = (dailyRows || []).reduce((acc, row) => {
+        const day = row.created_at.slice(0, 10);
+        acc[day] = (acc[day] || 0) + 1;
+        return acc;
+      }, {});
+
+      setDailyViews(
+        Object.entries(groupedDaily)
+          .map(([day, views]) => ({ day, views, label: formatDateLabel(day) }))
+          .sort((a, b) => (a.day > b.day ? 1 : -1)),
+      );
+
+      await refetchVisitorCount();
+      setAnalyticsLastUpdated(new Date().toISOString());
+    } catch (error) {
+      setAnalyticsError(error.message || "Failed to load analytics data.");
+    } finally {
+      setAnalyticsLoading(false);
+    }
+  }, [analyticsRangeDays, refetchVisitorCount]);
 
   const refreshAllCms = useCallback(async () => {
     await Promise.all([
@@ -677,862 +759,1085 @@ export default function Admin() {
     };
   }, [refreshAllCms, loadAnalytics, loadMessages, refetchVisitorCount]);
 
+  useEffect(() => {
+    if (tab !== "analytics") return;
+    const interval = setInterval(() => {
+      loadAnalytics();
+    }, 60000);
+    return () => clearInterval(interval);
+  }, [tab, loadAnalytics]);
+
+  useEffect(() => {
+    if (location.pathname === "/admin" || location.pathname === "/admin/") {
+      navigate("/admin/analytics", { replace: true });
+    }
+  }, [location.pathname, navigate]);
+
+  const tabItems = [
+    {
+      key: "analytics",
+      label: "Analytics",
+      icon: BarChart3,
+      subtitle: "Traffic and usage",
+    },
+    {
+      key: "projects",
+      label: `Projects (${projects.length})`,
+      icon: FolderKanban,
+      subtitle: "Portfolio case studies",
+    },
+    {
+      key: "testimonials",
+      label: `Testimonials (${testimonials.length})`,
+      icon: MessageSquare,
+      subtitle: "Client feedback",
+    },
+    {
+      key: "timeline",
+      label: `Timeline (${timeline.length})`,
+      icon: Briefcase,
+      subtitle: "Experience entries",
+    },
+    {
+      key: "skills",
+      label: `Skills (${skills.length})`,
+      icon: Sparkles,
+      subtitle: "Technical skills",
+    },
+    {
+      key: "services",
+      label: `Services (${services.length})`,
+      icon: Wrench,
+      subtitle: "Offerings",
+    },
+    {
+      key: "messages",
+      label: `Messages (${unreadMessages.length} unread)`,
+      icon: Inbox,
+      subtitle: "Contact inbox",
+    },
+  ];
+
+  const activeTabMeta = tabItems.find((item) => item.key === tab);
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-card/20 to-background text-foreground p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
-        <header className="rounded-2xl border border-border bg-card/80 backdrop-blur p-6 flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold">Portfolio Control Center</h1>
-            <p className="text-muted-foreground">
-              Manage all CMS sections, analytics, and contact messages.
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.12),_transparent_40%),radial-gradient(circle_at_85%_20%,_rgba(139,92,246,0.12),_transparent_35%)] bg-background text-foreground">
+      <div className="w-full grid grid-cols-1 lg:grid-cols-[300px,minmax(0,1fr)] lg:min-h-screen lg:gap-0">
+        <aside className="lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto lg:rounded-none rounded-2xl border border-border/70 lg:border-l-0 lg:border-t-0 lg:border-b-0 lg:border-r bg-card/80 backdrop-blur-xl p-4 space-y-4 m-4 lg:m-0">
+          <div className="rounded-xl border border-border/60 bg-background/60 p-4">
+            <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
+              Admin Workspace
+            </p>
+            <h1 className="text-2xl font-bold mt-2">Control Center</h1>
+            <p className="text-sm text-muted-foreground mt-1">
+              Clean, modular management for your complete portfolio.
             </p>
           </div>
-          <div className="flex gap-2">
-            <button
-              onClick={importLegacyContent}
-              className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90"
-            >
-              Import Legacy Content
-            </button>
-            <button
-              onClick={logout}
-              className="px-4 py-2 rounded-lg border border-border hover:bg-card"
-            >
-              Logout
-            </button>
+
+          <nav className="space-y-2">
+            {tabItems.map(({ key, label, icon: Icon, subtitle }) => (
+              <button
+                key={key}
+                onClick={() => navigate(`/admin/${tabRouteMap[key]}`)}
+                className={`w-full text-left rounded-xl border px-3 py-2.5 transition-all ${
+                  tab === key
+                    ? "border-primary/40 bg-primary/15 shadow-[0_0_0_1px_rgba(139,92,246,0.15)]"
+                    : "border-border/60 bg-background/40 hover:bg-card"
+                }`}
+              >
+                <span className="inline-flex items-center gap-2 text-sm font-semibold">
+                  <Icon className="w-4 h-4" />
+                  {label}
+                </span>
+                <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>
+              </button>
+            ))}
+          </nav>
+
+          <div className="rounded-xl border border-border/60 bg-background/50 p-3">
+            <p className="text-xs text-muted-foreground">Unread Inbox</p>
+            <p className="text-2xl font-bold">{unreadMessages.length}</p>
           </div>
-        </header>
+        </aside>
 
-        {statusMessage && (
-          <div className="rounded-lg border border-border bg-card p-3 text-sm">
-            {statusMessage}
-          </div>
-        )}
+        <main className="space-y-6 p-4 md:p-6 lg:p-8">
+          <header className="rounded-2xl border border-border/70 bg-card/85 backdrop-blur-xl p-5 md:p-6 flex flex-wrap items-center justify-between gap-4">
+            <div className="min-w-0">
+              <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
+                Active Module
+              </p>
+              <h2 className="text-2xl md:text-3xl font-bold truncate mt-1">
+                {activeTabMeta?.label || "Dashboard"}
+              </h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                {activeTabMeta?.subtitle ||
+                  "Manage content, monitor analytics, and track inquiries."}
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={importLegacyContent}
+                className={`${uiPrimaryBtn} inline-flex items-center gap-2`}
+              >
+                <Layers className="w-4 h-4" />
+                Import Legacy
+              </button>
+              <button onClick={logout} className={uiSecondaryBtn}>
+                Logout
+              </button>
+            </div>
+          </header>
 
-        <div className="flex flex-wrap gap-2">
-          {[
-            ["projects", `Projects (${projects.length})`],
-            ["testimonials", `Testimonials (${testimonials.length})`],
-            ["timeline", `Timeline (${timeline.length})`],
-            ["skills", `Skills (${skills.length})`],
-            ["services", `Services (${services.length})`],
-            ["analytics", "Analytics"],
-            ["messages", `Messages (${unreadMessages.length} unread)`],
-          ].map(([key, label]) => (
-            <button
-              key={key}
-              onClick={() => setTab(key)}
-              className={`px-4 py-2 rounded-lg border ${
-                tab === key
-                  ? "bg-primary text-primary-foreground border-primary"
-                  : "border-border bg-card/70 hover:bg-card"
-              }`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-
-        {tab === "projects" && (
-          <section className="space-y-6">
-            <form
-              onSubmit={saveProject}
-              className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-card border border-border rounded-xl p-4"
-            >
-              <input
-                className="px-3 py-2 rounded border border-border bg-background"
-                placeholder="Project title"
-                value={projectForm.title}
-                onChange={(e) =>
-                  setProjectForm((p) => ({ ...p, title: e.target.value }))
-                }
-                required
-              />
-              <input
-                className="px-3 py-2 rounded border border-border bg-background"
-                placeholder="Display order"
-                type="number"
-                value={projectForm.display_order}
-                onChange={(e) =>
-                  setProjectForm((p) => ({
-                    ...p,
-                    display_order: e.target.value,
-                  }))
-                }
-              />
-              <input
-                className="md:col-span-2 px-3 py-2 rounded border border-border bg-background"
-                placeholder="Live URL"
-                value={projectForm.live_url}
-                onChange={(e) =>
-                  setProjectForm((p) => ({ ...p, live_url: e.target.value }))
-                }
-              />
-              <input
-                className="md:col-span-2 px-3 py-2 rounded border border-border bg-background"
-                placeholder="GitHub URL"
-                value={projectForm.github_url}
-                onChange={(e) =>
-                  setProjectForm((p) => ({ ...p, github_url: e.target.value }))
-                }
-              />
-              <input
-                className="md:col-span-2 px-3 py-2 rounded border border-border bg-background"
-                placeholder="Tags (comma separated)"
-                value={projectForm.tags}
-                onChange={(e) =>
-                  setProjectForm((p) => ({ ...p, tags: e.target.value }))
-                }
-              />
-              <textarea
-                className="md:col-span-2 px-3 py-2 rounded border border-border bg-background"
-                placeholder="Description"
-                rows={4}
-                value={projectForm.description}
-                onChange={(e) =>
-                  setProjectForm((p) => ({ ...p, description: e.target.value }))
-                }
-              />
-              <input
-                className="md:col-span-2"
-                type="file"
-                accept="image/*"
-                onChange={(e) =>
-                  setProjectImageFile(e.target.files?.[0] || null)
-                }
-              />
-              <label className="inline-flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={projectForm.featured}
-                  onChange={(e) =>
-                    setProjectForm((p) => ({
-                      ...p,
-                      featured: e.target.checked,
-                    }))
-                  }
-                />
-                Featured
-              </label>
-              <div className="md:col-span-2 flex gap-2">
-                <button
-                  type="submit"
-                  className="px-4 py-2 rounded-lg bg-primary text-primary-foreground"
-                >
-                  {editingProjectId ? "Update Project" : "Add Project"}
-                </button>
-                {editingProjectId && (
-                  <button
-                    type="button"
-                    onClick={resetProjectForm}
-                    className="px-4 py-2 rounded-lg border border-border"
-                  >
-                    Cancel Edit
-                  </button>
-                )}
+          <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {[
+              { label: "Projects", value: projects.length },
+              { label: "Skills", value: skills.length },
+              { label: "Timeline", value: timeline.length },
+              { label: "Unread", value: unreadMessages.length },
+            ].map((item) => (
+              <div
+                key={item.label}
+                className="rounded-xl border border-border/60 bg-card/60 p-3"
+              >
+                <p className="text-xs text-muted-foreground">{item.label}</p>
+                <p className="text-2xl font-bold mt-1">{item.value}</p>
               </div>
-            </form>
+            ))}
+          </section>
 
-            <div className="overflow-x-auto bg-card border border-border rounded-xl">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="text-left border-b border-border">
-                    <th className="p-3">Title</th>
-                    <th className="p-3">Featured</th>
-                    <th className="p-3">Order</th>
-                    <th className="p-3">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {projectLoading ? (
-                    <tr>
-                      <td className="p-3" colSpan={4}>
-                        Loading projects...
-                      </td>
-                    </tr>
-                  ) : (
-                    projects.map((project) => (
-                      <tr
-                        key={project.id}
-                        className="border-b border-border/50"
+          {statusMessage && (
+            <div className="rounded-xl border border-border/70 bg-card/70 px-4 py-3 text-sm">
+              {statusMessage}
+            </div>
+          )}
+
+          <section className="rounded-2xl border border-border/70 bg-card/85 backdrop-blur-xl p-4 md:p-5">
+            {tab === "projects" && (
+              <section className="space-y-6">
+                <form
+                  onSubmit={saveProject}
+                  className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-background/40 border border-border/60 rounded-2xl p-5"
+                >
+                  <input
+                    className={uiInput}
+                    placeholder="Project title"
+                    value={projectForm.title}
+                    onChange={(e) =>
+                      setProjectForm((p) => ({ ...p, title: e.target.value }))
+                    }
+                    required
+                  />
+                  <input
+                    className={uiInput}
+                    placeholder="Display order"
+                    type="number"
+                    value={projectForm.display_order}
+                    onChange={(e) =>
+                      setProjectForm((p) => ({
+                        ...p,
+                        display_order: e.target.value,
+                      }))
+                    }
+                  />
+                  <input
+                    className={`md:col-span-2 ${uiInput}`}
+                    placeholder="Live URL"
+                    value={projectForm.live_url}
+                    onChange={(e) =>
+                      setProjectForm((p) => ({
+                        ...p,
+                        live_url: e.target.value,
+                      }))
+                    }
+                  />
+                  <input
+                    className={`md:col-span-2 ${uiInput}`}
+                    placeholder="GitHub URL"
+                    value={projectForm.github_url}
+                    onChange={(e) =>
+                      setProjectForm((p) => ({
+                        ...p,
+                        github_url: e.target.value,
+                      }))
+                    }
+                  />
+                  <input
+                    className={`md:col-span-2 ${uiInput}`}
+                    placeholder="Tags (comma separated)"
+                    value={projectForm.tags}
+                    onChange={(e) =>
+                      setProjectForm((p) => ({ ...p, tags: e.target.value }))
+                    }
+                  />
+                  <textarea
+                    className={`md:col-span-2 ${uiInput}`}
+                    placeholder="Description"
+                    rows={4}
+                    value={projectForm.description}
+                    onChange={(e) =>
+                      setProjectForm((p) => ({
+                        ...p,
+                        description: e.target.value,
+                      }))
+                    }
+                  />
+                  <input
+                    className="md:col-span-2"
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) =>
+                      setProjectImageFile(e.target.files?.[0] || null)
+                    }
+                  />
+                  <label className="inline-flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={projectForm.featured}
+                      onChange={(e) =>
+                        setProjectForm((p) => ({
+                          ...p,
+                          featured: e.target.checked,
+                        }))
+                      }
+                    />
+                    Featured
+                  </label>
+                  <div className="md:col-span-2 flex gap-2">
+                    <button type="submit" className={uiPrimaryBtn}>
+                      {editingProjectId ? "Update Project" : "Add Project"}
+                    </button>
+                    {editingProjectId && (
+                      <button
+                        type="button"
+                        onClick={resetProjectForm}
+                        className={uiSecondaryBtn}
                       >
-                        <td className="p-3">{project.title}</td>
-                        <td className="p-3">
-                          {project.featured ? "Yes" : "No"}
-                        </td>
-                        <td className="p-3">{project.display_order}</td>
-                        <td className="p-3 space-x-2">
-                          <button
-                            className="px-2 py-1 rounded border border-border"
-                            onClick={() => {
-                              setEditingProjectId(project.id);
-                              setProjectForm({
-                                title: project.title || "",
-                                description: project.description || "",
-                                tags: (project.tags || []).join(", "),
-                                live_url: project.live_url || "",
-                                github_url: project.github_url || "",
-                                featured: Boolean(project.featured),
-                                display_order: project.display_order || 0,
-                              });
-                            }}
-                          >
-                            Edit
-                          </button>
-                          <button
-                            className="px-2 py-1 rounded border border-red-400 text-red-500"
-                            onClick={() => deleteProject(project.id)}
-                          >
-                            Delete
-                          </button>
-                        </td>
+                        Cancel Edit
+                      </button>
+                    )}
+                  </div>
+                </form>
+
+                <div className="overflow-x-auto bg-background/40 border border-border/60 rounded-2xl">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="text-left border-b border-border">
+                        <th className="p-3">Title</th>
+                        <th className="p-3">Featured</th>
+                        <th className="p-3">Order</th>
+                        <th className="p-3">Actions</th>
                       </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </section>
-        )}
+                    </thead>
+                    <tbody>
+                      {projectLoading ? (
+                        <tr>
+                          <td className="p-3" colSpan={4}>
+                            Loading projects...
+                          </td>
+                        </tr>
+                      ) : (
+                        projects.map((project) => (
+                          <tr
+                            key={project.id}
+                            className="border-b border-border/50"
+                          >
+                            <td className="p-3">{project.title}</td>
+                            <td className="p-3">
+                              {project.featured ? "Yes" : "No"}
+                            </td>
+                            <td className="p-3">{project.display_order}</td>
+                            <td className="p-3 space-x-2">
+                              <button
+                                className={uiSmallBtn}
+                                onClick={() => {
+                                  setEditingProjectId(project.id);
+                                  setProjectForm({
+                                    title: project.title || "",
+                                    description: project.description || "",
+                                    tags: (project.tags || []).join(", "),
+                                    live_url: project.live_url || "",
+                                    github_url: project.github_url || "",
+                                    featured: Boolean(project.featured),
+                                    display_order: project.display_order || 0,
+                                  });
+                                }}
+                              >
+                                Edit
+                              </button>
+                              <button
+                                className={uiSmallDangerBtn}
+                                onClick={() => deleteProject(project.id)}
+                              >
+                                Delete
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            )}
 
-        {tab === "testimonials" && (
-          <section className="space-y-4 bg-card border border-border rounded-xl p-4">
-            <form
-              className="grid grid-cols-1 md:grid-cols-2 gap-3"
-              onSubmit={async (e) => {
-                e.preventDefault();
-                try {
-                  await saveSimple(
-                    "testimonials",
-                    editingTestimonialId,
-                    {
-                      name: testimonialForm.name,
-                      role: testimonialForm.role,
-                      company: testimonialForm.company,
-                      content: testimonialForm.content,
-                      rating: Number(testimonialForm.rating) || 5,
-                      display_order: Number(testimonialForm.display_order) || 0,
-                      active: Boolean(testimonialForm.active),
-                    },
-                    () => {
-                      setEditingTestimonialId(null);
-                      setTestimonialForm({
-                        name: "",
-                        role: "",
-                        company: "",
-                        content: "",
-                        rating: 5,
-                        display_order: 0,
-                        active: true,
-                      });
-                    },
-                    loadTestimonials,
-                  );
-                } catch (error) {
-                  setStatusMessage(
-                    error.message || "Failed to save testimonial.",
-                  );
-                }
-              }}
-            >
-              <input
-                className="px-3 py-2 rounded border border-border bg-background"
-                placeholder="Name"
-                value={testimonialForm.name}
-                onChange={(e) =>
-                  setTestimonialForm((p) => ({ ...p, name: e.target.value }))
-                }
-                required
-              />
-              <input
-                className="px-3 py-2 rounded border border-border bg-background"
-                placeholder="Role"
-                value={testimonialForm.role}
-                onChange={(e) =>
-                  setTestimonialForm((p) => ({ ...p, role: e.target.value }))
-                }
-              />
-              <input
-                className="px-3 py-2 rounded border border-border bg-background"
-                placeholder="Company"
-                value={testimonialForm.company}
-                onChange={(e) =>
-                  setTestimonialForm((p) => ({ ...p, company: e.target.value }))
-                }
-              />
-              <input
-                className="px-3 py-2 rounded border border-border bg-background"
-                type="number"
-                placeholder="Rating"
-                value={testimonialForm.rating}
-                onChange={(e) =>
-                  setTestimonialForm((p) => ({ ...p, rating: e.target.value }))
-                }
-              />
-              <textarea
-                className="md:col-span-2 px-3 py-2 rounded border border-border bg-background"
-                placeholder="Content"
-                rows={3}
-                value={testimonialForm.content}
-                onChange={(e) =>
-                  setTestimonialForm((p) => ({ ...p, content: e.target.value }))
-                }
-                required
-              />
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={testimonialForm.active}
-                  onChange={(e) =>
-                    setTestimonialForm((p) => ({
-                      ...p,
-                      active: e.target.checked,
-                    }))
-                  }
-                />{" "}
-                Active
-              </div>
-              <button
-                className="px-4 py-2 rounded bg-primary text-primary-foreground"
-                type="submit"
-              >
-                {editingTestimonialId ? "Update" : "Add"}
-              </button>
-            </form>
-            <div className="space-y-2">
-              {testimonials.map((item) => (
-                <div
-                  key={item.id}
-                  className="border border-border rounded-lg p-3 flex justify-between gap-3"
+            {tab === "testimonials" && (
+              <section className="space-y-4 bg-background/40 border border-border/60 rounded-2xl p-5">
+                <form
+                  className="grid grid-cols-1 md:grid-cols-2 gap-3"
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    try {
+                      await saveSimple(
+                        "testimonials",
+                        editingTestimonialId,
+                        {
+                          name: testimonialForm.name,
+                          role: testimonialForm.role,
+                          company: testimonialForm.company,
+                          content: testimonialForm.content,
+                          rating: Number(testimonialForm.rating) || 5,
+                          display_order:
+                            Number(testimonialForm.display_order) || 0,
+                          active: Boolean(testimonialForm.active),
+                        },
+                        () => {
+                          setEditingTestimonialId(null);
+                          setTestimonialForm({
+                            name: "",
+                            role: "",
+                            company: "",
+                            content: "",
+                            rating: 5,
+                            display_order: 0,
+                            active: true,
+                          });
+                        },
+                        loadTestimonials,
+                      );
+                    } catch (error) {
+                      setStatusMessage(
+                        error.message || "Failed to save testimonial.",
+                      );
+                    }
+                  }}
                 >
-                  <div>
-                    <p className="font-semibold">{item.name}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {item.role} {item.company ? `- ${item.company}` : ""}
-                    </p>
+                  <input
+                    className={uiInput}
+                    placeholder="Name"
+                    value={testimonialForm.name}
+                    onChange={(e) =>
+                      setTestimonialForm((p) => ({
+                        ...p,
+                        name: e.target.value,
+                      }))
+                    }
+                    required
+                  />
+                  <input
+                    className={uiInput}
+                    placeholder="Role"
+                    value={testimonialForm.role}
+                    onChange={(e) =>
+                      setTestimonialForm((p) => ({
+                        ...p,
+                        role: e.target.value,
+                      }))
+                    }
+                  />
+                  <input
+                    className={uiInput}
+                    placeholder="Company"
+                    value={testimonialForm.company}
+                    onChange={(e) =>
+                      setTestimonialForm((p) => ({
+                        ...p,
+                        company: e.target.value,
+                      }))
+                    }
+                  />
+                  <input
+                    className={uiInput}
+                    type="number"
+                    placeholder="Rating"
+                    value={testimonialForm.rating}
+                    onChange={(e) =>
+                      setTestimonialForm((p) => ({
+                        ...p,
+                        rating: e.target.value,
+                      }))
+                    }
+                  />
+                  <textarea
+                    className={`md:col-span-2 ${uiInput}`}
+                    placeholder="Content"
+                    rows={3}
+                    value={testimonialForm.content}
+                    onChange={(e) =>
+                      setTestimonialForm((p) => ({
+                        ...p,
+                        content: e.target.value,
+                      }))
+                    }
+                    required
+                  />
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={testimonialForm.active}
+                      onChange={(e) =>
+                        setTestimonialForm((p) => ({
+                          ...p,
+                          active: e.target.checked,
+                        }))
+                      }
+                    />{" "}
+                    Active
                   </div>
-                  <div className="space-x-2">
-                    <button
-                      className="px-2 py-1 border rounded"
-                      onClick={() => {
-                        setEditingTestimonialId(item.id);
-                        setTestimonialForm({
-                          name: item.name || "",
-                          role: item.role || "",
-                          company: item.company || "",
-                          content: item.content || "",
-                          rating: item.rating || 5,
-                          display_order: item.display_order || 0,
-                          active: item.active !== false,
-                        });
-                      }}
+                  <button className={uiPrimaryBtn} type="submit">
+                    {editingTestimonialId ? "Update" : "Add"}
+                  </button>
+                </form>
+                <div className="space-y-2">
+                  {testimonials.map((item) => (
+                    <div
+                      key={item.id}
+                      className="border border-border rounded-lg p-3 flex justify-between gap-3"
                     >
-                      Edit
-                    </button>
-                    <button
-                      className="px-2 py-1 border border-red-400 text-red-500 rounded"
-                      onClick={async () => {
-                        try {
-                          await deleteSimple(
-                            "testimonials",
-                            item.id,
-                            loadTestimonials,
-                          );
-                        } catch (error) {
-                          setStatusMessage(error.message);
-                        }
-                      }}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {tab === "timeline" && (
-          <section className="space-y-4 bg-card border border-border rounded-xl p-4">
-            <form
-              className="grid grid-cols-1 md:grid-cols-2 gap-3"
-              onSubmit={async (e) => {
-                e.preventDefault();
-                try {
-                  await saveSimple(
-                    "timeline",
-                    editingTimelineId,
-                    {
-                      year: timelineForm.year,
-                      title: timelineForm.title,
-                      company: timelineForm.company,
-                      description: timelineForm.description,
-                      type: timelineForm.type,
-                      display_order: Number(timelineForm.display_order) || 0,
-                    },
-                    () => {
-                      setEditingTimelineId(null);
-                      setTimelineForm({
-                        year: "",
-                        title: "",
-                        company: "",
-                        description: "",
-                        type: "work",
-                        display_order: 0,
-                      });
-                    },
-                    loadTimeline,
-                  );
-                } catch (error) {
-                  setStatusMessage(
-                    error.message || "Failed to save timeline item.",
-                  );
-                }
-              }}
-            >
-              <input
-                className="px-3 py-2 rounded border border-border bg-background"
-                placeholder="Year"
-                value={timelineForm.year}
-                onChange={(e) =>
-                  setTimelineForm((p) => ({ ...p, year: e.target.value }))
-                }
-              />
-              <input
-                className="px-3 py-2 rounded border border-border bg-background"
-                placeholder="Title"
-                value={timelineForm.title}
-                onChange={(e) =>
-                  setTimelineForm((p) => ({ ...p, title: e.target.value }))
-                }
-                required
-              />
-              <input
-                className="px-3 py-2 rounded border border-border bg-background"
-                placeholder="Company"
-                value={timelineForm.company}
-                onChange={(e) =>
-                  setTimelineForm((p) => ({ ...p, company: e.target.value }))
-                }
-              />
-              <select
-                className="px-3 py-2 rounded border border-border bg-background"
-                value={timelineForm.type}
-                onChange={(e) =>
-                  setTimelineForm((p) => ({ ...p, type: e.target.value }))
-                }
-              >
-                <option value="work">work</option>
-                <option value="education">education</option>
-              </select>
-              <textarea
-                className="md:col-span-2 px-3 py-2 rounded border border-border bg-background"
-                placeholder="Description"
-                rows={3}
-                value={timelineForm.description}
-                onChange={(e) =>
-                  setTimelineForm((p) => ({
-                    ...p,
-                    description: e.target.value,
-                  }))
-                }
-              />
-              <button
-                className="px-4 py-2 rounded bg-primary text-primary-foreground"
-                type="submit"
-              >
-                {editingTimelineId ? "Update" : "Add"}
-              </button>
-            </form>
-            {timeline.map((item) => (
-              <div
-                key={item.id}
-                className="border border-border rounded-lg p-3 flex justify-between gap-3"
-              >
-                <div>
-                  <p className="font-semibold">{item.title}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {item.year} - {item.type}
-                  </p>
-                </div>
-                <div className="space-x-2">
-                  <button
-                    className="px-2 py-1 border rounded"
-                    onClick={() => {
-                      setEditingTimelineId(item.id);
-                      setTimelineForm({
-                        year: item.year || "",
-                        title: item.title || "",
-                        company: item.company || "",
-                        description: item.description || "",
-                        type: item.type || "work",
-                        display_order: item.display_order || 0,
-                      });
-                    }}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="px-2 py-1 border border-red-400 text-red-500 rounded"
-                    onClick={async () => {
-                      try {
-                        await deleteSimple("timeline", item.id, loadTimeline);
-                      } catch (error) {
-                        setStatusMessage(error.message);
-                      }
-                    }}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            ))}
-          </section>
-        )}
-
-        {tab === "skills" && (
-          <section className="space-y-4 bg-card border border-border rounded-xl p-4">
-            <form
-              className="grid grid-cols-1 md:grid-cols-2 gap-3"
-              onSubmit={async (e) => {
-                e.preventDefault();
-                try {
-                  await saveSimple(
-                    "skills",
-                    editingSkillId,
-                    {
-                      name: skillForm.name,
-                      category: skillForm.category,
-                      proficiency: Number(skillForm.proficiency) || 80,
-                      description: skillForm.description,
-                      display_order: Number(skillForm.display_order) || 0,
-                    },
-                    () => {
-                      setEditingSkillId(null);
-                      setSkillForm({
-                        name: "",
-                        category: "",
-                        proficiency: 80,
-                        description: "",
-                        display_order: 0,
-                      });
-                    },
-                    loadSkills,
-                  );
-                } catch (error) {
-                  setStatusMessage(error.message || "Failed to save skill.");
-                }
-              }}
-            >
-              <input
-                className="px-3 py-2 rounded border border-border bg-background"
-                placeholder="Name"
-                value={skillForm.name}
-                onChange={(e) =>
-                  setSkillForm((p) => ({ ...p, name: e.target.value }))
-                }
-                required
-              />
-              <input
-                className="px-3 py-2 rounded border border-border bg-background"
-                placeholder="Category"
-                value={skillForm.category}
-                onChange={(e) =>
-                  setSkillForm((p) => ({ ...p, category: e.target.value }))
-                }
-              />
-              <input
-                className="px-3 py-2 rounded border border-border bg-background"
-                type="number"
-                placeholder="Proficiency"
-                value={skillForm.proficiency}
-                onChange={(e) =>
-                  setSkillForm((p) => ({ ...p, proficiency: e.target.value }))
-                }
-              />
-              <input
-                className="px-3 py-2 rounded border border-border bg-background"
-                type="number"
-                placeholder="Display order"
-                value={skillForm.display_order}
-                onChange={(e) =>
-                  setSkillForm((p) => ({ ...p, display_order: e.target.value }))
-                }
-              />
-              <textarea
-                className="md:col-span-2 px-3 py-2 rounded border border-border bg-background"
-                placeholder="Description"
-                rows={3}
-                value={skillForm.description}
-                onChange={(e) =>
-                  setSkillForm((p) => ({ ...p, description: e.target.value }))
-                }
-              />
-              <button
-                className="px-4 py-2 rounded bg-primary text-primary-foreground"
-                type="submit"
-              >
-                {editingSkillId ? "Update" : "Add"}
-              </button>
-            </form>
-            {skills.map((item) => (
-              <div
-                key={item.id}
-                className="border border-border rounded-lg p-3 flex justify-between gap-3"
-              >
-                <div>
-                  <p className="font-semibold">{item.name}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {item.category} - {item.proficiency}%
-                  </p>
-                </div>
-                <div className="space-x-2">
-                  <button
-                    className="px-2 py-1 border rounded"
-                    onClick={() => {
-                      setEditingSkillId(item.id);
-                      setSkillForm({
-                        name: item.name || "",
-                        category: item.category || "",
-                        proficiency: item.proficiency || 80,
-                        description: item.description || "",
-                        display_order: item.display_order || 0,
-                      });
-                    }}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="px-2 py-1 border border-red-400 text-red-500 rounded"
-                    onClick={async () => {
-                      try {
-                        await deleteSimple("skills", item.id, loadSkills);
-                      } catch (error) {
-                        setStatusMessage(error.message);
-                      }
-                    }}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            ))}
-          </section>
-        )}
-
-        {tab === "services" && (
-          <section className="space-y-4 bg-card border border-border rounded-xl p-4">
-            <form
-              className="grid grid-cols-1 md:grid-cols-2 gap-3"
-              onSubmit={async (e) => {
-                e.preventDefault();
-                try {
-                  await saveSimple(
-                    "services",
-                    editingServiceId,
-                    {
-                      title: serviceForm.title,
-                      description: serviceForm.description,
-                      icon: serviceForm.icon,
-                      display_order: Number(serviceForm.display_order) || 0,
-                    },
-                    () => {
-                      setEditingServiceId(null);
-                      setServiceForm({
-                        title: "",
-                        description: "",
-                        icon: "Code",
-                        display_order: 0,
-                      });
-                    },
-                    loadServices,
-                  );
-                } catch (error) {
-                  setStatusMessage(error.message || "Failed to save service.");
-                }
-              }}
-            >
-              <input
-                className="px-3 py-2 rounded border border-border bg-background"
-                placeholder="Title"
-                value={serviceForm.title}
-                onChange={(e) =>
-                  setServiceForm((p) => ({ ...p, title: e.target.value }))
-                }
-                required
-              />
-              <input
-                className="px-3 py-2 rounded border border-border bg-background"
-                placeholder="Icon (Code, Palette, Zap...)"
-                value={serviceForm.icon}
-                onChange={(e) =>
-                  setServiceForm((p) => ({ ...p, icon: e.target.value }))
-                }
-              />
-              <textarea
-                className="md:col-span-2 px-3 py-2 rounded border border-border bg-background"
-                placeholder="Description"
-                rows={3}
-                value={serviceForm.description}
-                onChange={(e) =>
-                  setServiceForm((p) => ({ ...p, description: e.target.value }))
-                }
-              />
-              <button
-                className="px-4 py-2 rounded bg-primary text-primary-foreground"
-                type="submit"
-              >
-                {editingServiceId ? "Update" : "Add"}
-              </button>
-            </form>
-            {services.map((item) => (
-              <div
-                key={item.id}
-                className="border border-border rounded-lg p-3 flex justify-between gap-3"
-              >
-                <div>
-                  <p className="font-semibold">{item.title}</p>
-                  <p className="text-sm text-muted-foreground">{item.icon}</p>
-                </div>
-                <div className="space-x-2">
-                  <button
-                    className="px-2 py-1 border rounded"
-                    onClick={() => {
-                      setEditingServiceId(item.id);
-                      setServiceForm({
-                        title: item.title || "",
-                        description: item.description || "",
-                        icon: item.icon || "Code",
-                        display_order: item.display_order || 0,
-                      });
-                    }}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="px-2 py-1 border border-red-400 text-red-500 rounded"
-                    onClick={async () => {
-                      try {
-                        await deleteSimple("services", item.id, loadServices);
-                      } catch (error) {
-                        setStatusMessage(error.message);
-                      }
-                    }}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            ))}
-          </section>
-        )}
-
-        {tab === "analytics" && (
-          <section className="space-y-6">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="bg-card border border-border rounded-xl p-4">
-                <p className="text-muted-foreground text-sm">Total Views</p>
-                <p className="text-3xl font-bold">{totalViews}</p>
-              </div>
-              <div className="bg-card border border-border rounded-xl p-4">
-                <p className="text-muted-foreground text-sm">Unique Visitors</p>
-                <p className="text-3xl font-bold">{uniqueVisitors}</p>
-              </div>
-              <div className="bg-card border border-border rounded-xl p-4">
-                <p className="text-muted-foreground text-sm">
-                  Live Visitors (5m)
-                </p>
-                <p className="text-3xl font-bold">{liveVisitors}</p>
-              </div>
-            </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <div className="bg-card border border-border rounded-xl p-4 h-80">
-                <h3 className="font-semibold mb-3">Views Last 30 Days</h3>
-                {analyticsLoading ? (
-                  <p className="text-muted-foreground">Loading chart...</p>
-                ) : (
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={dailyViews}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="label" />
-                      <YAxis allowDecimals={false} />
-                      <Tooltip />
-                      <Line
-                        type="monotone"
-                        dataKey="views"
-                        stroke="currentColor"
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                )}
-              </div>
-              <div className="bg-card border border-border rounded-xl p-4 h-80">
-                <h3 className="font-semibold mb-3">Top Pages</h3>
-                {analyticsLoading ? (
-                  <p className="text-muted-foreground">Loading chart...</p>
-                ) : (
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={topPages}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="path" />
-                      <YAxis allowDecimals={false} />
-                      <Tooltip />
-                      <Bar dataKey="views" fill="currentColor" />
-                    </BarChart>
-                  </ResponsiveContainer>
-                )}
-              </div>
-            </div>
-          </section>
-        )}
-
-        {tab === "messages" && (
-          <section className="bg-card border border-border rounded-xl p-4">
-            {messageLoading ? (
-              <p className="text-muted-foreground">Loading messages...</p>
-            ) : messages.length === 0 ? (
-              <p className="text-muted-foreground">No messages yet.</p>
-            ) : (
-              <div className="space-y-4">
-                {messages.map((message) => (
-                  <article
-                    key={message.id}
-                    className={`border rounded-lg p-4 ${
-                      message.read ? "border-border" : "border-primary/40"
-                    }`}
-                  >
-                    <div className="flex justify-between gap-3">
                       <div>
-                        <h4 className="font-semibold">
-                          {message.name || "Unknown"}
-                        </h4>
+                        <p className="font-semibold">{item.name}</p>
                         <p className="text-sm text-muted-foreground">
-                          {message.email}
+                          {item.role} {item.company ? `- ${item.company}` : ""}
                         </p>
                       </div>
-                      <div className="text-right">
-                        <p className="text-xs text-muted-foreground">
-                          {new Date(message.created_at).toLocaleString()}
-                        </p>
-                        {!message.read && (
-                          <button
-                            onClick={() => markMessageRead(message.id)}
-                            className="mt-2 text-sm px-2 py-1 rounded border border-border"
-                          >
-                            Mark read
-                          </button>
-                        )}
+                      <div className="space-x-2">
+                        <button
+                          className={uiSmallBtn}
+                          onClick={() => {
+                            setEditingTestimonialId(item.id);
+                            setTestimonialForm({
+                              name: item.name || "",
+                              role: item.role || "",
+                              company: item.company || "",
+                              content: item.content || "",
+                              rating: item.rating || 5,
+                              display_order: item.display_order || 0,
+                              active: item.active !== false,
+                            });
+                          }}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className={uiSmallDangerBtn}
+                          onClick={async () => {
+                            try {
+                              await deleteSimple(
+                                "testimonials",
+                                item.id,
+                                loadTestimonials,
+                              );
+                            } catch (error) {
+                              setStatusMessage(error.message);
+                            }
+                          }}
+                        >
+                          Delete
+                        </button>
                       </div>
                     </div>
-                    <p className="mt-3 whitespace-pre-wrap">
-                      {message.message}
-                    </p>
-                  </article>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {tab === "timeline" && (
+              <section className="space-y-4 bg-background/40 border border-border/60 rounded-2xl p-5">
+                <form
+                  className="grid grid-cols-1 md:grid-cols-2 gap-3"
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    try {
+                      await saveSimple(
+                        "timeline",
+                        editingTimelineId,
+                        {
+                          year: timelineForm.year,
+                          title: timelineForm.title,
+                          company: timelineForm.company,
+                          description: timelineForm.description,
+                          type: timelineForm.type,
+                          display_order:
+                            Number(timelineForm.display_order) || 0,
+                        },
+                        () => {
+                          setEditingTimelineId(null);
+                          setTimelineForm({
+                            year: "",
+                            title: "",
+                            company: "",
+                            description: "",
+                            type: "work",
+                            display_order: 0,
+                          });
+                        },
+                        loadTimeline,
+                      );
+                    } catch (error) {
+                      setStatusMessage(
+                        error.message || "Failed to save timeline item.",
+                      );
+                    }
+                  }}
+                >
+                  <input
+                    className={uiInput}
+                    placeholder="Year"
+                    value={timelineForm.year}
+                    onChange={(e) =>
+                      setTimelineForm((p) => ({ ...p, year: e.target.value }))
+                    }
+                  />
+                  <input
+                    className={uiInput}
+                    placeholder="Title"
+                    value={timelineForm.title}
+                    onChange={(e) =>
+                      setTimelineForm((p) => ({ ...p, title: e.target.value }))
+                    }
+                    required
+                  />
+                  <input
+                    className={uiInput}
+                    placeholder="Company"
+                    value={timelineForm.company}
+                    onChange={(e) =>
+                      setTimelineForm((p) => ({
+                        ...p,
+                        company: e.target.value,
+                      }))
+                    }
+                  />
+                  <select
+                    className={uiInput}
+                    value={timelineForm.type}
+                    onChange={(e) =>
+                      setTimelineForm((p) => ({ ...p, type: e.target.value }))
+                    }
+                  >
+                    <option value="work">work</option>
+                    <option value="education">education</option>
+                  </select>
+                  <textarea
+                    className={`md:col-span-2 ${uiInput}`}
+                    placeholder="Description"
+                    rows={3}
+                    value={timelineForm.description}
+                    onChange={(e) =>
+                      setTimelineForm((p) => ({
+                        ...p,
+                        description: e.target.value,
+                      }))
+                    }
+                  />
+                  <button className={uiPrimaryBtn} type="submit">
+                    {editingTimelineId ? "Update" : "Add"}
+                  </button>
+                </form>
+                {timeline.map((item) => (
+                  <div
+                    key={item.id}
+                    className="border border-border rounded-lg p-3 flex justify-between gap-3"
+                  >
+                    <div>
+                      <p className="font-semibold">{item.title}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {item.year} - {item.type}
+                      </p>
+                    </div>
+                    <div className="space-x-2">
+                      <button
+                        className={uiSmallBtn}
+                        onClick={() => {
+                          setEditingTimelineId(item.id);
+                          setTimelineForm({
+                            year: item.year || "",
+                            title: item.title || "",
+                            company: item.company || "",
+                            description: item.description || "",
+                            type: item.type || "work",
+                            display_order: item.display_order || 0,
+                          });
+                        }}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className={uiSmallDangerBtn}
+                        onClick={async () => {
+                          try {
+                            await deleteSimple(
+                              "timeline",
+                              item.id,
+                              loadTimeline,
+                            );
+                          } catch (error) {
+                            setStatusMessage(error.message);
+                          }
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
                 ))}
-              </div>
+              </section>
+            )}
+
+            {tab === "skills" && (
+              <section className="space-y-4 bg-background/40 border border-border/60 rounded-2xl p-5">
+                <form
+                  className="grid grid-cols-1 md:grid-cols-2 gap-3"
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    try {
+                      await saveSimple(
+                        "skills",
+                        editingSkillId,
+                        {
+                          name: skillForm.name,
+                          category: skillForm.category,
+                          proficiency: Number(skillForm.proficiency) || 80,
+                          description: skillForm.description,
+                          display_order: Number(skillForm.display_order) || 0,
+                        },
+                        () => {
+                          setEditingSkillId(null);
+                          setSkillForm({
+                            name: "",
+                            category: "",
+                            proficiency: 80,
+                            description: "",
+                            display_order: 0,
+                          });
+                        },
+                        loadSkills,
+                      );
+                    } catch (error) {
+                      setStatusMessage(
+                        error.message || "Failed to save skill.",
+                      );
+                    }
+                  }}
+                >
+                  <input
+                    className={uiInput}
+                    placeholder="Name"
+                    value={skillForm.name}
+                    onChange={(e) =>
+                      setSkillForm((p) => ({ ...p, name: e.target.value }))
+                    }
+                    required
+                  />
+                  <input
+                    className={uiInput}
+                    placeholder="Category"
+                    value={skillForm.category}
+                    onChange={(e) =>
+                      setSkillForm((p) => ({ ...p, category: e.target.value }))
+                    }
+                  />
+                  <input
+                    className={uiInput}
+                    type="number"
+                    placeholder="Proficiency"
+                    value={skillForm.proficiency}
+                    onChange={(e) =>
+                      setSkillForm((p) => ({
+                        ...p,
+                        proficiency: e.target.value,
+                      }))
+                    }
+                  />
+                  <input
+                    className={uiInput}
+                    type="number"
+                    placeholder="Display order"
+                    value={skillForm.display_order}
+                    onChange={(e) =>
+                      setSkillForm((p) => ({
+                        ...p,
+                        display_order: e.target.value,
+                      }))
+                    }
+                  />
+                  <textarea
+                    className={`md:col-span-2 ${uiInput}`}
+                    placeholder="Description"
+                    rows={3}
+                    value={skillForm.description}
+                    onChange={(e) =>
+                      setSkillForm((p) => ({
+                        ...p,
+                        description: e.target.value,
+                      }))
+                    }
+                  />
+                  <button className={uiPrimaryBtn} type="submit">
+                    {editingSkillId ? "Update" : "Add"}
+                  </button>
+                </form>
+                {skills.map((item) => (
+                  <div
+                    key={item.id}
+                    className="border border-border rounded-lg p-3 flex justify-between gap-3"
+                  >
+                    <div>
+                      <p className="font-semibold">{item.name}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {item.category} - {item.proficiency}%
+                      </p>
+                    </div>
+                    <div className="space-x-2">
+                      <button
+                        className={uiSmallBtn}
+                        onClick={() => {
+                          setEditingSkillId(item.id);
+                          setSkillForm({
+                            name: item.name || "",
+                            category: item.category || "",
+                            proficiency: item.proficiency || 80,
+                            description: item.description || "",
+                            display_order: item.display_order || 0,
+                          });
+                        }}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className={uiSmallDangerBtn}
+                        onClick={async () => {
+                          try {
+                            await deleteSimple("skills", item.id, loadSkills);
+                          } catch (error) {
+                            setStatusMessage(error.message);
+                          }
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </section>
+            )}
+
+            {tab === "services" && (
+              <section className="space-y-4 bg-background/40 border border-border/60 rounded-2xl p-5">
+                <form
+                  className="grid grid-cols-1 md:grid-cols-2 gap-3"
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    try {
+                      await saveSimple(
+                        "services",
+                        editingServiceId,
+                        {
+                          title: serviceForm.title,
+                          description: serviceForm.description,
+                          icon: serviceForm.icon,
+                          display_order: Number(serviceForm.display_order) || 0,
+                        },
+                        () => {
+                          setEditingServiceId(null);
+                          setServiceForm({
+                            title: "",
+                            description: "",
+                            icon: "Code",
+                            display_order: 0,
+                          });
+                        },
+                        loadServices,
+                      );
+                    } catch (error) {
+                      setStatusMessage(
+                        error.message || "Failed to save service.",
+                      );
+                    }
+                  }}
+                >
+                  <input
+                    className={uiInput}
+                    placeholder="Title"
+                    value={serviceForm.title}
+                    onChange={(e) =>
+                      setServiceForm((p) => ({ ...p, title: e.target.value }))
+                    }
+                    required
+                  />
+                  <input
+                    className={uiInput}
+                    placeholder="Icon (Code, Palette, Zap...)"
+                    value={serviceForm.icon}
+                    onChange={(e) =>
+                      setServiceForm((p) => ({ ...p, icon: e.target.value }))
+                    }
+                  />
+                  <textarea
+                    className={`md:col-span-2 ${uiInput}`}
+                    placeholder="Description"
+                    rows={3}
+                    value={serviceForm.description}
+                    onChange={(e) =>
+                      setServiceForm((p) => ({
+                        ...p,
+                        description: e.target.value,
+                      }))
+                    }
+                  />
+                  <button className={uiPrimaryBtn} type="submit">
+                    {editingServiceId ? "Update" : "Add"}
+                  </button>
+                </form>
+                {services.map((item) => (
+                  <div
+                    key={item.id}
+                    className="border border-border rounded-lg p-3 flex justify-between gap-3"
+                  >
+                    <div>
+                      <p className="font-semibold">{item.title}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {item.icon}
+                      </p>
+                    </div>
+                    <div className="space-x-2">
+                      <button
+                        className={uiSmallBtn}
+                        onClick={() => {
+                          setEditingServiceId(item.id);
+                          setServiceForm({
+                            title: item.title || "",
+                            description: item.description || "",
+                            icon: item.icon || "Code",
+                            display_order: item.display_order || 0,
+                          });
+                        }}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className={uiSmallDangerBtn}
+                        onClick={async () => {
+                          try {
+                            await deleteSimple(
+                              "services",
+                              item.id,
+                              loadServices,
+                            );
+                          } catch (error) {
+                            setStatusMessage(error.message);
+                          }
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </section>
+            )}
+
+            {tab === "analytics" && (
+              <section className="space-y-6">
+                <div className="bg-background/40 border border-border/60 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <h3 className="text-lg font-semibold">
+                      Analytics Overview
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      Traffic data from page views and visitor sessions.
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <select
+                      value={analyticsRangeDays}
+                      onChange={(e) =>
+                        setAnalyticsRangeDays(Number(e.target.value))
+                      }
+                      className={uiSelect}
+                    >
+                      <option value={7}>Last 7 days</option>
+                      <option value={30}>Last 30 days</option>
+                      <option value={90}>Last 90 days</option>
+                    </select>
+                    <button
+                      type="button"
+                      onClick={loadAnalytics}
+                      className="px-3 py-2 rounded-lg border border-border bg-background hover:bg-card inline-flex items-center gap-2 text-sm"
+                    >
+                      <RefreshCw className="w-4 h-4" />
+                      Refresh
+                    </button>
+                  </div>
+                </div>
+
+                {analyticsError && (
+                  <div className="rounded-lg border border-red-400/60 bg-red-500/10 p-3 text-sm text-red-200">
+                    {analyticsError}
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="bg-background/40 border border-border/60 rounded-2xl p-4">
+                    <p className="text-muted-foreground text-sm">Total Views</p>
+                    <p className="text-3xl font-bold">{totalViews}</p>
+                  </div>
+                  <div className="bg-background/40 border border-border/60 rounded-2xl p-4">
+                    <p className="text-muted-foreground text-sm">
+                      Unique Visitors
+                    </p>
+                    <p className="text-3xl font-bold">{uniqueVisitors}</p>
+                  </div>
+                  <div className="bg-background/40 border border-border/60 rounded-2xl p-4">
+                    <p className="text-muted-foreground text-sm">
+                      Live Visitors (5m)
+                    </p>
+                    <p className="text-3xl font-bold">{liveVisitors}</p>
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {analyticsLastUpdated
+                    ? `Last updated: ${new Date(analyticsLastUpdated).toLocaleString()}`
+                    : "Last updated: -"}
+                </p>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <div className="bg-background/40 border border-border/60 rounded-2xl p-4 h-80">
+                    <h3 className="font-semibold mb-3">Views Trend</h3>
+                    {analyticsLoading ? (
+                      <p className="text-muted-foreground">Loading chart...</p>
+                    ) : dailyViews.length === 0 ? (
+                      <p className="text-muted-foreground">
+                        No page view data in selected range.
+                      </p>
+                    ) : (
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={dailyViews}>
+                          <CartesianGrid
+                            strokeDasharray="3 3"
+                            stroke="rgba(148,163,184,0.2)"
+                          />
+                          <XAxis dataKey="label" />
+                          <YAxis allowDecimals={false} />
+                          <Tooltip
+                            contentStyle={{
+                              background: "#0f172a",
+                              border: "1px solid rgba(148,163,184,0.3)",
+                              borderRadius: "8px",
+                            }}
+                          />
+                          <Line
+                            type="monotone"
+                            dataKey="views"
+                            stroke="#8b7bff"
+                            strokeWidth={3}
+                            dot={{ r: 3, fill: "#8b7bff" }}
+                          />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    )}
+                  </div>
+                  <div className="bg-background/40 border border-border/60 rounded-2xl p-4 h-80">
+                    <h3 className="font-semibold mb-3">Top Pages</h3>
+                    {analyticsLoading ? (
+                      <p className="text-muted-foreground">Loading chart...</p>
+                    ) : topPages.length === 0 ? (
+                      <p className="text-muted-foreground">
+                        No top pages data in selected range.
+                      </p>
+                    ) : (
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={topPages}>
+                          <CartesianGrid
+                            strokeDasharray="3 3"
+                            stroke="rgba(148,163,184,0.2)"
+                          />
+                          <XAxis
+                            dataKey="path"
+                            tickFormatter={(value) =>
+                              value.length > 18
+                                ? `${value.slice(0, 18)}...`
+                                : value
+                            }
+                          />
+                          <YAxis allowDecimals={false} />
+                          <Tooltip
+                            contentStyle={{
+                              background: "#0f172a",
+                              border: "1px solid rgba(148,163,184,0.3)",
+                              borderRadius: "8px",
+                            }}
+                          />
+                          <Bar
+                            dataKey="views"
+                            fill="#38bdf8"
+                            radius={[6, 6, 0, 0]}
+                          />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    )}
+                  </div>
+                </div>
+              </section>
+            )}
+
+            {tab === "messages" && (
+              <section className="bg-background/40 border border-border/60 rounded-2xl p-4">
+                {messageLoading ? (
+                  <p className="text-muted-foreground">Loading messages...</p>
+                ) : messages.length === 0 ? (
+                  <p className="text-muted-foreground">No messages yet.</p>
+                ) : (
+                  <div className="space-y-4">
+                    {messages.map((message) => (
+                      <article
+                        key={message.id}
+                        className={`border rounded-lg p-4 ${
+                          message.read ? "border-border" : "border-primary/40"
+                        }`}
+                      >
+                        <div className="flex justify-between gap-3">
+                          <div>
+                            <h4 className="font-semibold">
+                              {message.name || "Unknown"}
+                            </h4>
+                            <p className="text-sm text-muted-foreground">
+                              {message.email}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-xs text-muted-foreground">
+                              {new Date(message.created_at).toLocaleString()}
+                            </p>
+                            {!message.read && (
+                              <button
+                                onClick={() => markMessageRead(message.id)}
+                                className={uiSmallBtn}
+                              >
+                                Mark read
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                        <p className="mt-3 whitespace-pre-wrap">
+                          {message.message}
+                        </p>
+                      </article>
+                    ))}
+                  </div>
+                )}
+              </section>
             )}
           </section>
-        )}
+        </main>
       </div>
     </div>
   );
