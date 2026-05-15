@@ -25,6 +25,8 @@ import kumari from "./assets/portfolio/kumari.png";
 import Enimto from "./assets/portfolio/enimto.png";
 import SawariExpertImage from "./assets/portfolio/sawari.png";
 import FotosFolioImage from "./assets/portfolio/fotosfolio.png";
+import ZipItImage from "./assets/portfolio/zipit.png";
+import CreatopediaImage from "./assets/portfolio/creatopedia.png";
 
 // Real Data
 const projects = [
@@ -47,15 +49,6 @@ const projects = [
     featured: true,
   },
   {
-    title: "Kumari Bank",
-    description:
-      "Official website for Kumari Bank Limited, featuring secure banking services, account management, and financial tools.",
-    image: kumari,
-    technologies: ["React", "Banking API", "Security"],
-    demo: "https://www.kumaribank.com/en/personal-banking",
-    featured: true,
-  },
-  {
     title: "Abroad Institute",
     description:
       "Educational consultancy platform helping students pursue studies abroad with course finder and application tracking.",
@@ -65,13 +58,48 @@ const projects = [
     featured: true,
   },
   {
+    title: "ZipIt",
+    description:
+      "A high-performance NPM package and web utility to zip files efficiently in the browser. Supports large file streaming and customizable compression.",
+    image: ZipItImage,
+    technologies: ["React", "TypeScript", "NPM", "Streams API"],
+    demo: "https://www.npmjs.com/package/@khatiwadaprashant/zipit-react",
+    featured: true,
+  },
+  {
+    title: "Creatopedia",
+    description:
+      "A premium SaaS platform for AI creators to host, manage, and monetize prompt libraries. Features dynamic subdomain routing, real-time analytics, and a sophisticated multi-tenant architecture.",
+    image: CreatopediaImage,
+    technologies: ["Next.js", "React", "Tailwind CSS", "Supabase"],
+    demo: "https://creatopedia.tech/",
+    featured: true,
+  },
+  {
+    title: "Kumari Bank",
+    description:
+      "Official website for Kumari Bank Limited, featuring secure banking services, account management, and financial tools.",
+    image: kumari,
+    technologies: ["React", "Banking API", "Security"],
+    demo: "https://www.kumaribank.com/en/personal-banking",
+    featured: true,
+  },
+  {
+    title: "E-nimto",
+    description: "Digital invitation platform for events and celebrations.",
+    image: Enimto,
+    technologies: ["React", "Firebase", "Social"],
+    demo: "https://enimto.com/en",
+    featured: false,
+  },
+  {
     title: "Pacific Regional Bank",
     description:
       "Digital banking platform for Pacific Regional Bank offering online account opening and transaction services.",
     image: PRB,
     technologies: ["React", "FinTech", "Secure Auth"],
     demo: "https://pacificbank.peacenepal.com",
-    featured: true,
+    featured: false,
   },
   {
     title: "Wealth Pandit",
@@ -80,7 +108,7 @@ const projects = [
     image: WP,
     technologies: ["React", "Charts.js", "Finance"],
     demo: "https://uat.wealthpandit.com",
-    featured: true,
+    featured: false,
   },
 
   {
@@ -92,18 +120,11 @@ const projects = [
     // github: "https://github.com/Prashant8Khatiwada/youtube-app",
     demo: "https://p-youtube-clone.netlify.app",
   },
-  {
-    title: "E-nimto",
-    description: "Digital invitation platform for events and celebrations.",
-    image: Enimto,
-    technologies: ["React", "Firebase", "Social"],
-    demo: "https://enimto.com/en",
-  },
 ];
 
 const experience = [
   {
-    date: "Jan 2025 – Sept 2025",
+    date: "Jan 2025 – Current",
     title: "Mid-level Developer",
     company: "Blueneontech",
     description:
@@ -226,15 +247,16 @@ const skills = [
   },
 ];
 
+const experienceYears = new Date().getFullYear() - 2022;
+
 const stats = [
-  { value: "3", suffix: "+", label: "Years Experience" },
+  { value: experienceYears.toString(), suffix: "+", label: "Years Experience" },
   { value: "10", suffix: "+", label: "Projects Completed" },
   { value: "20", suffix: "+", label: "Happy Clients" },
   { value: "10", suffix: "+", label: "Technologies" },
 ];
 
 function App() {
-  const [showAllProjects, setShowAllProjects] = useState(false);
   const [activeTab, setActiveTab] = useState("featured");
 
   // Filter projects based on active tab
@@ -242,12 +264,7 @@ function App() {
     activeTab === "featured" ? projects.filter((p) => p.featured) : projects;
 
   // Determine which projects to display
-  const displayedProjects =
-    activeTab === "all"
-      ? projects // Always show all projects when "All Projects" is selected
-      : showAllProjects
-      ? filteredProjects // Show all filtered projects
-      : filteredProjects.slice(0, 6); // Show first 6 filtered projects
+  const displayedProjects = filteredProjects;
 
   return (
     <ThemeProvider>
@@ -296,13 +313,12 @@ function App() {
                   <button
                     onClick={() => {
                       setActiveTab("featured");
-                      setShowAllProjects(false);
                     }}
                     className={cn(
                       "px-6 py-2 rounded-lg text-sm font-medium transition-all",
                       activeTab === "featured"
                         ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
-                        : "bg-card text-muted-foreground border border-border hover:border-primary hover:bg-primary/5"
+                        : "bg-card text-muted-foreground border border-border hover:border-primary hover:bg-primary/5",
                     )}
                   >
                     Featured
@@ -310,13 +326,12 @@ function App() {
                   <button
                     onClick={() => {
                       setActiveTab("all");
-                      setShowAllProjects(false);
                     }}
                     className={cn(
                       "px-6 py-2 rounded-lg text-sm font-medium transition-all",
                       activeTab === "all"
                         ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
-                        : "bg-card text-muted-foreground border border-border hover:border-primary hover:bg-primary/5"
+                        : "bg-card text-muted-foreground border border-border hover:border-primary hover:bg-primary/5",
                     )}
                   >
                     All Projects
@@ -325,39 +340,19 @@ function App() {
               </motion.div>
 
               <motion.div
+                key={activeTab}
                 variants={staggerContainer}
                 initial="initial"
                 whileInView="animate"
-                viewport={{ once: true, margin: "-100px" }}
+                viewport={{ once: true, margin: "0px" }}
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
               >
                 {displayedProjects.map((project, index) => (
-                  <motion.div key={index} variants={staggerItem}>
+                  <motion.div key={project.title} variants={staggerItem} layout>
                     <ProjectCard project={project} />
                   </motion.div>
                 ))}
               </motion.div>
-
-              {activeTab !== "all" && filteredProjects.length > 6 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  className="text-center mt-12"
-                >
-                  <button
-                    onClick={() => setShowAllProjects(!showAllProjects)}
-                    className={cn(
-                      "px-8 py-3 rounded-lg font-medium transition-all hover:scale-105",
-                      showAllProjects
-                        ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20"
-                        : "bg-card text-foreground border-2 border-border hover:border-primary hover:bg-primary/5"
-                    )}
-                  >
-                    {showAllProjects ? "Show Less" : "View More Projects"}
-                  </button>
-                </motion.div>
-              )}
             </div>
           </section>
 
