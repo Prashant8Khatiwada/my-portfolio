@@ -484,7 +484,7 @@ export default function Admin() {
                 markMessageRead={handleMarkMessageRead}
               />
             )}
-          </section>
+          </div>
         </main>
       </div>
     </div>
