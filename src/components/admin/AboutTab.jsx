@@ -15,16 +15,19 @@ export default function AboutTab({ profile, saveProfile, showToast, projectsCoun
   const [showJson, setShowJson] = useState(false);
 
   useEffect(() => {
-    if (profile) setForm({
-      about_title: profile.about_title || "",
-      about_subtitle: profile.about_subtitle || "",
-      about_description_1: profile.about_description_1 || "",
-      about_description_2: profile.about_description_2 || "",
-      stats_experience: profile.stats_experience || "",
-      stats_projects: profile.stats_projects || "",
-      stats_clients: profile.stats_clients || "",
-      stats_technologies: profile.stats_technologies || "",
-    });
+    if (profile) {
+      const isValidDate = profile.stats_experience && profile.stats_experience.includes("-");
+      setForm({
+        about_title: profile.about_title || "",
+        about_subtitle: profile.about_subtitle || "",
+        about_description_1: profile.about_description_1 || "",
+        about_description_2: profile.about_description_2 || "",
+        stats_experience: isValidDate ? profile.stats_experience : "",
+        stats_projects: profile.stats_projects || "",
+        stats_clients: profile.stats_clients || "",
+        stats_technologies: profile.stats_technologies || "",
+      });
+    }
   }, [profile]);
 
   const jsonTemplate = {
