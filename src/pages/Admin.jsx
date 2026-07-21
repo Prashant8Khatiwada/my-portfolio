@@ -12,6 +12,8 @@ import TimelineTab from "../components/admin/TimelineTab";
 import SkillsTab from "../components/admin/SkillsTab";
 import ServicesTab from "../components/admin/ServicesTab";
 import MessagesTab from "../components/admin/MessagesTab";
+import HeroTab from "../components/admin/HeroTab";
+import AboutTab from "../components/admin/AboutTab";
 import { LEGACY_DATA } from "./AdminLegacyData";
 
 function formatDateLabel(isoDate) {
@@ -44,6 +46,8 @@ export default function Admin() {
   const [timeline, setTimeline] = useState([]);
   const [skills, setSkills] = useState([]);
   const [services, setServices] = useState([]);
+  
+  const [profile, setProfile] = useState(null);
 
   const [testimonialForm, setTestimonialForm] = useState({
     name: "",
@@ -121,6 +125,8 @@ export default function Admin() {
 
   const tabRouteMap = {
     analytics: "analytics",
+    hero: "hero",
+    about: "about",
     services: "services",
     projects: "projects",
     timeline: "timeline",
@@ -196,6 +202,31 @@ export default function Admin() {
     setMessages(data || []);
     setMessageLoading(false);
   }, []);
+
+  const loadProfile = useCallback(async () => {
+    const { data, error } = await supabase
+      .from("profile")
+      .select("*")
+      .limit(1)
+      .single();
+    if (!error && data) {
+      setProfile(data);
+    }
+  }, []);
+
+  const saveProfile = async (formPayload) => {
+    try {
+      const { error } = await supabase
+        .from("profile")
+        .update(formPayload)
+        .eq("id", profile.id);
+      if (error) throw error;
+      showToast("Profile settings saved successfully!", "success");
+      await loadProfile();
+    } catch (e) {
+      showToast(e.message || "Failed to save profile settings.", "error");
+    }
+  };
 
   const refetchVisitorCount = useCallback(async () => {
     const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
@@ -292,16 +323,6 @@ export default function Admin() {
     }
   }, [analyticsRangeDays, refetchVisitorCount]);
 
-  const refreshAllCms = useCallback(async () => {
-    await Promise.all([
-      loadProjects(),
-      loadTestimonials(),
-      loadTimeline(),
-      loadSkills(),
-      loadServices(),
-    ]);
-  }, [loadProjects, loadTestimonials, loadTimeline, loadSkills, loadServices]);
-
   const resetProjectForm = () => {
     setProjectForm({
       title: "",
@@ -393,7 +414,6 @@ export default function Admin() {
     if (!ok) return;
 
     try {
-      // Import template datasets from local modules
       const { LEGACY_DATA: localData } = await import("./Admin");
 
       await Promise.all([
@@ -412,22 +432,12 @@ export default function Admin() {
         supabase.from("services").insert(localData.services),
       ]);
 
-      const insertErrors = inserts
-        .map((result, index) => ({
-          table: ["projects", "testimonials", "timeline", "skills", "services"][
-            index
-          ],
-          error: result.error,
-        }))
-        .filter((item) => item.error);
+      if (tab === "projects") await loadProjects();
+      if (tab === "testimonials") await loadTestimonials();
+      if (tab === "timeline") await loadTimeline();
+      if (tab === "skills") await loadSkills();
+      if (tab === "services") await loadServices();
 
-      if (insertErrors.length > 0) {
-        throw new Error(
-          `Insert failed for ${insertErrors[0].table}: ${insertErrors[0].error.message}`,
-        );
-      }
-
-      await refreshAllCms();
       showToast("Default template data imported successfully.", "success");
     } catch (error) {
       showToast(error.message || "Template import failed.", "error");
@@ -448,32 +458,49 @@ export default function Admin() {
     window.location.href = "/admin/login";
   };
 
+  // Lazy-load data ONLY for the active tab to optimize API queries
   useEffect(() => {
-    refreshAllCms();
-    loadAnalytics();
-    loadMessages();
-
-    const channel = supabase
-      .channel("visitors")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "visitors" },
-        refetchVisitorCount,
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [refreshAllCms, loadAnalytics, loadMessages, refetchVisitorCount]);
+    if (tab === "projects") loadProjects();
+  }, [tab, loadProjects]);
 
   useEffect(() => {
-    if (tab !== "analytics") return;
-    const interval = setInterval(() => {
+    if (tab === "testimonials") loadTestimonials();
+  }, [tab, loadTestimonials]);
+
+  useEffect(() => {
+    if (tab === "timeline") loadTimeline();
+  }, [tab, loadTimeline]);
+
+  useEffect(() => {
+    if (tab === "skills") loadSkills();
+  }, [tab, loadSkills]);
+
+  useEffect(() => {
+    if (tab === "services") loadServices();
+  }, [tab, loadServices]);
+
+  useEffect(() => {
+    if (tab === "messages") loadMessages();
+  }, [tab, loadMessages]);
+
+  useEffect(() => {
+    if (tab === "hero" || tab === "about") loadProfile();
+  }, [tab, loadProfile]);
+
+  useEffect(() => {
+    if (tab === "analytics") {
       loadAnalytics();
-    }, 60000);
-    return () => clearInterval(interval);
+      const interval = setInterval(() => {
+        loadAnalytics();
+      }, 60000);
+      return () => clearInterval(interval);
+    }
   }, [tab, loadAnalytics]);
+
+  // Keep unread messages count up-to-date in sidebar
+  useEffect(() => {
+    loadMessages();
+  }, [loadMessages]);
 
   useEffect(() => {
     if (location.pathname === "/admin" || location.pathname === "/admin/") {
@@ -565,6 +592,28 @@ export default function Admin() {
                 dailyViews={dailyViews}
                 topPages={topPages}
                 analyticsLastUpdated={analyticsLastUpdated}
+              />
+            )}
+
+            {tab === "hero" && (
+              <HeroTab
+                profile={profile}
+                saveProfile={saveProfile}
+                showToast={showToast}
+                uiInput={uiInput}
+                uiTextarea={uiTextarea}
+                uiPrimaryBtn={uiPrimaryBtn}
+              />
+            )}
+
+            {tab === "about" && (
+              <AboutTab
+                profile={profile}
+                saveProfile={saveProfile}
+                showToast={showToast}
+                uiInput={uiInput}
+                uiTextarea={uiTextarea}
+                uiPrimaryBtn={uiPrimaryBtn}
               />
             )}
 

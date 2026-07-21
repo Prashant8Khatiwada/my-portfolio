@@ -6,7 +6,15 @@ import ME from "../../assets/me.png";
 import DotMorphButton from "./DotMorphButton";
 import Magnetic from "./Magnetic";
 
-export default function Hero() {
+export default function Hero({ profile }) {
+  const name = profile?.name || "Prashant Khatiwada";
+  const title = profile?.title || "Frontend Developer";
+  const description = profile?.description || "I have a strong curiosity and creative mindset that drives me to find innovative solutions. Passionate React developer skilled at creating polished and effective web solutions.";
+  const availability = profile?.availability_status || "Available for freelance work";
+  const github = profile?.github_url || "https://github.com/Prashant8Khatiwada";
+  const linkedin = profile?.linkedin_url || "https://www.linkedin.com/in/prashant-khatiwada-a0b99a184/";
+  const email = profile?.email || "prashantkhatiwada21@gmail.com";
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-background pt-20 md:pt-0">
       {/* Animated background elements */}
@@ -18,7 +26,7 @@ export default function Hero() {
           <div className="flex-1 text-center md:text-left">
             {/* Badge */}
             <motion.div {...fadeIn} className="inline-block mb-8">
-              <DotMorphButton label="Available for freelance work" />
+              <DotMorphButton label={availability} />
             </motion.div>
 
             {/* Main heading */}
@@ -27,10 +35,10 @@ export default function Hero() {
                 Hello I'm
               </h2>
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-4 text-foreground">
-                Prashant Khatiwada
+                {name}
               </h1>
               <h3 className="text-2xl md:text-3xl font-semibold text-primary mb-6">
-                Frontend Developer
+                {title}
               </h3>
             </motion.div>
 
@@ -39,9 +47,7 @@ export default function Hero() {
               transition={{ delay: 0.2 }}
               className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto md:mx-0"
             >
-              I have a strong curiosity and creative mindset that drives me to
-              find innovative solutions. Passionate React developer skilled at
-              creating polished and effective web solutions.
+              {description}
             </motion.p>
 
             {/* CTA Buttons */}
@@ -71,12 +77,12 @@ export default function Hero() {
               className="flex gap-4 justify-center md:justify-start"
             >
               {[
-                { icon: Github, href: "https://github.com/Prashant8Khatiwada" },
+                { icon: Github, href: github },
                 {
                   icon: Linkedin,
-                  href: "https://www.linkedin.com/in/prashant-khatiwada-a0b99a184/",
+                  href: linkedin,
                 },
-                { icon: Mail, href: "mailto:prashantkhatiwada21@gmail.com" },
+                { icon: Mail, href: email.startsWith("mailto:") ? email : `mailto:${email}` },
               ].map((social, index) => {
                 const Icon = social.icon;
                 return (

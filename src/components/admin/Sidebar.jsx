@@ -7,6 +7,8 @@ import {
   MessageSquare,
   Sparkles,
   Wrench,
+  Layers,
+  User,
 } from "lucide-react";
 
 export default function Sidebar({ tab, navigate, unreadCount, logout }) {
@@ -17,6 +19,20 @@ export default function Sidebar({ tab, navigate, unreadCount, logout }) {
       icon: BarChart3,
       subtitle: "Traffic & metrics",
       route: "analytics",
+    },
+    {
+      key: "hero",
+      label: "Hero Section",
+      icon: Sparkles,
+      subtitle: "Dynamic landing intro",
+      route: "hero",
+    },
+    {
+      key: "about",
+      label: "About Us",
+      icon: User,
+      subtitle: "Profile biography & stats",
+      route: "about",
     },
     {
       key: "services",
@@ -42,7 +58,7 @@ export default function Sidebar({ tab, navigate, unreadCount, logout }) {
     {
       key: "skills",
       label: "Skills",
-      icon: Sparkles,
+      icon: Layers,
       subtitle: "Core technologies",
       route: "skills",
     },

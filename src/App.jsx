@@ -16,16 +16,10 @@ import { useAnalytics } from "./hooks/useAnalytics";
 import { useProjects } from "./hooks/useProjects";
 import { useTimeline } from "./hooks/useTimeline";
 import { useSkills } from "./hooks/useSkills";
+import { useProfile } from "./hooks/useProfile";
 import { motion } from "framer-motion";
 import { staggerContainer } from "./lib/animations";
 import { cn } from "./lib/utils";
-
-const stats = [
-  { value: "3", suffix: "+", label: "Years Experience" },
-  { value: "10", suffix: "+", label: "Projects Completed" },
-  { value: "20", suffix: "+", label: "Happy Clients" },
-  { value: "10", suffix: "+", label: "Technologies" },
-];
 
 const EXPERIENCE_TECH_STACK = {
   "Mid-level Developer": [
@@ -54,8 +48,16 @@ function App() {
   const { projects, loading: projectsLoading } = useProjects();
   const { timeline, loading: timelineLoading } = useTimeline();
   const { skills, loading: skillsLoading } = useSkills();
+  const { profile } = useProfile();
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [activeTab, setActiveTab] = useState("featured");
+
+  const stats = [
+    { value: profile?.stats_experience || "3", suffix: "+", label: "Years Experience" },
+    { value: profile?.stats_projects || "10", suffix: "+", label: "Projects Completed" },
+    { value: profile?.stats_clients || "20", suffix: "+", label: "Happy Clients" },
+    { value: profile?.stats_technologies || "10", suffix: "+", label: "Technologies" },
+  ];
 
   const mappedProjects = projects.map((project) => ({
     id: project.id,
@@ -117,7 +119,7 @@ function App() {
         <main role="main" aria-label="Main content">
           {/* Hero Section */}
           <section id="home" aria-labelledby="hero-heading">
-            <Hero />
+            <Hero profile={profile} />
           </section>
 
           {/* Stats Section */}
@@ -128,7 +130,7 @@ function App() {
           </section>
 
           {/* About Section */}
-          <About />
+          <About profile={profile} />
 
           {/* Services Section */}
           <Services />
