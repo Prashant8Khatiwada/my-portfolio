@@ -52,9 +52,19 @@ function App() {
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [activeTab, setActiveTab] = useState("featured");
 
+  const calculatedExperience = (() => {
+    const rawVal = profile?.stats_experience;
+    if (!rawVal) return "3";
+    const startDate = new Date(rawVal);
+    if (isNaN(startDate.getTime())) return rawVal;
+    const diffMs = Date.now() - startDate.getTime();
+    const years = Math.floor(diffMs / (365.25 * 24 * 60 * 60 * 1000));
+    return String(Math.max(0, years));
+  })();
+
   const stats = [
-    { value: profile?.stats_experience || "3", suffix: "+", label: "Years Experience" },
-    { value: profile?.stats_projects || "10", suffix: "+", label: "Projects Completed" },
+    { value: calculatedExperience, suffix: "+", label: "Years Experience" },
+    { value: projectsLoading ? (profile?.stats_projects || "0") : String(projects.length), suffix: "+", label: "Projects Completed" },
     { value: profile?.stats_clients || "20", suffix: "+", label: "Happy Clients" },
     { value: profile?.stats_technologies || "10", suffix: "+", label: "Technologies" },
   ];

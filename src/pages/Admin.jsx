@@ -258,6 +258,7 @@ export default function Admin() {
                 profile={profile}
                 saveProfile={(payload) => saveProfileMutation.mutate({ id: profile?.id, payload })}
                 showToast={showToast}
+                projectsCount={projects.length}
               />
             )}
 

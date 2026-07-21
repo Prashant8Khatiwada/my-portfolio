@@ -5,7 +5,7 @@ import {
   JsonAssistantPanel, AdminPanelHeader,
 } from "./adminUI.jsx";
 
-export default function AboutTab({ profile, saveProfile, showToast }) {
+export default function AboutTab({ profile, saveProfile, showToast, projectsCount = 0 }) {
   const [form, setForm] = useState({
     about_title: "", about_subtitle: "",
     about_description_1: "", about_description_2: "",
@@ -30,7 +30,7 @@ export default function AboutTab({ profile, saveProfile, showToast }) {
   const jsonTemplate = {
     about_title: "About Me", about_subtitle: "Get To Know Me",
     about_description_1: "Bio paragraph 1...", about_description_2: "Bio paragraph 2...",
-    stats_experience: "3", stats_projects: "10", stats_clients: "20", stats_technologies: "10",
+    stats_experience: "2023-01-01", stats_projects: "10", stats_clients: "20", stats_technologies: "10",
   };
 
   const applyJson = () => {
@@ -42,9 +42,17 @@ export default function AboutTab({ profile, saveProfile, showToast }) {
     } catch { showToast("Invalid JSON format.", "error"); }
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    saveProfile({
+      ...form,
+      stats_projects: String(projectsCount),
+    });
+  };
+
   const statsFields = [
-    { key: "stats_experience", label: "Years Experience" },
-    { key: "stats_projects", label: "Projects Completed" },
+    { key: "stats_experience", label: "Career Start Date", type: "date" },
+    { key: "stats_projects", label: "Projects Completed (Auto)", disabled: true, value: projectsCount },
     { key: "stats_clients", label: "Happy Clients" },
     { key: "stats_technologies", label: "Technologies" },
   ];
@@ -65,7 +73,7 @@ export default function AboutTab({ profile, saveProfile, showToast }) {
         }
       />
 
-      <form onSubmit={(e) => { e.preventDefault(); saveProfile(form); }} className="space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-5">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div>
             <label className={adminLabel}>About Title</label>
@@ -89,10 +97,17 @@ export default function AboutTab({ profile, saveProfile, showToast }) {
         <div className="border-t border-white/5 pt-5">
           <p className="text-xs font-bold uppercase tracking-widest text-white/30 mb-4">Stats Counters</p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {statsFields.map(({ key, label }) => (
+            {statsFields.map(({ key, label, type, disabled, value }) => (
               <div key={key}>
                 <label className={adminLabel}>{label}</label>
-                <input className={adminInput} placeholder="0" value={form[key]} onChange={(e) => setForm(f => ({ ...f, [key]: e.target.value }))} />
+                <input
+                  type={type || "text"}
+                  disabled={disabled}
+                  className={`${adminInput} ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+                  placeholder="0"
+                  value={value !== undefined ? value : form[key]}
+                  onChange={(e) => setForm(f => ({ ...f, [key]: e.target.value }))}
+                />
               </div>
             ))}
           </div>
