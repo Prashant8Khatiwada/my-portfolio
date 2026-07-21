@@ -9,134 +9,85 @@ import {
   Wrench,
   Layers,
   User,
+  LogOut,
+  Shield,
 } from "lucide-react";
 
 export default function Sidebar({ tab, navigate, unreadCount, logout }) {
   const sidebarItems = [
-    {
-      key: "analytics",
-      label: "Analytics",
-      icon: BarChart3,
-      subtitle: "Traffic & metrics",
-      route: "analytics",
-    },
-    {
-      key: "hero",
-      label: "Hero Section",
-      icon: Sparkles,
-      subtitle: "Dynamic landing intro",
-      route: "hero",
-    },
-    {
-      key: "about",
-      label: "About Us",
-      icon: User,
-      subtitle: "Profile biography & stats",
-      route: "about",
-    },
-    {
-      key: "services",
-      label: "Services",
-      icon: Wrench,
-      subtitle: "Service offerings",
-      route: "services",
-    },
-    {
-      key: "projects",
-      label: "Projects",
-      icon: FolderKanban,
-      subtitle: "Case studies & work",
-      route: "projects",
-    },
-    {
-      key: "timeline",
-      label: "Timeline",
-      icon: Briefcase,
-      subtitle: "Professional history",
-      route: "timeline",
-    },
-    {
-      key: "skills",
-      label: "Skills",
-      icon: Layers,
-      subtitle: "Core technologies",
-      route: "skills",
-    },
-    {
-      key: "testimonials",
-      label: "Testimonials",
-      icon: MessageSquare,
-      subtitle: "Client feedback",
-      route: "testimonials",
-    },
-    {
-      key: "messages",
-      label: `Messages (${unreadCount})`,
-      icon: Inbox,
-      subtitle: "Inquiries inbox",
-      route: "messages",
-    },
+    { key: "analytics", label: "Analytics", icon: BarChart3, subtitle: "Traffic & metrics", route: "analytics", color: "text-violet-400" },
+    { key: "hero", label: "Hero Section", icon: Sparkles, subtitle: "Landing intro", route: "hero", color: "text-indigo-400" },
+    { key: "about", label: "About", icon: User, subtitle: "Profile & stats", route: "about", color: "text-sky-400" },
+    { key: "services", label: "Services", icon: Wrench, subtitle: "Offerings", route: "services", color: "text-amber-400" },
+    { key: "projects", label: "Projects", icon: FolderKanban, subtitle: "Case studies", route: "projects", color: "text-emerald-400" },
+    { key: "timeline", label: "Timeline", icon: Briefcase, subtitle: "Work history", route: "timeline", color: "text-orange-400" },
+    { key: "skills", label: "Skills", icon: Layers, subtitle: "Technologies", route: "skills", color: "text-cyan-400" },
+    { key: "testimonials", label: "Testimonials", icon: MessageSquare, subtitle: "Client feedback", route: "testimonials", color: "text-pink-400" },
+    { key: "messages", label: "Messages", icon: Inbox, subtitle: `${unreadCount} unread`, route: "messages", color: "text-rose-400", badge: unreadCount },
   ];
 
   return (
-    <aside className="lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto border-r border-border/40 bg-card/40 backdrop-blur-md p-6 flex flex-col justify-between">
-      <div className="space-y-6">
-        <div className="flex items-center gap-3 px-2">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/25">
-            <Sparkles className="w-5 h-5 text-white" />
+    <aside className="lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto flex flex-col border-r border-white/5 bg-[#0d0d14]">
+      {/* Logo / Brand */}
+      <div className="px-5 py-6 border-b border-white/5">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-violet-500/25 flex-shrink-0">
+            <Shield className="w-4.5 h-4.5 text-white" />
           </div>
           <div>
-            <h1 className="text-lg font-bold tracking-tight">Admin Center</h1>
-            <p className="text-xs text-muted-foreground">Portfolio CMS v2.0</p>
+            <h1 className="text-sm font-bold text-white tracking-tight">Admin Panel</h1>
+            <p className="text-[10px] text-white/35 tracking-widest uppercase font-medium">CMS v2.0</p>
           </div>
         </div>
+      </div>
 
-        <nav className="space-y-1.5">
-          {sidebarItems.map(({ key, label, icon: Icon, subtitle, route }) => (
+      {/* Navigation */}
+      <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+        <p className="px-3 pb-2 text-[9px] uppercase tracking-[0.15em] font-semibold text-white/20">Navigation</p>
+        {sidebarItems.map(({ key, label, icon: Icon, subtitle, route, color, badge }) => {
+          const isActive = tab === key;
+          return (
             <button
               key={key}
               onClick={() => navigate(`/admin/${route}`)}
-              className={`w-full group flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-200 ${
-                tab === key
-                  ? "bg-primary text-primary-foreground shadow-lg shadow-primary/10"
-                  : "hover:bg-card text-muted-foreground hover:text-foreground"
+              className={`w-full group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 relative ${
+                isActive
+                  ? "bg-white/8 text-white"
+                  : "text-white/40 hover:text-white/80 hover:bg-white/4"
               }`}
             >
-              <Icon
-                className={`w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110 ${
-                  tab === key ? "text-primary-foreground" : "text-muted-foreground group-hover:text-foreground"
-                }`}
-              />
-              <div className="text-left">
-                <p className="text-sm font-semibold tracking-tight">{label}</p>
-                <p
-                  className={`text-[10px] ${
-                    tab === key ? "text-primary-foreground/75" : "text-muted-foreground/60"
-                  }`}
-                >
-                  {subtitle}
-                </p>
+              {isActive && (
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-violet-500 rounded-r-full" />
+              )}
+              <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-200 ${
+                isActive ? "bg-violet-500/15" : "bg-transparent group-hover:bg-white/5"
+              }`}>
+                <Icon className={`w-4 h-4 ${isActive ? "text-violet-400" : `${color} opacity-60 group-hover:opacity-100`}`} />
               </div>
+              <div className="text-left flex-1 min-w-0">
+                <p className={`text-sm font-medium leading-tight truncate ${isActive ? "text-white" : ""}`}>{label}</p>
+                <p className={`text-[10px] leading-tight truncate mt-0.5 ${isActive ? "text-white/40" : "text-white/20"}`}>{subtitle}</p>
+              </div>
+              {badge > 0 && (
+                <span className="ml-auto flex-shrink-0 min-w-[18px] h-[18px] text-[10px] font-bold bg-rose-500 text-white rounded-full flex items-center justify-center px-1">
+                  {badge}
+                </span>
+              )}
             </button>
-          ))}
-        </nav>
-      </div>
+          );
+        })}
+      </nav>
 
-      <div className="mt-8 pt-6 border-t border-border/30 space-y-4">
-        <div className="bg-card/60 border border-border/40 rounded-xl p-3.5 flex items-center justify-between">
-          <div>
-            <p className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">
-              Unread Messages
-            </p>
-            <p className="text-2xl font-black mt-0.5">{unreadCount}</p>
-          </div>
-          <Inbox className="w-7 h-7 text-primary/45" />
-        </div>
+      {/* Footer */}
+      <div className="px-3 py-4 border-t border-white/5 space-y-2">
         <button
           onClick={logout}
-          className="w-full py-2.5 rounded-xl border border-red-500/20 text-red-500 hover:bg-red-500/5 font-semibold text-sm transition-all duration-200"
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/35 hover:text-rose-400 hover:bg-rose-500/8 transition-all duration-200 group"
         >
-          Sign Out
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-transparent group-hover:bg-rose-500/10 transition-colors">
+            <LogOut className="w-4 h-4" />
+          </div>
+          <span className="text-sm font-medium">Sign Out</span>
         </button>
       </div>
     </aside>
