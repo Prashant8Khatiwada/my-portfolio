@@ -12,259 +12,112 @@ import About from "./components/mvp/About";
 import Services from "./components/mvp/Services";
 import Testimonials from "./components/mvp/Testimonials";
 import SEO from "./components/mvp/SEO";
+import { useAnalytics } from "./hooks/useAnalytics";
+import { useProjects } from "./hooks/useProjects";
+import { useTimeline } from "./hooks/useTimeline";
+import { useSkills } from "./hooks/useSkills";
+import { useProfile } from "./hooks/useProfile";
 import { motion } from "framer-motion";
-import { staggerContainer, staggerItem } from "./lib/animations";
+import { staggerContainer } from "./lib/animations";
 import { cn } from "./lib/utils";
 
-// Import Project Images
-import WP from "./assets/portfolio/wealthPandit.png";
-import YTClone from "./assets/portfolio/youtube_clone.png";
-import PRB from "./assets/portfolio/pacific.png";
-import Abroad from "./assets/portfolio/abroadInstitute.png";
-import kumari from "./assets/portfolio/kumari.png";
-import Enimto from "./assets/portfolio/enimto.png";
-import SawariExpertImage from "./assets/portfolio/sawari.png";
-import FotosFolioImage from "./assets/portfolio/fotosfolio.png";
-import ZipItImage from "./assets/portfolio/zipit.png";
-import CreatopediaImage from "./assets/portfolio/creatopedia.png";
-
-// Real Data
-const projects = [
-  {
-    title: "FotosFolio",
-    description:
-      "Portfolio platform for photographers and visual artists to showcase high-quality images, manage galleries, and share work with clients.",
-    image: FotosFolioImage, // replace with your imported image variable
-    technologies: ["React", "Next.js", "Cloud Storage"],
-    demo: "https://fotosfolio.com/",
-    featured: true,
-  },
-  {
-    title: "Sawari Expert",
-    description:
-      "Ride-hailing and transport management platform providing seamless booking, driver tracking, and customer support for urban commuters.",
-    image: SawariExpertImage, // replace with your imported image variable
-    technologies: ["React", "Node.js", "Google Maps API"],
-    demo: "https://sawariexpert.com/",
-    featured: true,
-  },
-  {
-    title: "Abroad Institute",
-    description:
-      "Educational consultancy platform helping students pursue studies abroad with course finder and application tracking.",
-    image: Abroad,
-    technologies: ["React", "Node.js", "MongoDB"],
-    demo: "http://abroadinst.com",
-    featured: true,
-  },
-  {
-    title: "ZipIt",
-    description:
-      "A high-performance NPM package and web utility to zip files efficiently in the browser. Supports large file streaming and customizable compression.",
-    image: ZipItImage,
-    technologies: ["React", "TypeScript", "NPM", "Streams API"],
-    demo: "https://www.npmjs.com/package/@khatiwadaprashant/zipit-react",
-    featured: true,
-  },
-  {
-    title: "Creatopedia",
-    description:
-      "A premium SaaS platform for AI creators to host, manage, and monetize prompt libraries. Features dynamic subdomain routing, real-time analytics, and a sophisticated multi-tenant architecture.",
-    image: CreatopediaImage,
-    technologies: ["Next.js", "React", "Tailwind CSS", "Supabase"],
-    demo: "https://creatopedia.tech/",
-    featured: true,
-  },
-  {
-    title: "Kumari Bank",
-    description:
-      "Official website for Kumari Bank Limited, featuring secure banking services, account management, and financial tools.",
-    image: kumari,
-    technologies: ["React", "Banking API", "Security"],
-    demo: "https://www.kumaribank.com/en/personal-banking",
-    featured: true,
-  },
-  {
-    title: "E-nimto",
-    description: "Digital invitation platform for events and celebrations.",
-    image: Enimto,
-    technologies: ["React", "Firebase", "Social"],
-    demo: "https://enimto.com/en",
-    featured: false,
-  },
-  {
-    title: "Pacific Regional Bank",
-    description:
-      "Digital banking platform for Pacific Regional Bank offering online account opening and transaction services.",
-    image: PRB,
-    technologies: ["React", "FinTech", "Secure Auth"],
-    demo: "https://pacificbank.peacenepal.com",
-    featured: false,
-  },
-  {
-    title: "Wealth Pandit",
-    description:
-      "Financial advisory and wealth management platform for personalized investment strategies.",
-    image: WP,
-    technologies: ["React", "Charts.js", "Finance"],
-    demo: "https://uat.wealthpandit.com",
-    featured: false,
-  },
-
-  {
-    title: "Youtube Clone",
-    description:
-      "A functional clone of YouTube built with React, featuring video playback, search, and channel pages.",
-    image: YTClone,
-    technologies: ["React", "YouTube API", "Material UI"],
-    // github: "https://github.com/Prashant8Khatiwada/youtube-app",
-    demo: "https://p-youtube-clone.netlify.app",
-  },
-];
-
-const experience = [
-  {
-    date: "Jan 2025 – Current",
-    title: "Mid-level Developer",
-    company: "Blueneontech",
-    description:
-      "Built Fotosfolio platform with Next.js and TypeScript. Implemented galleries with lazy loading and Cloudinary integration, achieving 45% faster load times. Developed vehicle service booking system with real-time calendar and dashboard.",
-    technologies: [
-      "Next.js",
-      "TypeScript",
-      "Tailwind",
-      "React",
-      "Mantine UI",
-      "Cloudinary",
-    ],
-  },
-  {
-    date: "Jan 2024 – Dec 2024",
-    title: "Junior Developer",
-    company: "Peace Nepal",
-    description:
-      "Developed KYC forms for ADBL and Pacific Regional Bank using React, Formik, and Context API. Led CIVI app development with location mapping (Leaflet) and Firebase storage. Implemented secure API integrations with Yup and Zod validation.",
-    technologies: [
-      "React",
-      "Formik",
-      "Context API",
-      "Leaflet",
-      "Firebase",
-      "Yup",
-      "Zod",
-    ],
-  },
-  {
-    date: "Mar 2023 – Nov 2023",
-    title: "Junior Developer",
-    company: "Lancemeup",
-    description:
-      "Worked on WealthPandit and multiple client projects. Built advanced calendar component with CSS Grid, date-fns, and Google Calendar sync. Optimized frontend performance with incremental updates.",
-    technologies: ["React", "CSS Grid", "date-fns", "Google Calendar API"],
-  },
-  {
-    date: "Dec 2022 – Mar 2023",
-    title: "Frontend Intern",
-    company: "Lancemeup",
-    description:
-      "Built responsive WealthPandit website using React Query for optimized data fetching. Contributed to TickTicketing platform with performance fixes and feature enhancements.",
-    technologies: ["React", "React Query", "Performance Optimization"],
-  },
-];
-
-const skills = [
-  {
-    date: "Frontend",
-    title: "Core Technologies",
-    company: "Expertise",
-    description:
-      "Proficient in modern frontend frameworks and libraries for building scalable, performant web applications.",
-    technologies: [
-      "React.js",
-      "Next.js",
-      "TypeScript",
-      "JavaScript (ES6+)",
-      "HTML5",
-      "CSS3",
-    ],
-  },
-  {
-    date: "State Management",
-    title: "Data Flow",
-    company: "Expertise",
-    description:
-      "Experienced in various state management solutions for complex application architectures.",
-    technologies: ["Redux", "Context API", "Zustand", "React Query"],
-  },
-  {
-    date: "Styling",
-    title: "UI Frameworks",
-    company: "Expertise",
-    description:
-      "Skilled in modern CSS frameworks and component libraries for creating beautiful, responsive interfaces.",
-    technologies: [
-      "Tailwind CSS",
-      "SCSS",
-      "ShadCN",
-      "Mantine UI",
-      "Material UI",
-      "Styled Components",
-    ],
-  },
-  {
-    date: "Backend & DB",
-    title: "Full Stack",
-    company: "Knowledge",
-    description:
-      "Familiar with backend technologies and databases for full-stack development capabilities.",
-    technologies: [
-      "Node.js",
-      "PostgreSQL",
-      "MongoDB",
-      "MySQL",
-      "Prisma",
-      "NestJS",
-      "Firebase",
-    ],
-  },
-  {
-    date: "Cloud & Tools",
-    title: "DevOps",
-    company: "Expertise",
-    description:
-      "Experienced with modern development tools, version control, and cloud deployment platforms.",
-    technologies: [
-      "Git",
-      "GitHub",
-      "Docker",
-      "CI/CD",
-      "Postman",
-      "Swagger",
-      "AWS",
-      "Vercel",
-      "Netlify",
-    ],
-  },
-];
-
-const experienceYears = new Date().getFullYear() - 2022;
-
-const stats = [
-  { value: experienceYears.toString(), suffix: "+", label: "Years Experience" },
-  { value: "10", suffix: "+", label: "Projects Completed" },
-  { value: "20", suffix: "+", label: "Happy Clients" },
-  { value: "10", suffix: "+", label: "Technologies" },
-];
+const EXPERIENCE_TECH_STACK = {
+  "Mid-level Developer": [
+    "Next.js",
+    "TypeScript",
+    "Tailwind",
+    "React",
+    "Mantine UI",
+    "Cloudinary",
+  ],
+  "Junior Developer": [
+    "React",
+    "Formik",
+    "Context API",
+    "Leaflet",
+    "Firebase",
+    "Yup",
+    "Zod",
+  ],
+  "Frontend Developer Intern": ["React", "JavaScript", "CSS", "Git"],
+  "Frontend Intern": ["React Query", "Responsive UI", "Performance"],
+};
 
 function App() {
+  useAnalytics();
+  const { projects, loading: projectsLoading } = useProjects();
+  const { timeline, loading: timelineLoading } = useTimeline();
+  const { skills, loading: skillsLoading } = useSkills();
+  const { profile } = useProfile();
+  const [showAllProjects, setShowAllProjects] = useState(false);
   const [activeTab, setActiveTab] = useState("featured");
+
+  const calculatedExperience = (() => {
+    const rawVal = profile?.stats_experience;
+    if (!rawVal) return "3";
+    const startDate = new Date(rawVal);
+    if (isNaN(startDate.getTime())) return rawVal;
+    const diffMs = Date.now() - startDate.getTime();
+    const years = Math.floor(diffMs / (365.25 * 24 * 60 * 60 * 1000));
+    return String(Math.max(0, years));
+  })();
+
+  const stats = [
+    { value: calculatedExperience, suffix: "+", label: "Years Experience" },
+    { value: projectsLoading ? (profile?.stats_projects || "0") : String(projects.length), suffix: "+", label: "Projects Completed" },
+    { value: profile?.stats_clients || "20", suffix: "+", label: "Happy Clients" },
+    { value: profile?.stats_technologies || "10", suffix: "+", label: "Technologies" },
+  ];
+
+  const mappedProjects = projects.map((project) => ({
+    id: project.id,
+    title: project.title,
+    description: project.description,
+    image: project.image_url,
+    technologies: project.tags || [],
+    github: project.github_url,
+    demo: project.live_url,
+    featured: project.featured,
+  }));
+
+  const experience = timeline
+    .filter((item) => item.type === "work")
+    .map((item) => ({
+      date: item.year,
+      title: item.title,
+      company: item.company,
+      description: item.description,
+      technologies: Array.isArray(item.technologies)
+        ? item.technologies
+        : typeof item.technologies === "string" &&
+            item.technologies.trim().length > 0
+          ? item.technologies
+              .split(",")
+              .map((tech) => tech.trim())
+              .filter(Boolean)
+          : EXPERIENCE_TECH_STACK[item.title] || [],
+    }));
+
+  const skillItems = skills.map((item) => ({
+    date: item.category || "Skill",
+    title: item.name,
+    company: `Proficiency ${item.proficiency ?? 80}%`,
+    description: item.description || "",
+  }));
 
   // Filter projects based on active tab
   const filteredProjects =
-    activeTab === "featured" ? projects.filter((p) => p.featured) : projects;
+    activeTab === "featured"
+      ? mappedProjects.filter((p) => p.featured)
+      : mappedProjects;
 
   // Determine which projects to display
-  const displayedProjects = filteredProjects;
+  const displayedProjects =
+    activeTab === "all"
+      ? mappedProjects // Always show all projects when "All Projects" is selected
+      : showAllProjects
+        ? filteredProjects // Show all filtered projects
+        : filteredProjects.slice(0, 6); // Show first 6 filtered projects
 
   return (
     <ThemeProvider>
@@ -276,7 +129,7 @@ function App() {
         <main role="main" aria-label="Main content">
           {/* Hero Section */}
           <section id="home" aria-labelledby="hero-heading">
-            <Hero />
+            <Hero profile={profile} />
           </section>
 
           {/* Stats Section */}
@@ -287,7 +140,7 @@ function App() {
           </section>
 
           {/* About Section */}
-          <About />
+          <About profile={profile} />
 
           {/* Services Section */}
           <Services />
@@ -347,12 +200,49 @@ function App() {
                 viewport={{ once: true, margin: "0px" }}
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
               >
-                {displayedProjects.map((project, index) => (
-                  <motion.div key={project.title} variants={staggerItem} layout>
-                    <ProjectCard project={project} />
-                  </motion.div>
-                ))}
+                {projectsLoading ? (
+                  <p className="text-muted-foreground">Loading projects...</p>
+                ) : displayedProjects.length === 0 ? (
+                  <p className="text-muted-foreground">
+                    No projects found yet. Import content from admin dashboard.
+                  </p>
+                ) : (
+                  displayedProjects.map((project, index) => (
+                    <motion.div
+                      key={project.id || `${project.title}-${index}`}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 0.35,
+                        delay: Math.min(index * 0.03, 0.2),
+                      }}
+                    >
+                      <ProjectCard project={project} />
+                    </motion.div>
+                  ))
+                )}
               </motion.div>
+
+              {activeTab !== "all" && filteredProjects.length > 6 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  className="text-center mt-12"
+                >
+                  <button
+                    onClick={() => setShowAllProjects(!showAllProjects)}
+                    className={cn(
+                      "px-8 py-3 rounded-lg font-medium transition-all hover:scale-105",
+                      showAllProjects
+                        ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20"
+                        : "bg-card text-foreground border-2 border-border hover:border-primary hover:bg-primary/5",
+                    )}
+                  >
+                    {showAllProjects ? "Show Less" : "View More Projects"}
+                  </button>
+                </motion.div>
+              )}
             </div>
           </section>
 
@@ -373,7 +263,15 @@ function App() {
                 </p>
               </motion.div>
 
-              <Timeline items={experience} type="experience" />
+              {timelineLoading ? (
+                <p className="text-muted-foreground">Loading experience...</p>
+              ) : experience.length === 0 ? (
+                <p className="text-muted-foreground text-center">
+                  No work experience entries found yet.
+                </p>
+              ) : (
+                <Timeline items={experience} type="experience" />
+              )}
             </div>
           </section>
 
@@ -394,7 +292,15 @@ function App() {
                 </p>
               </motion.div>
 
-              <Timeline items={skills} type="skills" />
+              {skillsLoading ? (
+                <p className="text-muted-foreground">Loading skills...</p>
+              ) : skillItems.length === 0 ? (
+                <p className="text-muted-foreground text-center">
+                  No technical skills found yet.
+                </p>
+              ) : (
+                <Timeline items={skillItems} type="skills" />
+              )}
             </div>
           </section>
 

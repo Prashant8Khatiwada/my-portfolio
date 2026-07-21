@@ -9,6 +9,7 @@ import {
   Phone,
 } from "lucide-react";
 import emailjs from "@emailjs/browser";
+import { supabase } from "../../lib/supabase";
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -38,8 +39,18 @@ export default function ContactForm() {
           email: formData.email,
           message: formData.message,
         },
-        process.env.REACT_APP_EMAILJS_PUBLIC_KEY
+        process.env.REACT_APP_EMAILJS_PUBLIC_KEY,
       );
+
+      const { error: dbError } = await supabase.from("messages").insert({
+        name: formData.name,
+        email: formData.email,
+        message: formData.message,
+      });
+
+      if (dbError) {
+        throw dbError;
+      }
 
       setStatus("success");
       setFormData({ name: "", email: "", message: "" });

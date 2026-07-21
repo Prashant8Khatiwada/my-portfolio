@@ -31,26 +31,26 @@
   }
 
   .dark {
-    /* Dark theme colors - Comfortable, easy on the eyes */
-    --background: 220 15% 10%;
+    /* Dark theme - deep premium dark */
+    --background: 225 20% 7%;
     --foreground: 210 20% 92%;
-    --card: 220 15% 13%;
+    --card: 225 20% 9%;
     --card-foreground: 210 20% 92%;
-    --popover: 220 15% 13%;
+    --popover: 225 20% 9%;
     --popover-foreground: 210 20% 92%;
-    --primary: 250 50% 55%;
+    --primary: 252 80% 62%;
     --primary-foreground: 210 20% 98%;
     --secondary: 195 45% 50%;
     --secondary-foreground: 210 20% 98%;
-    --muted: 220 15% 20%;
-    --muted-foreground: 220 10% 60%;
+    --muted: 225 20% 14%;
+    --muted-foreground: 220 10% 55%;
     --accent: 335 45% 52%;
     --accent-foreground: 210 20% 98%;
     --destructive: 0 60% 55%;
     --destructive-foreground: 210 20% 98%;
-    --border: 220 15% 22%;
-    --input: 220 15% 20%;
-    --ring: 250 50% 55%;
+    --border: 225 20% 16%;
+    --input: 225 20% 14%;
+    --ring: 252 80% 62%;
   }
 }
 
@@ -114,3 +114,9 @@
     box-shadow: 0 0 40px hsla(250, 50%, 55%, 0.6);
   }
 }
+
+/* Admin panel scrollbar */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.15); }

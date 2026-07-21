@@ -4,7 +4,12 @@ import { fadeIn, slideUp } from "../../lib/animations";
 import ME from "../../assets/about -me.png";
 import { ArrowRight } from "lucide-react";
 
-export default function About() {
+export default function About({ profile }) {
+  const title = profile?.about_title || "About Me";
+  const subtitle = profile?.about_subtitle || "Get To Know Me";
+  const desc1 = profile?.about_description_1 || "I have a strong curiosity and creative mindset that drives me to find innovative solutions and question the way things are done. Passionate React developer skilled at creating polished and effective web solutions.";
+  const desc2 = profile?.about_description_2 || "I am deeply committed to keeping up with the latest advancements in the ever-changing React ecosystem and continuously improving my skills.";
+
   return (
     <section id="about" className="py-24 bg-card/50">
       <div className="container mx-auto px-6">
@@ -35,21 +40,16 @@ export default function About() {
             className="w-full md:w-1/2 text-center md:text-left"
           >
             <h2 className="text-sm font-bold text-primary tracking-widest uppercase mb-2">
-              Get To Know Me
+              {subtitle}
             </h2>
-            <h3 className="text-3xl md:text-4xl font-bold mb-6">About Me</h3>
+            <h3 className="text-3xl md:text-4xl font-bold mb-6">{title}</h3>
 
             <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
-              I have a strong curiosity and creative mindset that drives me to
-              find innovative solutions and question the way things are done.
-              Passionate React developer skilled at creating polished and
-              effective web solutions.
+              {desc1}
             </p>
 
             <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-              I am deeply committed to keeping up with the latest advancements
-              in the ever-changing React ecosystem and continuously improving my
-              skills.
+              {desc2}
             </p>
 
             <a
