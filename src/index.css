@@ -114,3 +114,9 @@
     box-shadow: 0 0 40px hsla(250, 50%, 55%, 0.6);
   }
 }
+
+/* Make form labels block and add spacing to match modern UI specs */
+form label:not(.flex):not(.inline-flex) {
+  display: block;
+  margin-bottom: 0.5rem;
+}

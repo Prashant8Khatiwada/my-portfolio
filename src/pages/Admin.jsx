@@ -95,11 +95,11 @@ export default function Admin() {
 
   // Styled button/input tokens for children
   const uiInput =
-    "px-3.5 py-2.5 rounded-xl border border-border/60 bg-background/70 shadow-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/20";
+    "w-full px-3.5 py-2.5 rounded-xl border border-border/60 bg-background/70 text-sm shadow-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/20";
   const uiTextarea =
-    "px-3.5 py-2.5 rounded-xl border border-border/60 bg-background/70 shadow-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/20";
+    "w-full px-3.5 py-2.5 rounded-xl border border-border/60 bg-background/70 text-sm shadow-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/20";
   const uiSelect =
-    "px-3.5 py-2.5 rounded-xl border border-border/60 bg-background/70 shadow-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/20";
+    "w-full px-3.5 py-2.5 rounded-xl border border-border/60 bg-background/70 text-sm shadow-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/20";
   const uiPrimaryBtn =
     "px-4 py-2.5 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm hover:shadow-md transition-all";
   const uiSecondaryBtn =
