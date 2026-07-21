@@ -27,9 +27,9 @@ export default function Sidebar({ tab, navigate, unreadCount, logout }) {
   ];
 
   return (
-    <aside className="lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto flex flex-col border-r border-white/5 bg-[#0d0d14]">
+    <aside className="lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto flex flex-col border-r border-zinc-800/40 bg-[#0f0f11]">
       {/* Logo / Brand */}
-      <div className="px-5 py-6 border-b border-white/5">
+      <div className="px-5 py-6 border-b border-zinc-800/40">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-violet-500/25 flex-shrink-0">
             <Shield className="w-4.5 h-4.5 text-white" />
@@ -52,21 +52,21 @@ export default function Sidebar({ tab, navigate, unreadCount, logout }) {
               onClick={() => navigate(`/admin/${route}`)}
               className={`w-full group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 relative ${
                 isActive
-                  ? "bg-white/8 text-white"
-                  : "text-white/40 hover:text-white/80 hover:bg-white/4"
+                  ? "bg-zinc-800/50 text-white"
+                  : "text-white/40 hover:text-white/80 hover:bg-zinc-900/40"
               }`}
             >
               {isActive && (
                 <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-violet-500 rounded-r-full" />
               )}
               <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-200 ${
-                isActive ? "bg-violet-500/15" : "bg-transparent group-hover:bg-white/5"
+                isActive ? "bg-violet-500/15" : "bg-transparent group-hover:bg-zinc-900/60"
               }`}>
                 <Icon className={`w-4 h-4 ${isActive ? "text-violet-400" : `${color} opacity-60 group-hover:opacity-100`}`} />
               </div>
               <div className="text-left flex-1 min-w-0">
                 <p className={`text-sm font-medium leading-tight truncate ${isActive ? "text-white" : ""}`}>{label}</p>
-                <p className={`text-[10px] leading-tight truncate mt-0.5 ${isActive ? "text-white/40" : "text-white/20"}`}>{subtitle}</p>
+                <p className={`text-[10px] leading-tight truncate mt-0.5 ${isActive ? "text-white/40" : "text-white/25"}`}>{subtitle}</p>
               </div>
               {badge > 0 && (
                 <span className="ml-auto flex-shrink-0 min-w-[18px] h-[18px] text-[10px] font-bold bg-rose-500 text-white rounded-full flex items-center justify-center px-1">
@@ -79,7 +79,7 @@ export default function Sidebar({ tab, navigate, unreadCount, logout }) {
       </nav>
 
       {/* Footer */}
-      <div className="px-3 py-4 border-t border-white/5 space-y-2">
+      <div className="px-3 py-4 border-t border-zinc-800/40 space-y-2">
         <button
           onClick={logout}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/35 hover:text-rose-400 hover:bg-rose-500/8 transition-all duration-200 group"
