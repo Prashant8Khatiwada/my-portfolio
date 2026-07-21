@@ -285,7 +285,6 @@ export function useLiveVisitorsQuery() {
       if (error) throw error;
       return count || 0;
     },
-    refetchInterval: 10000, // Query live visitors count every 10 seconds
   });
 }
 
@@ -365,6 +364,5 @@ export function useAnalyticsQuery(rangeDays) {
         dailyViews: dailyViewsList,
       };
     },
-    refetchInterval: 60000, // Refresh traffic data automatically every 60 seconds
   });
 }
