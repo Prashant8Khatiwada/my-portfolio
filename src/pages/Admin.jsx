@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Sparkles, Layers } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
@@ -14,22 +14,35 @@ import ServicesTab from "../components/admin/ServicesTab";
 import MessagesTab from "../components/admin/MessagesTab";
 import HeroTab from "../components/admin/HeroTab";
 import AboutTab from "../components/admin/AboutTab";
-import { LEGACY_DATA } from "./AdminLegacyData";
 
-function formatDateLabel(isoDate) {
-  return new Date(isoDate).toLocaleDateString(undefined, {
-    month: "short",
-    day: "numeric",
-  });
-}
+// React Query Custom Hooks
+import {
+  useProjectsQuery,
+  useSaveProjectMutation,
+  useDeleteProjectMutation,
+  useTestimonialsQuery,
+  useTimelineQuery,
+  useSkillsQuery,
+  useServicesQuery,
+  useSaveSimpleMutation,
+  useDeleteSimpleMutation,
+  useProfileQuery,
+  useSaveProfileMutation,
+  useMessagesQuery,
+  useMarkMessageReadMutation,
+  useResetToDefaultsMutation,
+  useLiveVisitorsQuery,
+  useAnalyticsQuery,
+} from "../hooks/useAdminData";
 
 export default function Admin() {
   const location = useLocation();
   const navigate = useNavigate();
   const [statusMessage, setStatusMessage] = useState("");
+  const [statusType, setStatusType] = useState("info"); // 'info' | 'success' | 'error'
 
-  const [projects, setProjects] = useState([]);
-  const [projectLoading, setProjectLoading] = useState(true);
+  const [analyticsRangeDays, setAnalyticsRangeDays] = useState(30);
+
   const [projectForm, setProjectForm] = useState({
     title: "",
     description: "",
@@ -41,13 +54,6 @@ export default function Admin() {
   });
   const [projectImageFile, setProjectImageFile] = useState(null);
   const [editingProjectId, setEditingProjectId] = useState(null);
-
-  const [testimonials, setTestimonials] = useState([]);
-  const [timeline, setTimeline] = useState([]);
-  const [skills, setSkills] = useState([]);
-  const [services, setServices] = useState([]);
-  
-  const [profile, setProfile] = useState(null);
 
   const [testimonialForm, setTestimonialForm] = useState({
     name: "",
@@ -87,19 +93,6 @@ export default function Admin() {
   });
   const [editingServiceId, setEditingServiceId] = useState(null);
 
-  const [analyticsLoading, setAnalyticsLoading] = useState(true);
-  const [analyticsError, setAnalyticsError] = useState("");
-  const [analyticsRangeDays, setAnalyticsRangeDays] = useState(30);
-  const [analyticsLastUpdated, setAnalyticsLastUpdated] = useState(null);
-  const [totalViews, setTotalViews] = useState(0);
-  const [uniqueVisitors, setUniqueVisitors] = useState(0);
-  const [liveVisitors, setLiveVisitors] = useState(0);
-  const [topPages, setTopPages] = useState([]);
-  const [dailyViews, setDailyViews] = useState([]);
-
-  const [messages, setMessages] = useState([]);
-  const [messageLoading, setMessageLoading] = useState(true);
-
   // Styled button/input tokens for children
   const uiInput =
     "px-3.5 py-2.5 rounded-xl border border-border/60 bg-background/70 shadow-sm outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/20";
@@ -110,18 +103,15 @@ export default function Admin() {
   const uiPrimaryBtn =
     "px-4 py-2.5 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm hover:shadow-md transition-all";
   const uiSecondaryBtn =
-    "px-4 py-2.5 rounded-xl border border-border/70 bg-background/50 hover:bg-card transition-all";
-  const uiSmallBtn =
-    "px-2.5 py-1.5 rounded-lg border border-border/70 bg-background/60 hover:bg-card text-xs font-medium transition-all";
-  const uiSmallDangerBtn =
-    "px-2.5 py-1.5 rounded-lg border border-red-400/70 text-red-500 hover:bg-red-500/10 text-xs font-medium transition-all";
-  const uiDangerBtn =
-    "px-3 py-1.5 rounded-lg border border-red-400/70 text-red-500 hover:bg-red-500/10 transition-all";
+    "px-5 py-2.5 rounded-xl border border-border/70 bg-background/50 hover:bg-card text-foreground font-medium transition-all duration-200 active:scale-95";
 
-  const unreadMessages = useMemo(
-    () => messages.filter((message) => !message.read),
-    [messages],
-  );
+  const showToast = (message, type = "success") => {
+    setStatusMessage(message);
+    setStatusType(type);
+    setTimeout(() => {
+      setStatusMessage("");
+    }, 4000);
+  };
 
   const tabRouteMap = {
     analytics: "analytics",
@@ -140,188 +130,66 @@ export default function Admin() {
   const pathSegment = location.pathname.split("/")[2] || "";
   const tab = pathToTabMap[pathSegment] || "analytics";
 
+  // TanStack React Query Hooks
+  const { data: projects = [], isLoading: projectLoading } = useProjectsQuery();
+  const { data: testimonials = [] } = useTestimonialsQuery();
+  const { data: timeline = [] } = useTimelineQuery();
+  const { data: skills = [] } = useSkillsQuery();
+  const { data: services = [] } = useServicesQuery();
+  const { data: profile } = useProfileQuery();
+  const { data: messages = [], isLoading: messageLoading } = useMessagesQuery();
+  const { data: liveVisitors = 0 } = useLiveVisitorsQuery();
+  const { data: analytics = {}, isLoading: analyticsLoading, error: analyticsError } = useAnalyticsQuery(analyticsRangeDays);
+
+  const unreadMessages = useMemo(
+    () => messages.filter((message) => !message.read),
+    [messages],
+  );
+
+  const saveProjectMutation = useSaveProjectMutation(
+    () => showToast(editingProjectId ? "Project updated successfully!" : "Project created successfully!"),
+    (err) => showToast(err.message || "Failed to save project.", "error")
+  );
+
+  const deleteProjectMutation = useDeleteProjectMutation(
+    () => showToast("Project deleted successfully."),
+    (err) => showToast(err.message, "error")
+  );
+
+  const saveSimpleMutation = useSaveSimpleMutation(
+    tab,
+    () => showToast(`${tab.charAt(0).toUpperCase() + tab.slice(1)} saved.`),
+    (err) => showToast(err.message || `Failed to save ${tab}.`, "error")
+  );
+
+  const deleteSimpleMutation = useDeleteSimpleMutation(
+    tab,
+    () => showToast("Item deleted successfully."),
+    (err) => showToast(err.message, "error")
+  );
+
+  const saveProfileMutation = useSaveProfileMutation(
+    () => showToast("Profile settings saved successfully!"),
+    (err) => showToast(err.message || "Failed to save profile settings.", "error")
+  );
+
+  const markMessageReadMutation = useMarkMessageReadMutation(
+    () => showToast("Message marked as read."),
+    (err) => showToast(err.message, "error")
+  );
+
+  const resetToDefaultsMutation = useResetToDefaultsMutation(
+    () => showToast("Default template data imported successfully.", "success"),
+    (err) => showToast(err.message || "Template import failed.", "error")
+  );
+
   const uploadImage = async (file) => {
     const path = `projects/${Date.now()}-${file.name}`;
-    const { error } = await supabase.storage
-      .from("portfolio")
-      .upload(path, file);
+    const { error } = await supabase.storage.from("portfolio").upload(path, file);
     if (error) throw error;
-
     const { data } = supabase.storage.from("portfolio").getPublicUrl(path);
     return data.publicUrl;
   };
-
-  const loadProjects = useCallback(async () => {
-    setProjectLoading(true);
-    const { data } = await supabase
-      .from("projects")
-      .select("*")
-      .order("display_order", { ascending: true });
-    setProjects(data || []);
-    setProjectLoading(false);
-  }, []);
-
-  const loadTestimonials = useCallback(async () => {
-    const { data } = await supabase
-      .from("testimonials")
-      .select("*")
-      .order("display_order", { ascending: true });
-    setTestimonials(data || []);
-  }, []);
-
-  const loadTimeline = useCallback(async () => {
-    const { data } = await supabase
-      .from("timeline")
-      .select("*")
-      .order("display_order", { ascending: true });
-    setTimeline(data || []);
-  }, []);
-
-  const loadSkills = useCallback(async () => {
-    const { data } = await supabase
-      .from("skills")
-      .select("*")
-      .order("display_order", { ascending: true });
-    setSkills(data || []);
-  }, []);
-
-  const loadServices = useCallback(async () => {
-    const { data } = await supabase
-      .from("services")
-      .select("*")
-      .order("display_order", { ascending: true });
-    setServices(data || []);
-  }, []);
-
-  const loadMessages = useCallback(async () => {
-    setMessageLoading(true);
-    const { data } = await supabase
-      .from("messages")
-      .select("*")
-      .order("created_at", { ascending: false });
-    setMessages(data || []);
-    setMessageLoading(false);
-  }, []);
-
-  const loadProfile = useCallback(async () => {
-    const { data, error } = await supabase
-      .from("profile")
-      .select("*")
-      .limit(1)
-      .single();
-    if (!error && data) {
-      setProfile(data);
-    }
-  }, []);
-
-  const saveProfile = async (formPayload) => {
-    try {
-      const { error } = await supabase
-        .from("profile")
-        .update(formPayload)
-        .eq("id", profile.id);
-      if (error) throw error;
-      showToast("Profile settings saved successfully!", "success");
-      await loadProfile();
-    } catch (e) {
-      showToast(e.message || "Failed to save profile settings.", "error");
-    }
-  };
-
-  const refetchVisitorCount = useCallback(async () => {
-    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
-    const { count } = await supabase
-      .from("visitors")
-      .select("*", { count: "exact", head: true })
-      .gte("last_seen", fiveMinutesAgo);
-    setLiveVisitors(count || 0);
-  }, []);
-
-  const loadAnalytics = useCallback(async () => {
-    setAnalyticsLoading(true);
-    setAnalyticsError("");
-
-    const fromIso = new Date(
-      Date.now() - analyticsRangeDays * 86400 * 1000,
-    ).toISOString();
-
-    try {
-      const [
-        { count: total, error: totalError },
-        { count: visitorsCount, error: visitorsError },
-        { data: pageRows, error: pageRowsError },
-        { data: dailyRows, error: dailyRowsError },
-        { data: sessionRows, error: sessionRowsError },
-      ] = await Promise.all([
-        supabase.from("page_views").select("*", { count: "exact", head: true }),
-        supabase.from("visitors").select("*", { count: "exact", head: true }),
-        supabase
-          .from("page_views")
-          .select("path")
-          .gte("created_at", fromIso)
-          .limit(5000),
-        supabase
-          .from("page_views")
-          .select("created_at")
-          .gte("created_at", fromIso),
-        supabase
-          .from("page_views")
-          .select("session_id")
-          .not("session_id", "is", null)
-          .gte("created_at", fromIso)
-          .limit(5000),
-      ]);
-
-      const firstError =
-        totalError ||
-        visitorsError ||
-        pageRowsError ||
-        dailyRowsError ||
-        sessionRowsError;
-
-      if (firstError) {
-        throw firstError;
-      }
-
-      setTotalViews(total || 0);
-
-      const uniqueSessions = new Set(
-        (sessionRows || []).map((row) => row.session_id).filter(Boolean),
-      ).size;
-      setUniqueVisitors(visitorsCount || uniqueSessions || 0);
-
-      const groupedPages = (pageRows || []).reduce((acc, row) => {
-        const key = row.path || "/";
-        acc[key] = (acc[key] || 0) + 1;
-        return acc;
-      }, {});
-      setTopPages(
-        Object.entries(groupedPages)
-          .map(([path, views]) => ({ path, views }))
-          .sort((a, b) => b.views - a.views)
-          .slice(0, 7),
-      );
-
-      const groupedDaily = (dailyRows || []).reduce((acc, row) => {
-        const day = row.created_at.slice(0, 10);
-        acc[day] = (acc[day] || 0) + 1;
-        return acc;
-      }, {});
-
-      setDailyViews(
-        Object.entries(groupedDaily)
-          .map(([day, views]) => ({ day, views, label: formatDateLabel(day) }))
-          .sort((a, b) => (a.day > b.day ? 1 : -1)),
-      );
-
-      await refetchVisitorCount();
-      setAnalyticsLastUpdated(new Date().toISOString());
-    } catch (error) {
-      setAnalyticsError(error.message || "Failed to load analytics data.");
-    } finally {
-      setAnalyticsLoading(false);
-    }
-  }, [analyticsRangeDays, refetchVisitorCount]);
 
   const resetProjectForm = () => {
     setProjectForm({
@@ -337,7 +205,7 @@ export default function Admin() {
     setEditingProjectId(null);
   };
 
-  const saveProject = async (e) => {
+  const handleSaveProject = async (e) => {
     e.preventDefault();
     try {
       const tagsArray =
@@ -362,145 +230,46 @@ export default function Admin() {
         payload.image_url = await uploadImage(projectImageFile);
       }
 
-      if (editingProjectId) {
-        const { error } = await supabase
-          .from("projects")
-          .update(payload)
-          .eq("id", editingProjectId);
-        if (error) throw error;
-      } else {
-        const { error } = await supabase.from("projects").insert(payload);
-        if (error) throw error;
-      }
-
+      await saveProjectMutation.mutateAsync({ id: editingProjectId, payload });
       resetProjectForm();
-      await loadProjects();
-      setStatusMessage("Project saved successfully.");
     } catch (error) {
-      setStatusMessage(error.message || "Failed to save project.");
+      showToast(error.message, "error");
     }
   };
 
-  const deleteProject = async (id) => {
+  const handleDeleteProject = async (id) => {
     const ok = window.confirm("Delete this project?");
     if (!ok) return;
-    const { error } = await supabase.from("projects").delete().eq("id", id);
-    if (error) return setStatusMessage(error.message);
-    await loadProjects();
+    deleteProjectMutation.mutate(id);
   };
 
-  const saveSimple = async (table, id, payload, reset, reload) => {
-    const query = id
-      ? supabase.from(table).update(payload).eq("id", id)
-      : supabase.from(table).insert(payload);
-    const { error } = await query;
-    if (error) throw error;
+  const handleSaveSimple = async (table, id, payload, reset) => {
+    await saveSimpleMutation.mutateAsync({ id, payload });
     reset();
-    await reload();
   };
 
-  const deleteSimple = async (table, id, reload) => {
-    const ok = window.confirm("Delete this item?");
+  const handleDeleteSimple = async (table, id) => {
+    const ok = window.confirm(`Delete this item from ${table}?`);
     if (!ok) return;
-    const { error } = await supabase.from(table).delete().eq("id", id);
-    if (error) throw error;
-    await reload();
+    deleteSimpleMutation.mutate(id);
   };
 
-  const importLegacyContent = async () => {
+  const handleImportLegacyContent = async () => {
     const ok = window.confirm(
       "This will clear current CMS content and reset to default data. Continue?",
     );
     if (!ok) return;
-
-    try {
-      const { LEGACY_DATA: localData } = await import("./Admin");
-
-      await Promise.all([
-        supabase.from("projects").delete().not("id", "is", null),
-        supabase.from("testimonials").delete().not("id", "is", null),
-        supabase.from("timeline").delete().not("id", "is", null),
-        supabase.from("skills").delete().not("id", "is", null),
-        supabase.from("services").delete().not("id", "is", null),
-      ]);
-
-      await Promise.all([
-        supabase.from("projects").insert(localData.projects),
-        supabase.from("testimonials").insert(localData.testimonials),
-        supabase.from("timeline").insert(localData.timeline),
-        supabase.from("skills").insert(localData.skills),
-        supabase.from("services").insert(localData.services),
-      ]);
-
-      if (tab === "projects") await loadProjects();
-      if (tab === "testimonials") await loadTestimonials();
-      if (tab === "timeline") await loadTimeline();
-      if (tab === "skills") await loadSkills();
-      if (tab === "services") await loadServices();
-
-      showToast("Default template data imported successfully.", "success");
-    } catch (error) {
-      showToast(error.message || "Template import failed.", "error");
-    }
+    resetToDefaultsMutation.mutate();
   };
 
-  const markMessageRead = async (id) => {
-    const { error } = await supabase
-      .from("messages")
-      .update({ read: true })
-      .eq("id", id);
-    if (error) return setStatusMessage(error.message);
-    await loadMessages();
+  const handleMarkMessageRead = async (id) => {
+    markMessageReadMutation.mutate(id);
   };
 
   const logout = async () => {
     await supabase.auth.signOut();
     window.location.href = "/admin/login";
   };
-
-  // Lazy-load data ONLY for the active tab to optimize API queries
-  useEffect(() => {
-    if (tab === "projects") loadProjects();
-  }, [tab, loadProjects]);
-
-  useEffect(() => {
-    if (tab === "testimonials") loadTestimonials();
-  }, [tab, loadTestimonials]);
-
-  useEffect(() => {
-    if (tab === "timeline") loadTimeline();
-  }, [tab, loadTimeline]);
-
-  useEffect(() => {
-    if (tab === "skills") loadSkills();
-  }, [tab, loadSkills]);
-
-  useEffect(() => {
-    if (tab === "services") loadServices();
-  }, [tab, loadServices]);
-
-  useEffect(() => {
-    if (tab === "messages") loadMessages();
-  }, [tab, loadMessages]);
-
-  useEffect(() => {
-    if (tab === "hero" || tab === "about") loadProfile();
-  }, [tab, loadProfile]);
-
-  useEffect(() => {
-    if (tab === "analytics") {
-      loadAnalytics();
-      const interval = setInterval(() => {
-        loadAnalytics();
-      }, 60000);
-      return () => clearInterval(interval);
-    }
-  }, [tab, loadAnalytics]);
-
-  // Keep unread messages count up-to-date in sidebar
-  useEffect(() => {
-    loadMessages();
-  }, [loadMessages]);
 
   useEffect(() => {
     if (location.pathname === "/admin" || location.pathname === "/admin/") {
@@ -562,18 +331,13 @@ export default function Admin() {
               <h2 className="text-3xl font-black tracking-tight mt-1 capitalize">{tab}</h2>
               <p className="text-sm text-muted-foreground mt-0.5">Manage details and dynamically control data</p>
             </div>
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={importLegacyContent}
-                className={`${uiPrimaryBtn} inline-flex items-center gap-2`}
-              >
-                <Layers className="w-4 h-4" />
-                Import Legacy
-              </button>
-              <button onClick={logout} className={uiSecondaryBtn}>
-                Logout
-              </button>
-            </div>
+            <button
+              onClick={handleImportLegacyContent}
+              className="px-5 py-2.5 rounded-xl bg-card border border-border/60 hover:border-primary/40 hover:bg-primary/5 text-sm font-semibold transition-all duration-200 flex items-center gap-2"
+            >
+              <Layers className="w-4 h-4 text-primary" />
+              Reset to Defaults
+            </button>
           </header>
 
           {/* Dynamic Tab Views */}
@@ -583,22 +347,22 @@ export default function Admin() {
               <AnalyticsTab
                 analyticsRangeDays={analyticsRangeDays}
                 setAnalyticsRangeDays={setAnalyticsRangeDays}
-                loadAnalytics={loadAnalytics}
-                analyticsError={analyticsError}
-                totalViews={totalViews}
-                uniqueVisitors={uniqueVisitors}
+                loadAnalytics={() => {}} // Controlled by react-query
+                analyticsError={analyticsError ? analyticsError.message : ""}
+                totalViews={analytics.totalViews || 0}
+                uniqueVisitors={analytics.uniqueVisitors || 0}
                 liveVisitors={liveVisitors}
                 analyticsLoading={analyticsLoading}
-                dailyViews={dailyViews}
-                topPages={topPages}
-                analyticsLastUpdated={analyticsLastUpdated}
+                dailyViews={analytics.dailyViews || []}
+                topPages={analytics.topPages || []}
+                analyticsLastUpdated={null} // Managed by react-query internally
               />
             )}
 
             {tab === "hero" && (
               <HeroTab
                 profile={profile}
-                saveProfile={saveProfile}
+                saveProfile={(formPayload) => saveProfileMutation.mutate({ id: profile.id, payload: formPayload })}
                 showToast={showToast}
                 uiInput={uiInput}
                 uiTextarea={uiTextarea}
@@ -609,7 +373,7 @@ export default function Admin() {
             {tab === "about" && (
               <AboutTab
                 profile={profile}
-                saveProfile={saveProfile}
+                saveProfile={(formPayload) => saveProfileMutation.mutate({ id: profile.id, payload: formPayload })}
                 showToast={showToast}
                 uiInput={uiInput}
                 uiTextarea={uiTextarea}
@@ -624,9 +388,9 @@ export default function Admin() {
                 setServiceForm={setServiceForm}
                 editingServiceId={editingServiceId}
                 setEditingServiceId={setEditingServiceId}
-                saveSimple={saveSimple}
-                deleteSimple={deleteSimple}
-                loadServices={loadServices}
+                saveSimple={(table, id, payload, reset) => handleSaveSimple(table, id, payload, reset)}
+                deleteSimple={handleDeleteSimple}
+                loadServices={() => {}}
                 showToast={showToast}
                 uiInput={uiInput}
                 uiTextarea={uiTextarea}
@@ -646,8 +410,8 @@ export default function Admin() {
                 editingProjectId={editingProjectId}
                 setEditingProjectId={setEditingProjectId}
                 resetProjectForm={resetProjectForm}
-                saveProject={saveProject}
-                deleteProject={deleteProject}
+                saveProject={handleSaveProject}
+                deleteProject={handleDeleteProject}
                 showToast={showToast}
                 uiInput={uiInput}
                 uiTextarea={uiTextarea}
@@ -664,9 +428,9 @@ export default function Admin() {
                 setTimelineForm={setTimelineForm}
                 editingTimelineId={editingTimelineId}
                 setEditingTimelineId={setEditingTimelineId}
-                saveSimple={saveSimple}
-                deleteSimple={deleteSimple}
-                loadTimeline={loadTimeline}
+                saveSimple={(table, id, payload, reset) => handleSaveSimple(table, id, payload, reset)}
+                deleteSimple={handleDeleteSimple}
+                loadTimeline={() => {}}
                 showToast={showToast}
                 uiInput={uiInput}
                 uiTextarea={uiTextarea}
@@ -683,9 +447,9 @@ export default function Admin() {
                 setSkillForm={setSkillForm}
                 editingSkillId={editingSkillId}
                 setEditingSkillId={setEditingSkillId}
-                saveSimple={saveSimple}
-                deleteSimple={deleteSimple}
-                loadSkills={loadSkills}
+                saveSimple={(table, id, payload, reset) => handleSaveSimple(table, id, payload, reset)}
+                deleteSimple={handleDeleteSimple}
+                loadSkills={() => {}}
                 showToast={showToast}
                 uiInput={uiInput}
                 uiTextarea={uiTextarea}
@@ -701,9 +465,9 @@ export default function Admin() {
                 setTestimonialForm={setTestimonialForm}
                 editingTestimonialId={editingTestimonialId}
                 setEditingTestimonialId={setEditingTestimonialId}
-                saveSimple={saveSimple}
-                deleteSimple={deleteSimple}
-                loadTestimonials={loadTestimonials}
+                saveSimple={(table, id, payload, reset) => handleSaveSimple(table, id, payload, reset)}
+                deleteSimple={handleDeleteSimple}
+                loadTestimonials={() => {}}
                 showToast={showToast}
                 uiInput={uiInput}
                 uiTextarea={uiTextarea}
@@ -717,7 +481,7 @@ export default function Admin() {
               <MessagesTab
                 messages={messages}
                 messageLoading={messageLoading}
-                markMessageRead={markMessageRead}
+                markMessageRead={handleMarkMessageRead}
               />
             )}
           </section>
@@ -726,6 +490,3 @@ export default function Admin() {
     </div>
   );
 }
-
-// Re-export LEGACY_DATA for importLegacyContent use
-export { LEGACY_DATA };
