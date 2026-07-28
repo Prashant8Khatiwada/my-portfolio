@@ -5,26 +5,27 @@ import {
   User,
   Briefcase,
   Mail,
-  Sparkles,
-  MessageSquareQuote,
-  Folder,
-  Cpu,
+  LayoutGrid,
+  MessageSquare,
+  FolderGit,
+  Code,
 } from "lucide-react";
 
 const navItems = [
   { name: "Home", href: "#home", icon: Home },
   { name: "About", href: "#about", icon: User },
-  { name: "Services", href: "#services", icon: Sparkles },
-  { name: "Projects", href: "#portfolio", icon: Folder },
+  { name: "Services", href: "#services", icon: LayoutGrid },
+  { name: "Projects", href: "#portfolio", icon: FolderGit },
   { name: "Experience", href: "#experience", icon: Briefcase },
-  { name: "Skills", href: "#skills", icon: Cpu },
-  { name: "Testimonials", href: "#testimonials", icon: MessageSquareQuote },
+  { name: "Skills", href: "#skills", icon: Code },
+  { name: "Testimonials", href: "#testimonials", icon: MessageSquare },
   { name: "Contact", href: "#contact", icon: Mail },
 ];
 
 // Dock Item Component with magnification effect
 function DockIcon({ mouseX, item, isActive, onClick }) {
   const ref = useRef(null);
+  const [isHovered, setIsHovered] = useState(false);
 
   const distance = useTransform(mouseX, (val) => {
     const bounds = ref.current?.getBoundingClientRect() ?? { x: 0, width: 0 };
@@ -47,6 +48,8 @@ function DockIcon({ mouseX, item, isActive, onClick }) {
       style={{ width }}
       whileHover={{ y: -8 }}
       whileTap={{ scale: 0.9 }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       transition={{
         type: "spring",
         stiffness: 400,
@@ -93,13 +96,17 @@ function DockIcon({ mouseX, item, isActive, onClick }) {
       {/* Tooltip on hover */}
       <motion.div
         initial={{ opacity: 0, y: 10, scale: 0.8 }}
-        whileHover={{ opacity: 1, y: 0, scale: 1 }}
+        animate={{
+          opacity: isHovered ? 1 : 0,
+          y: isHovered ? 0 : 10,
+          scale: isHovered ? 1 : 0.8,
+        }}
         transition={{
           type: "spring",
           stiffness: 500,
           damping: 25,
         }}
-        className="absolute -top-12 bg-background/95 backdrop-blur-md px-3 py-1.5 rounded-lg text-xs font-medium text-foreground shadow-lg border border-border pointer-events-none"
+        className="absolute -top-14 bg-background/95 backdrop-blur-md px-3 py-1.5 rounded-lg text-xs font-medium text-foreground shadow-lg border border-border pointer-events-none"
       >
         {item.name}
         <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-background/95 border-r border-b border-border rotate-45" />

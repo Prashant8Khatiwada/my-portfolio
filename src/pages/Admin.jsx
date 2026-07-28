@@ -188,7 +188,7 @@ export default function Admin() {
   }, [location.pathname, navigate]);
 
   return (
-    <div className="min-h-screen bg-[#0f0f11] text-white font-sans">
+    <div className="min-h-screen bg-background text-foreground font-sans">
 
       {/* Toast */}
       {statusMessage && (
@@ -209,18 +209,18 @@ export default function Admin() {
         <Sidebar tab={tab} navigate={navigate} unreadCount={unreadMessages.length} logout={logout} />
 
         {/* Main */}
-        <main className="min-w-0 bg-[#131316] flex flex-col">
+        <main className="min-w-0 bg-background/50 flex flex-col">
           {/* Top bar */}
-          <div className="sticky top-0 z-10 flex items-center justify-between gap-4 px-6 py-4 border-b border-zinc-800/40 bg-[#131316]/80 backdrop-blur-md">
+          <div className="sticky top-0 z-10 flex items-center justify-between gap-4 px-6 py-4 border-b border-border bg-card/85 backdrop-blur-md">
             <div className="flex items-center gap-3">
               <div>
-                <p className="text-[10px] uppercase tracking-[0.15em] font-semibold text-white/25">Module</p>
-                <h2 className="text-sm font-bold text-white capitalize leading-tight">{TAB_LABELS[tab] || tab}</h2>
+                <p className="text-[10px] uppercase tracking-[0.15em] font-semibold text-muted-foreground/60">Module</p>
+                <h2 className="text-sm font-bold text-foreground capitalize leading-tight">{TAB_LABELS[tab] || tab}</h2>
               </div>
             </div>
             <button
               onClick={handleImportLegacyContent}
-              className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold text-white/40 hover:text-white/80 border border-zinc-800/80 bg-zinc-900/60 hover:bg-zinc-900/80 transition-all duration-200"
+              className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold text-muted-foreground hover:text-foreground border border-border bg-muted/60 hover:bg-muted transition-all duration-200"
             >
               <RotateCcw className="w-3 h-3" />
               Reset to Defaults

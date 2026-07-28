@@ -7,6 +7,7 @@ import Admin from "./pages/Admin";
 import { AdminRoute } from "./components/AdminRoute";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ThemeProvider } from "./context/ThemeContext";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -21,20 +22,22 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<App />} />
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route
-            path="/admin/*"
-            element={
-              <AdminRoute>
-                <Admin />
-              </AdminRoute>
-            }
-          />
-        </Routes>
-      </BrowserRouter>
+      <ThemeProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<App />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route
+              path="/admin/*"
+              element={
+                <AdminRoute>
+                  <Admin />
+                </AdminRoute>
+              }
+            />
+          </Routes>
+        </BrowserRouter>
+      </ThemeProvider>
     </QueryClientProvider>
   </React.StrictMode>
 );

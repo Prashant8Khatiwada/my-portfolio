@@ -120,7 +120,7 @@ function App() {
         : filteredProjects.slice(0, 6); // Show first 6 filtered projects
 
   return (
-    <ThemeProvider>
+    <>
       <SEO />
       <div className="min-h-screen bg-background text-foreground">
         <BottomNav />
@@ -332,7 +332,7 @@ function App() {
 
         <Footer />
       </div>
-    </ThemeProvider>
+    </>
   );
 }
 
