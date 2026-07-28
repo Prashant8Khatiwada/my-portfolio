@@ -1,6 +1,28 @@
 export const LEGACY_DATA = {
   projects: [
     {
+      title: "RunMyCrew",
+      description:
+        "Built a visual node-based workflow builder using React Flow and Zustand with live expression bindings and a real-time run execution inspector.\nImplemented a Claude-powered AI chat panel for configuring automated agents, with a Linear-inspired dark UI supporting 6 dynamic color themes.",
+      tags: ["React", "Next.js", "TypeScript", "Tailwind CSS", "React Flow", "TanStack Query", "Zustand"],
+      live_url: "https://app.runmycrew.com",
+      github_url: "https://github.com/bibektimilsina00/runmycrew",
+      image_url: null,
+      featured: true,
+      display_order: 0,
+    },
+    {
+      title: "UniCore Pedant",
+      description:
+        "Enterprise-grade academic administration portal built with Next.js and TypeScript for managing student records, grading workflows, and faculty schedules.\nFeatures a high-density dashboard with fast query execution using React Query and state synchronization via Zustand.",
+      tags: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Zustand", "React Query", "Zod", "shadcn/ui"],
+      live_url: null,
+      github_url: "https://github.com/pedant-heimate/pedant-frontend",
+      image_url: null,
+      featured: true,
+      display_order: 1,
+    },
+    {
       title: "TaskMesh",
       description:
         "TaskMesh is a unified, keyboard-first developer and business operating system that combines project management, CRM, and HR tools into a single high-speed workspace.\nBy native linking of client deals, delivery workflows, and employee timesheets, it eliminates subscription fatigue and provides unmatched organizational efficiency.",
@@ -9,7 +31,7 @@ export const LEGACY_DATA = {
       github_url: null,
       image_url: null,
       featured: true,
-      display_order: 0,
+      display_order: 2,
     },
     {
       title: "FotosFolio",
