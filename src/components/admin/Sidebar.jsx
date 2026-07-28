@@ -11,6 +11,7 @@ import {
   User,
   LogOut,
   Shield,
+  FileText,
 } from "lucide-react";
 
 export default function Sidebar({ tab, navigate, unreadCount, logout }) {
@@ -24,6 +25,7 @@ export default function Sidebar({ tab, navigate, unreadCount, logout }) {
     { key: "skills", label: "Skills", icon: Layers, subtitle: "Technologies", route: "skills", color: "text-cyan-400" },
     { key: "testimonials", label: "Testimonials", icon: MessageSquare, subtitle: "Client feedback", route: "testimonials", color: "text-pink-400" },
     { key: "messages", label: "Messages", icon: Inbox, subtitle: `${unreadCount} unread`, route: "messages", color: "text-rose-400", badge: unreadCount },
+    { key: "cv", label: "CV Generator", icon: FileText, subtitle: "Export resume", route: "cv", color: "text-teal-400" },
   ];
 
   return (

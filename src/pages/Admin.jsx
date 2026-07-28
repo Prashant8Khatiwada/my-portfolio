@@ -14,6 +14,7 @@ import ServicesTab from "../components/admin/ServicesTab";
 import MessagesTab from "../components/admin/MessagesTab";
 import HeroTab from "../components/admin/HeroTab";
 import AboutTab from "../components/admin/AboutTab";
+import CVTab from "../components/admin/CVTab";
 
 // React Query Custom Hooks
 import {
@@ -45,6 +46,7 @@ const TAB_LABELS = {
   skills: "Skills",
   testimonials: "Testimonials",
   messages: "Messages",
+  cv: "CV Generator",
 };
 
 export default function Admin() {
@@ -345,6 +347,16 @@ export default function Admin() {
                 messages={messages}
                 messageLoading={messageLoading}
                 markMessageRead={handleMarkMessageRead}
+              />
+            )}
+
+            {tab === "cv" && (
+              <CVTab
+                profile={profile}
+                skills={skills}
+                timeline={timeline}
+                projects={projects}
+                services={services}
               />
             )}
           </div>
