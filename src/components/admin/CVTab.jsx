@@ -70,10 +70,10 @@ const TEMPLATES = {
 function CVPreview({ profile, skills, timeline, projects, services, options, template }) {
   const t = TEMPLATES[template];
   const workItems = timeline.filter((i) => i.type === "work").sort((a, b) => (a.display_order ?? 0) - (b.display_order ?? 0));
-  const eduItems = timeline.filter((i) => i.type === "education").sort((a, b) => (a.display_order ?? 0) - (b.display_order ?? 0));
   const displayProjects = options.featuredOnly ? projects.filter((p) => p.featured) : projects;
   const skillGroups = groupBy(skills.sort((a, b) => (a.display_order ?? 0) - (b.display_order ?? 0)), "category");
   const yearsExp = profile?.stats_experience ? calcYearsExp(profile.stats_experience) : null;
+  const displaySummary = options.summaryOverride || (profile?.description ? (yearsExp ? profile.description.replace(/\d\+?\s*years?/gi, `${yearsExp}+`) : profile.description) : "");
 
   const s = {
     page: { fontFamily: t.fontFamily, fontSize: "10pt", color: "#111", lineHeight: t.lineHeight, background: "#fff" },
@@ -82,8 +82,10 @@ function CVPreview({ profile, skills, timeline, projects, services, options, tem
     contactLine: { fontSize: "9pt", color: "#374151", margin: "2px 0" },
     header: { borderBottom: t.headingBorder, paddingBottom: "3px", marginBottom: "6px", marginTop: "14px" },
     sectionTitle: { fontSize: "10.5pt", fontWeight: "bold", color: t.accent, textTransform: "uppercase", letterSpacing: "1.5px", margin: "0" },
-    bulletList: { margin: "4px 0 0 0", paddingLeft: "16px" },
-    bullet: { marginBottom: "3px", fontSize: "9.5pt", color: "#1f2937" },
+    bulletList: { margin: "4px 0 0 0", paddingLeft: "0", listStyle: "none" },
+    bullet: { display: "flex", gap: "7px", marginBottom: "4px", fontSize: "9.5pt", color: "#1f2937", alignItems: "flex-start" },
+    bulletDot: { flexShrink: "0", marginTop: "1px", lineHeight: "1.5" },
+    bulletText: { flex: "1" },
     jobTitle: { fontWeight: "bold", fontSize: "10pt", color: "#111" },
     jobMeta: { fontSize: "9pt", color: "#6b7280", marginBottom: "3px" },
     paragraph: { fontSize: "9.5pt", color: "#1f2937", margin: "4px 0 0 0" },
@@ -96,29 +98,29 @@ function CVPreview({ profile, skills, timeline, projects, services, options, tem
       <div style={{ textAlign: "center", marginBottom: "6px" }}>
         <h1 style={s.name}>{profile?.name || "Your Name"}</h1>
         {options.showTitle && (
-          <p style={s.subtitle}>{options.jobTitleOverride || profile?.title || "Full Stack Developer"}</p>
+          <p style={s.subtitle}>{options.jobTitleOverride || profile?.title || "Fullstack Developer"}</p>
         )}
         <p style={s.contactLine}>
           {options.location || "Kathmandu, Nepal"}
           {options.phone && <> | {options.phone}</>}
-          {profile?.email && <> | <a href={`mailto:${profile.email}`} style={{ color: t.accent }}>{profile.email}</a></>}
+          {(options.emailOverride || profile?.email) && (
+            <> | <a href={`mailto:${options.emailOverride || profile.email}`} style={{ color: t.accent }}>{options.emailOverride || profile.email}</a></>
+          )}
         </p>
         <p style={s.contactLine}>
           {profile?.linkedin_url && <a href={profile.linkedin_url} style={{ color: t.accent }}>{profile.linkedin_url}</a>}
           {profile?.linkedin_url && profile?.github_url && " | "}
           {profile?.github_url && <a href={profile.github_url} style={{ color: t.accent }}>{profile.github_url}</a>}
-          {options.portfolioUrl && <> | <a href={options.portfolioUrl} style={{ color: t.accent }}>{options.portfolioUrl}</a></>}
+          {options.portfolioUrl && <> | <a href={options.portfolioUrl.startsWith("http") ? options.portfolioUrl : `https://${options.portfolioUrl}`} style={{ color: t.accent }}>{options.portfolioUrl}</a></>}
         </p>
       </div>
 
       {/* Summary */}
-      {options.showSummary && profile?.description && (
+      {options.showSummary && displaySummary && (
         <div>
           <div style={s.header}><h2 style={s.sectionTitle}>Professional Summary</h2></div>
           <p style={s.paragraph}>
-            {yearsExp
-              ? profile.description.replace(/\d\+?\s*years?/gi, `${yearsExp}+`)
-              : profile.description}
+            {displaySummary}
           </p>
         </div>
       )}
@@ -130,8 +132,8 @@ function CVPreview({ profile, skills, timeline, projects, services, options, tem
           <ul style={s.bulletList}>
             {Object.entries(skillGroups).map(([cat, items]) => (
               <li key={cat} style={s.bullet}>
-                <strong>{cat}:</strong>{" "}
-                {items.map((sk) => sk.name + (sk.description ? ` (${sk.description})` : "")).join(", ")}
+                <span style={s.bulletDot}>●</span>
+                <span style={s.bulletText}><strong>{cat}:</strong>{" "}{items.map((sk) => sk.name + (sk.description ? ` (${sk.description})` : "")).join(", ")}</span>
               </li>
             ))}
           </ul>
@@ -141,7 +143,7 @@ function CVPreview({ profile, skills, timeline, projects, services, options, tem
       {/* Experience */}
       {options.showExperience && workItems.length > 0 && (
         <div>
-          <div style={s.header}><h2 style={s.sectionTitle}>Professional Experience</h2></div>
+          <div style={s.header}><h2 style={s.sectionTitle}>Work Experience</h2></div>
           {workItems.map((item, i) => {
             const bullets = (item.description || "")
               .split(/\n/)
@@ -150,12 +152,17 @@ function CVPreview({ profile, skills, timeline, projects, services, options, tem
             return (
               <div key={item.id || i} style={{ marginBottom: "12px" }}>
                 <div style={s.row}>
-                  <span style={s.jobTitle}>{item.title}{item.company ? `, ${item.company}` : ""}</span>
+                  <span style={s.jobTitle}>{item.title}{item.company ? ` | ${item.company}` : ""}</span>
                   <span style={{ fontSize: "9pt", color: "#6b7280" }}>{item.year}</span>
                 </div>
                 {bullets.length > 0 && (
                   <ul style={s.bulletList}>
-                    {bullets.map((b, j) => <li key={j} style={s.bullet}>{b}</li>)}
+                    {bullets.map((b, j) => (
+                      <li key={j} style={s.bullet}>
+                        <span style={s.bulletDot}>●</span>
+                        <span style={s.bulletText}>{b}</span>
+                      </li>
+                    ))}
                   </ul>
                 )}
               </div>
@@ -167,7 +174,7 @@ function CVPreview({ profile, skills, timeline, projects, services, options, tem
       {/* Projects */}
       {options.showProjects && displayProjects.length > 0 && (
         <div>
-          <div style={s.header}><h2 style={s.sectionTitle}>Projects</h2></div>
+          <div style={s.header}><h2 style={s.sectionTitle}>Key Projects</h2></div>
           {displayProjects.map((p, i) => (
             <div key={p.id || i} style={{ marginBottom: "10px" }}>
               <div style={s.row}>
@@ -178,7 +185,21 @@ function CVPreview({ profile, skills, timeline, projects, services, options, tem
                   {p.github_url && <a href={p.github_url} style={{ color: t.accent }}>GitHub</a>}
                 </span>
               </div>
-              {p.description && <p style={{ ...s.paragraph, marginTop: "2px" }}>{p.description}</p>}
+              {p.description && (() => {
+                const descBullets = p.description.split(/\n/).map(b => b.trim()).filter(Boolean);
+                return descBullets.length > 1 ? (
+                  <ul style={{ ...s.bulletList, marginTop: "2px" }}>
+                    {descBullets.map((b, j) => (
+                      <li key={j} style={s.bullet}>
+                        <span style={s.bulletDot}>●</span>
+                        <span style={s.bulletText}>{b}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p style={{ ...s.paragraph, marginTop: "2px" }}>{p.description}</p>
+                );
+              })()}
               {p.tags && p.tags.length > 0 && (
                 <p style={{ ...s.paragraph, marginTop: "2px" }}>
                   <strong>Stack:</strong> {Array.isArray(p.tags) ? p.tags.join(", ") : p.tags}
@@ -190,25 +211,33 @@ function CVPreview({ profile, skills, timeline, projects, services, options, tem
       )}
 
       {/* Education */}
-      {options.showEducation && eduItems.length > 0 && (
+      {options.showEducation && (
         <div>
           <div style={s.header}><h2 style={s.sectionTitle}>Education</h2></div>
-          {eduItems.map((item, i) => {
-            const bullets = (item.description || "").split(/\n/).map((b) => b.trim()).filter(Boolean);
-            return (
-              <div key={item.id || i} style={{ marginBottom: "10px" }}>
-                <div style={s.row}>
-                  <span style={s.jobTitle}>{item.title}{item.company ? `, ${item.company}` : ""}</span>
-                  <span style={{ fontSize: "9pt", color: "#6b7280" }}>{item.year}</span>
-                </div>
-                {bullets.length > 0 && (
-                  <ul style={s.bulletList}>
-                    {bullets.map((b, j) => <li key={j} style={s.bullet}>{b}</li>)}
-                  </ul>
-                )}
-              </div>
-            );
-          })}
+          <div style={{ marginBottom: "8px" }}>
+            <div style={s.row}>
+              <span style={s.jobTitle}>BSc. CSIT (Computer Science & Information Technology)</span>
+              <span style={{ fontSize: "9pt", color: "#6b7280" }}>2022-2026</span>
+            </div>
+            <p style={{ ...s.paragraph, color: "#4b5563", marginTop: "1px" }}>Tribhuvan University, Patan multiple campus</p>
+          </div>
+          <div style={{ marginBottom: "8px" }}>
+            <div style={s.row}>
+              <span style={s.jobTitle}>+2 Science with CS</span>
+              <span style={{ fontSize: "9pt", color: "#6b7280" }}>2020-2021</span>
+            </div>
+            <p style={{ ...s.paragraph, color: "#4b5563", marginTop: "1px" }}>Reliance International Academy</p>
+          </div>
+        </div>
+      )}
+
+      {/* Languages */}
+      {options.showLanguages && (
+        <div>
+          <div style={s.header}><h2 style={s.sectionTitle}>Languages</h2></div>
+          <p style={s.paragraph}>
+            English (Fluent), Nepali (Native), Hindi (Proficient)
+          </p>
         </div>
       )}
 
@@ -279,11 +308,14 @@ export default function CVTab({ profile, skills = [], timeline = [], projects = 
     showProjects: true,
     showEducation: true,
     showServices: false,
+    showLanguages: true,
     featuredOnly: true,
-    jobTitleOverride: "",
+    jobTitleOverride: "Fullstack Developer",
     phone: "+977  9762713987",
     location: "Kathmandu, Nepal",
-    portfolioUrl: "",
+    portfolioUrl: "khatiwadaprashant.com.np",
+    emailOverride: "prashantkhatiwada554@gmail.com",
+    summaryOverride: "",
   });
 
   const setOpt = (key, val) => setOptions((o) => ({ ...o, [key]: val }));
@@ -339,6 +371,7 @@ export default function CVTab({ profile, skills = [], timeline = [], projects = 
           <Toggle label="Experience" checked={options.showExperience} onChange={(v) => setOpt("showExperience", v)} />
           <Toggle label="Projects" checked={options.showProjects} onChange={(v) => setOpt("showProjects", v)} />
           <Toggle label="Education" checked={options.showEducation} onChange={(v) => setOpt("showEducation", v)} />
+          <Toggle label="Languages" checked={options.showLanguages} onChange={(v) => setOpt("showLanguages", v)} />
           <Toggle label="Areas of Expertise" checked={options.showServices} onChange={(v) => setOpt("showServices", v)} />
         </SettingsSection>
 
@@ -353,11 +386,15 @@ export default function CVTab({ profile, skills = [], timeline = [], projects = 
         </SettingsSection>
 
         {/* Overrides */}
-        <SettingsSection title="Contact Overrides" defaultOpen={true}>
+        <SettingsSection title="Overrides" defaultOpen={true}>
           <div className="space-y-3 pt-1">
             <div>
               <label className="text-[10px] uppercase tracking-widest font-semibold text-muted-foreground/60 mb-1 block">Job Title Override</label>
-              <input className={inputCls} type="text" placeholder={profile?.title || "Full Stack Developer"} value={options.jobTitleOverride} onChange={(e) => setOpt("jobTitleOverride", e.target.value)} />
+              <input className={inputCls} type="text" placeholder={profile?.title || "Fullstack Developer"} value={options.jobTitleOverride} onChange={(e) => setOpt("jobTitleOverride", e.target.value)} />
+            </div>
+            <div>
+              <label className="text-[10px] uppercase tracking-widest font-semibold text-muted-foreground/60 mb-1 block">Email Override</label>
+              <input className={inputCls} type="email" placeholder="prashantkhatiwada554@gmail.com" value={options.emailOverride} onChange={(e) => setOpt("emailOverride", e.target.value)} />
             </div>
             <div>
               <label className="text-[10px] uppercase tracking-widest font-semibold text-muted-foreground/60 mb-1 block">Phone Number</label>
@@ -369,7 +406,11 @@ export default function CVTab({ profile, skills = [], timeline = [], projects = 
             </div>
             <div>
               <label className="text-[10px] uppercase tracking-widest font-semibold text-muted-foreground/60 mb-1 block">Portfolio URL</label>
-              <input className={inputCls} type="text" placeholder="https://yourportfolio.com" value={options.portfolioUrl} onChange={(e) => setOpt("portfolioUrl", e.target.value)} />
+              <input className={inputCls} type="text" placeholder="khatiwadaprashant.com.np" value={options.portfolioUrl} onChange={(e) => setOpt("portfolioUrl", e.target.value)} />
+            </div>
+            <div>
+              <label className="text-[10px] uppercase tracking-widest font-semibold text-muted-foreground/60 mb-1 block">Professional Summary Override</label>
+              <textarea className="w-full bg-muted/40 border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 outline-none focus:ring-2 focus:ring-primary/20 transition-all resize-none" rows={4} placeholder="Type custom professional summary here..." value={options.summaryOverride} onChange={(e) => setOpt("summaryOverride", e.target.value)} />
             </div>
           </div>
         </SettingsSection>
