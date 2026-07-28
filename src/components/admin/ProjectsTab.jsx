@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { FolderKanban, ExternalLink, Github } from "lucide-react";
 import {
   adminCard, adminInput, adminTextarea, adminPrimaryBtn, adminSecondaryBtn, adminLabel,
@@ -14,6 +14,7 @@ export default function ProjectsTab({
   const [jsonText, setJsonText] = useState("");
   const [showJson, setShowJson] = useState(false);
   const [copied, setCopied] = useState(false);
+  const fileInputRef = useRef(null);
 
   const parseRobustJson = (str) => {
     let cleaned = str.trim();
@@ -38,6 +39,22 @@ export default function ProjectsTab({
       }
     }
     return JSON.parse(result);
+  };
+
+  const handlePaste = (e) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].type.indexOf("image") !== -1) {
+        const file = items[i].getAsFile();
+        if (file) {
+          setProjectImageFile(file);
+          showToast("Image pasted from clipboard!", "success");
+          e.preventDefault();
+          break;
+        }
+      }
+    }
   };
 
   const applyToForm = () => {
@@ -127,12 +144,67 @@ export default function ProjectsTab({
             </div>
             <div>
               <label className={adminLabel}>Thumbnail Image</label>
-              <div className="relative rounded-xl border border-dashed border-white/15 hover:border-violet-500/40 bg-white/3 hover:bg-white/5 transition-all cursor-pointer p-6 flex flex-col items-center justify-center gap-2">
-                <input type="file" accept="image/*" onChange={(e) => setProjectImageFile(e.target.files?.[0] || null)} className="absolute inset-0 opacity-0 cursor-pointer" />
-                <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center">
-                  <FolderKanban className="w-4 h-4 text-white/30" />
+              <div 
+                onPaste={handlePaste}
+                tabIndex={0}
+                className="relative rounded-xl border border-dashed border-border bg-muted/40 hover:bg-muted/60 transition-all p-6 flex flex-col items-center justify-center gap-3 outline-none focus-within:ring-2 focus-within:ring-primary/20"
+              >
+                <input 
+                  type="file" 
+                  ref={fileInputRef}
+                  accept="image/*" 
+                  onChange={(e) => setProjectImageFile(e.target.files?.[0] || null)} 
+                  className="hidden" 
+                />
+                <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
+                  <FolderKanban className="w-4 h-4 text-muted-foreground/50" />
                 </div>
-                <p className="text-xs text-white/30 text-center">{projectImageFile ? projectImageFile.name : "Click or drag to upload image"}</p>
+                
+                {projectImageFile ? (
+                  <div className="text-center">
+                    <p className="text-xs font-semibold text-foreground truncate max-w-[200px]">{projectImageFile.name}</p>
+                    <p className="text-[10px] text-muted-foreground mt-0.5">Image loaded</p>
+                  </div>
+                ) : (
+                  <p className="text-xs text-muted-foreground/60 text-center">
+                    Select an option below to add a thumbnail
+                  </p>
+                )}
+
+                <div className="flex gap-2 mt-1">
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="px-3 py-1.5 rounded-lg border border-border bg-card hover:bg-muted text-xs font-semibold text-foreground transition-all"
+                  >
+                    📁 Browse File
+                  </button>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      try {
+                        const clipboardItems = await navigator.clipboard.read();
+                        for (const item of clipboardItems) {
+                          for (const type of item.types) {
+                            if (type.startsWith("image/")) {
+                              const blob = await item.getType(type);
+                              const file = new File([blob], `pasted-image-${Date.now()}.${type.split("/")[1]}`, { type });
+                              setProjectImageFile(file);
+                              showToast("Image pasted from clipboard!", "success");
+                              return;
+                            }
+                          }
+                        }
+                        showToast("No image found in clipboard.", "warning");
+                      } catch (err) {
+                        showToast("Click here and press Ctrl+V to paste.", "info");
+                      }
+                    }}
+                    className="px-3 py-1.5 rounded-lg border border-primary/20 bg-primary/5 hover:bg-primary/10 text-xs font-semibold text-primary transition-all"
+                  >
+                    📋 Paste Image
+                  </button>
+                </div>
               </div>
             </div>
             <div className="flex items-center gap-3 self-end pb-2">
@@ -141,14 +213,14 @@ export default function ProjectsTab({
                 role="switch"
                 aria-checked={projectForm.featured}
                 onClick={() => setProjectForm(f => ({ ...f, featured: !f.featured }))}
-                className={`relative w-10 h-5 rounded-full transition-colors duration-200 flex-shrink-0 ${projectForm.featured ? "bg-violet-600" : "bg-white/10"}`}
+                className={`relative w-10 h-5 rounded-full transition-colors duration-200 flex-shrink-0 ${projectForm.featured ? "bg-primary" : "bg-muted"}`}
               >
                 <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${projectForm.featured ? "translate-x-5" : "translate-x-0"}`} />
               </button>
-              <span className="text-xs font-medium text-white/50">{projectForm.featured ? "Featured on frontpage" : "Standard project"}</span>
+              <span className="text-xs font-medium text-muted-foreground">{projectForm.featured ? "Featured on frontpage" : "Standard project"}</span>
             </div>
           </div>
-          <div className="flex gap-3 pt-4 border-t border-white/5">
+          <div className="flex gap-3 pt-4 border-t border-border">
             <button type="submit" className={adminPrimaryBtn}><FolderKanban className="w-3.5 h-3.5" />{editingProjectId ? "Save Changes" : "Create Project"}</button>
             {editingProjectId && <button type="button" onClick={resetProjectForm} className={adminSecondaryBtn}>Cancel</button>}
           </div>
