@@ -1,6 +1,17 @@
 export const LEGACY_DATA = {
   projects: [
     {
+      title: "TaskMesh",
+      description:
+        "TaskMesh is a unified, keyboard-first developer and business operating system that combines project management, CRM, and HR tools into a single high-speed workspace.\nBy native linking of client deals, delivery workflows, and employee timesheets, it eliminates subscription fatigue and provides unmatched organizational efficiency.",
+      tags: ["Next.js", "NestJS", "TypeScript", "PostgreSQL", "Prisma", "Redis", "Tailwind CSS", "Clerk", "Socket.io", "AWS S3"],
+      live_url: null,
+      github_url: null,
+      image_url: null,
+      featured: true,
+      display_order: 0,
+    },
+    {
       title: "FotosFolio",
       description:
         "Designed and built a full-stack cloud SaaS product with multi-tenant architecture, user management, and dynamic data visualization dashboards.\nImplemented robust APIs and third-party integrations enabling seamless end-user experience across web and mobile.",
@@ -9,7 +20,7 @@ export const LEGACY_DATA = {
       github_url: null,
       image_url: null,
       featured: true,
-      display_order: 0,
+      display_order: 1,
     },
     {
       title: "Sawari Expert",
