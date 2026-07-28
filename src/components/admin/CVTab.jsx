@@ -37,6 +37,14 @@ function calcYearsExp(startDate) {
   return Math.max(1, Math.floor(diff));
 }
 
+function parseBullets(text) {
+  if (!text) return [];
+  return text
+    .split(/\n|●|•|\*|(?<=\.)\s+(?=[A-Z])/)
+    .map(x => x.trim())
+    .filter(Boolean);
+}
+
 const TEMPLATES = {
   classic: {
     label: "Classic",
@@ -82,7 +90,7 @@ function CVPreview({ profile, skills, timeline, projects, services, options, tem
     contactLine: { fontSize: "9pt", color: "#374151", margin: "2px 0" },
     header: { borderBottom: t.headingBorder, paddingBottom: "3px", marginBottom: "6px", marginTop: "14px" },
     sectionTitle: { fontSize: "10.5pt", fontWeight: "bold", color: t.accent, textTransform: "uppercase", letterSpacing: "1.5px", margin: "0" },
-    bulletList: { margin: "4px 0 0 0", paddingLeft: "0", listStyle: "none" },
+    bulletList: { margin: "4px 0 0 0", paddingLeft: "16px", listStyle: "none" },
     bullet: { display: "flex", gap: "7px", marginBottom: "4px", fontSize: "9.5pt", color: "#1f2937", alignItems: "flex-start" },
     bulletDot: { flexShrink: "0", marginTop: "1px", lineHeight: "1.5" },
     bulletText: { flex: "1" },
@@ -145,10 +153,7 @@ function CVPreview({ profile, skills, timeline, projects, services, options, tem
         <div>
           <div style={s.header}><h2 style={s.sectionTitle}>Work Experience</h2></div>
           {workItems.map((item, i) => {
-            const bullets = (item.description || "")
-              .split(/\n/)
-              .map((b) => b.trim())
-              .filter(Boolean);
+            const bullets = parseBullets(item.description);
             return (
               <div key={item.id || i} style={{ marginBottom: "12px" }}>
                 <div style={s.row}>
@@ -186,8 +191,8 @@ function CVPreview({ profile, skills, timeline, projects, services, options, tem
                 </span>
               </div>
               {p.description && (() => {
-                const descBullets = p.description.split(/\n/).map(b => b.trim()).filter(Boolean);
-                return descBullets.length > 1 ? (
+                const descBullets = parseBullets(p.description);
+                return descBullets.length > 0 ? (
                   <ul style={{ ...s.bulletList, marginTop: "2px" }}>
                     {descBullets.map((b, j) => (
                       <li key={j} style={s.bullet}>
@@ -196,9 +201,7 @@ function CVPreview({ profile, skills, timeline, projects, services, options, tem
                       </li>
                     ))}
                   </ul>
-                ) : (
-                  <p style={{ ...s.paragraph, marginTop: "2px" }}>{p.description}</p>
-                );
+                ) : null;
               })()}
               {p.tags && p.tags.length > 0 && (
                 <p style={{ ...s.paragraph, marginTop: "2px" }}>

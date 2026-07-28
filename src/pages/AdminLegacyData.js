@@ -3,7 +3,7 @@ export const LEGACY_DATA = {
     {
       title: "FotosFolio",
       description:
-        "Portfolio platform for photographers and visual artists to showcase high-quality images, manage galleries, and share work with clients.",
+        "Designed and built a full-stack cloud SaaS product with multi-tenant architecture, user management, and dynamic data visualization dashboards.\nImplemented robust APIs and third-party integrations enabling seamless end-user experience across web and mobile.",
       tags: ["React", "Next.js", "Cloud Storage"],
       live_url: "https://fotosfolio.com/",
       github_url: null,
@@ -14,7 +14,7 @@ export const LEGACY_DATA = {
     {
       title: "Sawari Expert",
       description:
-        "Ride-hailing and transport management platform providing seamless booking, driver tracking, and customer support for urban commuters.",
+        "Ride-hailing and transport management platform providing seamless booking, driver tracking, and customer support for urban commuters.\nIntegrated Google Maps API for real-time location mapping and routing calculations.",
       tags: ["React", "Node.js", "Google Maps API"],
       live_url: "https://sawariexpert.com/",
       github_url: null,
@@ -25,7 +25,7 @@ export const LEGACY_DATA = {
     {
       title: "Abroad Institute",
       description:
-        "Educational consultancy platform helping students pursue studies abroad with course finder and application tracking.",
+        "Educational consultancy platform helping students pursue studies abroad with course finder and application tracking.\nDeveloped interactive search and filter system for international courses.",
       tags: ["React", "Node.js", "MongoDB"],
       live_url: "http://abroadinst.com",
       github_url: null,
@@ -36,7 +36,7 @@ export const LEGACY_DATA = {
     {
       title: "ZipIt",
       description:
-        "A high-performance NPM package and web utility to zip files efficiently in the browser. Supports large file streaming and customizable compression.",
+        "A high-performance NPM package and web utility to zip files efficiently in the browser.\nSupports large file streaming and customizable compression ratios.",
       tags: ["React", "TypeScript", "NPM", "Streams API"],
       live_url: "https://www.npmjs.com/package/@khatiwadaprashant/zipit-react",
       github_url: null,
@@ -47,7 +47,7 @@ export const LEGACY_DATA = {
     {
       title: "Creatopedia",
       description:
-        "A premium SaaS platform for AI creators to host, manage, and monetize prompt libraries. Features dynamic subdomain routing, real-time analytics, and a sophisticated multi-tenant architecture.",
+        "A premium SaaS platform for AI creators to host, manage, and monetize prompt libraries.\nFeatures dynamic subdomain routing and real-time analytics dashboards.",
       tags: ["Next.js", "React", "Tailwind CSS", "Supabase"],
       live_url: "https://creatopedia.tech/",
       github_url: null,
@@ -58,7 +58,7 @@ export const LEGACY_DATA = {
     {
       title: "Kumari Bank",
       description:
-        "Official website for Kumari Bank Limited, featuring secure banking services, account management, and financial tools.",
+        "Official website for Kumari Bank Limited, featuring secure banking services, account management, and financial tools.\nDesigned secure registration forms and automated transaction reports.",
       tags: ["React", "Banking API", "Security"],
       live_url: "https://www.kumaribank.com/en/personal-banking",
       github_url: null,
@@ -158,29 +158,29 @@ export const LEGACY_DATA = {
   ],
   timeline: [
     {
-      year: "Jan 2025 - Sept 2025",
-      title: "Mid-level Developer",
+      year: "Jan 2025 - Present",
+      title: "Senior Software Engineer",
       company: "Blueneontech",
       description:
-        "Built Fotosfolio platform with Next.js and TypeScript. Implemented galleries with lazy loading and Cloudinary integration, achieving 45% faster load times. Developed vehicle service booking system with real-time calendar and dashboard.",
+        "Architect and develop Fotosfolio — a cloud-based SaaS photography platform.\nBuilt Sawari Expert — an automobile management platform with real-time tracking and management capabilities.\nDeveloped NexusHQ — a full-stack multi-tenant platform with automated workflows.",
       type: "work",
       display_order: 0,
     },
     {
       year: "Jan 2024 - Dec 2024",
-      title: "Junior Developer",
+      title: "Frontend Developer",
       company: "Peace Nepal",
       description:
-        "Developed KYC forms for ADBL and Pacific Regional Bank using React, Formik, and Context API. Led CIVI app development with location mapping (Leaflet) and Firebase storage. Implemented secure API integrations with Yup and Zod validation.",
+        "Developed secure KYC forms for Kumari Bank and ADBL with Yup and Zod validations.\nLed CIVI app development with location mapping (Leaflet) and Firebase real-time database.",
       type: "work",
       display_order: 1,
     },
     {
       year: "Mar 2023 - Nov 2023",
-      title: "Junior Developer",
+      title: "Frontend Developer",
       company: "Lancemeup",
       description:
-        "Worked on WealthPandit and multiple client projects. Built advanced calendar component with CSS Grid, date-fns, and Google Calendar sync. Optimized frontend performance with incremental updates.",
+        "Developed WealthPandit — a heavy CRUD financial trading dashboard using React Query.\nOptimized frontend performance and database queries with Google Calendar sync integration.",
       type: "work",
       display_order: 2,
     },
@@ -189,7 +189,7 @@ export const LEGACY_DATA = {
       title: "Frontend Intern",
       company: "Lancemeup",
       description:
-        "Built responsive WealthPandit website using React Query for optimized data fetching. Contributed to TickTicketing platform with performance fixes and feature enhancements.",
+        "Built responsive landing pages and user interfaces for WealthPandit.\nContributed to online movie ticket booking system with performance fixes.",
       type: "work",
       display_order: 3,
     },

@@ -38,6 +38,24 @@ export default function TimelineTab({
     education: { dot: "bg-cyan-500", badge: "bg-cyan-500/10 border-cyan-500/20 text-cyan-400", label: "Education" },
   };
 
+  const bullets = timelineForm.description ? timelineForm.description.split("\n") : [""];
+
+  const handleBulletChange = (index, value) => {
+    const newBullets = [...bullets];
+    newBullets[index] = value;
+    setTimelineForm(f => ({ ...f, description: newBullets.join("\n") }));
+  };
+
+  const addBullet = () => {
+    const newBullets = [...bullets, ""];
+    setTimelineForm(f => ({ ...f, description: newBullets.join("\n") }));
+  };
+
+  const removeBullet = (index) => {
+    const newBullets = bullets.filter((_, i) => i !== index);
+    setTimelineForm(f => ({ ...f, description: newBullets.join("\n") }));
+  };
+
   return (
     <div className="space-y-6">
       <div className={adminCard}>
@@ -75,9 +93,39 @@ export default function TimelineTab({
               <label className={adminLabel}>Company / Institution</label>
               <input className={adminInput} placeholder="Acme Corporation" value={timelineForm.company} onChange={(e) => setTimelineForm(f => ({ ...f, company: e.target.value }))} />
             </div>
-            <div className="md:col-span-2">
-              <label className={adminLabel}>Description</label>
-              <textarea className={adminTextarea} rows={3} placeholder="Responsibilities and achievements..." value={timelineForm.description} onChange={(e) => setTimelineForm(f => ({ ...f, description: e.target.value }))} />
+            <div className="md:col-span-2 space-y-2">
+              <div className="flex justify-between items-center">
+                <label className={adminLabel}>Description / Responsibility Bullets</label>
+                <button
+                  type="button"
+                  onClick={addBullet}
+                  className="text-xs px-2.5 py-1 rounded bg-primary/10 border border-primary/20 text-primary hover:bg-primary/20 transition-all font-semibold"
+                >
+                  + Add Point
+                </button>
+              </div>
+              <div className="space-y-2">
+                {bullets.map((bulletText, index) => (
+                  <div key={index} className="flex gap-2 items-center">
+                    <span className="text-muted-foreground/60 text-xs w-4 flex-shrink-0 text-right">{index + 1}.</span>
+                    <input
+                      className={adminInput}
+                      placeholder={`Detail point #${index + 1}...`}
+                      value={bulletText}
+                      onChange={(e) => handleBulletChange(index, e.target.value)}
+                    />
+                    {bullets.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeBullet(index)}
+                        className="p-2 text-muted-foreground hover:text-rose-500 transition-colors"
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
           <div className="flex gap-3 pt-4 border-t border-white/5">

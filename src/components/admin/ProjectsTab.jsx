@@ -16,6 +16,24 @@ export default function ProjectsTab({
   const [copied, setCopied] = useState(false);
   const fileInputRef = useRef(null);
 
+  const projectBullets = projectForm.description ? projectForm.description.split("\n") : [""];
+
+  const handleProjectBulletChange = (index, value) => {
+    const newBullets = [...projectBullets];
+    newBullets[index] = value;
+    setProjectForm(f => ({ ...f, description: newBullets.join("\n") }));
+  };
+
+  const addProjectBullet = () => {
+    const newBullets = [...projectBullets, ""];
+    setProjectForm(f => ({ ...f, description: newBullets.join("\n") }));
+  };
+
+  const removeProjectBullet = (index) => {
+    const newBullets = projectBullets.filter((_, i) => i !== index);
+    setProjectForm(f => ({ ...f, description: newBullets.join("\n") }));
+  };
+
   const parseRobustJson = (str) => {
     let cleaned = str.trim();
     if (cleaned.startsWith("```")) {
@@ -138,9 +156,39 @@ export default function ProjectsTab({
               <label className={adminLabel}>Tags / Technologies (comma separated)</label>
               <input className={adminInput} placeholder="React, TypeScript, Tailwind, Supabase" value={projectForm.tags} onChange={(e) => setProjectForm(f => ({ ...f, tags: e.target.value }))} />
             </div>
-            <div className="md:col-span-2">
-              <label className={adminLabel}>Project Description</label>
-              <textarea className={adminTextarea} rows={4} placeholder="What this project does..." value={projectForm.description} onChange={(e) => setProjectForm(f => ({ ...f, description: e.target.value }))} />
+            <div className="md:col-span-2 space-y-2">
+              <div className="flex justify-between items-center">
+                <label className={adminLabel}>Project Description (Bullet Points)</label>
+                <button
+                  type="button"
+                  onClick={addProjectBullet}
+                  className="text-xs px-2.5 py-1 rounded bg-primary/10 border border-primary/20 text-primary hover:bg-primary/20 transition-all font-semibold"
+                >
+                  + Add Point
+                </button>
+              </div>
+              <div className="space-y-2">
+                {projectBullets.map((bulletText, index) => (
+                  <div key={index} className="flex gap-2 items-center">
+                    <span className="text-muted-foreground/60 text-xs w-4 flex-shrink-0 text-right">{index + 1}.</span>
+                    <input
+                      className={adminInput}
+                      placeholder={`Detail point #${index + 1}...`}
+                      value={bulletText}
+                      onChange={(e) => handleProjectBulletChange(index, e.target.value)}
+                    />
+                    {projectBullets.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeProjectBullet(index)}
+                        className="p-2 text-muted-foreground hover:text-rose-500 transition-colors"
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
             <div>
               <label className={adminLabel}>Thumbnail Image</label>
