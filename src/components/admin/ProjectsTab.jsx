@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { FolderKanban, ExternalLink, Github } from "lucide-react";
 import {
   adminCard, adminInput, adminTextarea, adminPrimaryBtn, adminSecondaryBtn, adminLabel,
@@ -15,6 +15,17 @@ export default function ProjectsTab({
   const [showJson, setShowJson] = useState(false);
   const [copied, setCopied] = useState(false);
   const fileInputRef = useRef(null);
+  const [imagePreview, setImagePreview] = useState(null);
+
+  useEffect(() => {
+    if (!projectImageFile) {
+      setImagePreview(null);
+      return;
+    }
+    const objectUrl = URL.createObjectURL(projectImageFile);
+    setImagePreview(objectUrl);
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [projectImageFile]);
 
   const projectBullets = projectForm.description ? projectForm.description.split("\n") : [""];
 
@@ -208,10 +219,14 @@ export default function ProjectsTab({
                   <FolderKanban className="w-4 h-4 text-muted-foreground/50" />
                 </div>
                 
-                {projectImageFile ? (
-                  <div className="text-center">
-                    <p className="text-xs font-semibold text-foreground truncate max-w-[200px]">{projectImageFile.name}</p>
-                    <p className="text-[10px] text-muted-foreground mt-0.5">Image loaded</p>
+                {imagePreview ? (
+                  <div className="flex flex-col items-center gap-2">
+                    <img 
+                      src={imagePreview} 
+                      alt="Thumbnail preview" 
+                      className="w-16 h-16 rounded-lg object-cover border border-border shadow-sm bg-muted"
+                    />
+                    <p className="text-xs font-semibold text-foreground truncate max-w-[200px]">{projectImageFile?.name || "Uploaded Image"}</p>
                   </div>
                 ) : (
                   <p className="text-xs text-muted-foreground/60 text-center">
@@ -360,7 +375,7 @@ export default function ProjectsTab({
 
 ### INSTRUCTIONS:
 1. **title**: Extract a clean, professional, and clear project name. Remove generic versioning or repo prefixes.
-2. **description**: Write a highly engaging, professional 2-3 sentence description of the project. Focus on the core value proposition, key features, and what problems it solves. Avoid generic text. It must be polished and ready to showcase on a premium developer portfolio.
+2. **description**: Write a highly engaging, professional description of the project, formatted as 2-3 clean, distinct bullet points / achievements separated by a newline character (\\n) (e.g., "Bullet point one\\nBullet point two"). Avoid generic text. It must be polished and ready to showcase on a premium developer portfolio.
 3. **tags**: Identify and extract the exact technologies, frameworks, libraries, and languages used (e.g., ["React", "TypeScript", "Tailwind CSS", "Supabase", "Node.js"]). Order them by importance. Do not include generic tags.
 4. **live_url**: If a live preview, website, or deployment URL is mentioned, extract it. Otherwise, set it to null.
 5. **github_url**: If a GitHub, GitLab, or bitbucket repository URL is mentioned, extract it. Otherwise, set it to null.
