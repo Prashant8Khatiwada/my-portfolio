@@ -15,9 +15,34 @@ export default function ProjectsTab({
   const [showJson, setShowJson] = useState(false);
   const [copied, setCopied] = useState(false);
 
+  const parseRobustJson = (str) => {
+    let cleaned = str.trim();
+    if (cleaned.startsWith("```")) {
+      cleaned = cleaned.replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
+    }
+    cleaned = cleaned.trim();
+    
+    let inString = false;
+    let result = "";
+    for (let i = 0; i < cleaned.length; i++) {
+      const char = cleaned[i];
+      if (char === '"' && (i === 0 || cleaned[i - 1] !== '\\')) {
+        inString = !inString;
+        result += char;
+      } else if (inString && (char === '\n' || char === '\r')) {
+        if (char === '\n') {
+          result += '\\n';
+        }
+      } else {
+        result += char;
+      }
+    }
+    return JSON.parse(result);
+  };
+
   const applyToForm = () => {
     try {
-      const p = JSON.parse(jsonText);
+      const p = parseRobustJson(jsonText);
       setProjectForm({
         title: p.title || "",
         description: p.description || "",
@@ -37,7 +62,7 @@ export default function ProjectsTab({
 
   const applyAndCreate = async () => {
     try {
-      const p = JSON.parse(jsonText);
+      const p = parseRobustJson(jsonText);
       const tagsArray = Array.isArray(p.tags) ? p.tags : (p.tags || "").split(",").map((t) => t.trim()).filter(Boolean);
       const payload = {
         title: p.title || "Untitled Project",
