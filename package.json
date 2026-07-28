@@ -3,6 +3,9 @@
   "homepage": "https://prashantkhatiwada.com",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "dependencies": {
     "@craco/craco": "^7.1.0",
     "@emailjs/browser": "^4.4.1",
