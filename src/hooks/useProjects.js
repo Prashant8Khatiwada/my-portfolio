@@ -11,7 +11,8 @@ export function useProjects() {
             .select("*")
             .order("display_order", { ascending: true })
             .then(({ data }) => {
-                setProjects(data || []);
+                const visibleProjects = (data || []).filter(p => p.active !== false);
+                setProjects(visibleProjects);
                 setLoading(false);
             });
     }, []);

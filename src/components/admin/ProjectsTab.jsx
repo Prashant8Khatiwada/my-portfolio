@@ -96,7 +96,8 @@ export default function ProjectsTab({
         live_url: p.live_url || "",
         github_url: p.github_url || "",
         featured: p.featured !== undefined ? Boolean(p.featured) : false,
-        display_order: p.display_order !== undefined ? Number(p.display_order) : 0
+        display_order: p.display_order !== undefined ? Number(p.display_order) : 0,
+        active: p.active !== undefined ? Boolean(p.active) : true
       });
       showToast("Loaded into form. Review and save.", "success");
       setShowJson(false);
@@ -117,7 +118,8 @@ export default function ProjectsTab({
         live_url: p.live_url || null,
         github_url: p.github_url || null,
         featured: p.featured !== undefined ? Boolean(p.featured) : false,
-        display_order: p.display_order !== undefined ? Number(p.display_order) : 0
+        display_order: p.display_order !== undefined ? Number(p.display_order) : 0,
+        active: p.active !== undefined ? Boolean(p.active) : true
       };
       await saveProject(null, payload);
       setShowJson(false);
@@ -270,17 +272,32 @@ export default function ProjectsTab({
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-3 self-end pb-2">
-              <button
-                type="button"
-                role="switch"
-                aria-checked={projectForm.featured}
-                onClick={() => setProjectForm(f => ({ ...f, featured: !f.featured }))}
-                className={`relative w-10 h-5 rounded-full transition-colors duration-200 flex-shrink-0 ${projectForm.featured ? "bg-primary" : "bg-muted"}`}
-              >
-                <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${projectForm.featured ? "translate-x-5" : "translate-x-0"}`} />
-              </button>
-              <span className="text-xs font-medium text-muted-foreground">{projectForm.featured ? "Featured on frontpage" : "Standard project"}</span>
+            <div className="flex flex-col sm:flex-row gap-5 md:col-span-2 mt-2">
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={projectForm.featured}
+                  onClick={() => setProjectForm(f => ({ ...f, featured: !f.featured }))}
+                  className={`relative w-10 h-5 rounded-full transition-colors duration-200 flex-shrink-0 ${projectForm.featured ? "bg-primary" : "bg-muted"}`}
+                >
+                  <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${projectForm.featured ? "translate-x-5" : "translate-x-0"}`} />
+                </button>
+                <span className="text-xs font-medium text-muted-foreground">{projectForm.featured ? "Featured on frontpage" : "Standard project"}</span>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={projectForm.active}
+                  onClick={() => setProjectForm(f => ({ ...f, active: f.active !== false ? false : true }))}
+                  className={`relative w-10 h-5 rounded-full transition-colors duration-200 flex-shrink-0 ${projectForm.active !== false ? "bg-primary" : "bg-muted"}`}
+                >
+                  <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${projectForm.active !== false ? "translate-x-5" : "translate-x-0"}`} />
+                </button>
+                <span className="text-xs font-medium text-muted-foreground">{projectForm.active !== false ? "Visible on portfolio" : "Hidden from portfolio"}</span>
+              </div>
             </div>
           </div>
           <div className="flex gap-3 pt-4 border-t border-border">
@@ -328,7 +345,7 @@ export default function ProjectsTab({
                     {project.github_url && <a href={project.github_url} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors"><Github className="w-3.5 h-3.5" /></a>}
                   </div>
                   <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <EditBtn onClick={() => { setEditingProjectId(project.id); setProjectForm({ title: project.title || "", description: project.description || "", tags: (project.tags || []).join(", "), live_url: project.live_url || "", github_url: project.github_url || "", featured: Boolean(project.featured), display_order: project.display_order || 0 }); }} />
+                    <EditBtn onClick={() => { setEditingProjectId(project.id); setProjectForm({ title: project.title || "", description: project.description || "", tags: (project.tags || []).join(", "), live_url: project.live_url || "", github_url: project.github_url || "", featured: Boolean(project.featured), display_order: project.display_order || 0, active: project.active !== false }); }} />
                     <DeleteBtn onClick={() => deleteProject(project.id)} />
                   </div>
                 </div>

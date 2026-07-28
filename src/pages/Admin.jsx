@@ -57,7 +57,7 @@ export default function Admin() {
 
   const [analyticsRangeDays, setAnalyticsRangeDays] = useState(30);
 
-  const [projectForm, setProjectForm] = useState({ title: "", description: "", tags: "", live_url: "", github_url: "", featured: false, display_order: 0 });
+  const [projectForm, setProjectForm] = useState({ title: "", description: "", tags: "", live_url: "", github_url: "", featured: false, display_order: 0, active: true });
   const [projectImageFile, setProjectImageFile] = useState(null);
   const [editingProjectId, setEditingProjectId] = useState(null);
 
@@ -138,7 +138,7 @@ export default function Admin() {
   };
 
   const resetProjectForm = () => {
-    setProjectForm({ title: "", description: "", tags: "", live_url: "", github_url: "", featured: false, display_order: 0 });
+    setProjectForm({ title: "", description: "", tags: "", live_url: "", github_url: "", featured: false, display_order: 0, active: true });
     setProjectImageFile(null);
     setEditingProjectId(null);
   };
@@ -153,7 +153,7 @@ export default function Admin() {
         const tagsArray = typeof projectForm.tags === "string"
           ? projectForm.tags.split(",").map((t) => t.trim()).filter(Boolean)
           : projectForm.tags;
-        payload = { title: projectForm.title, description: projectForm.description, tags: tagsArray, live_url: projectForm.live_url || null, github_url: projectForm.github_url || null, featured: Boolean(projectForm.featured), display_order: Number(projectForm.display_order) || 0 };
+        payload = { title: projectForm.title, description: projectForm.description, tags: tagsArray, live_url: projectForm.live_url || null, github_url: projectForm.github_url || null, featured: Boolean(projectForm.featured), display_order: Number(projectForm.display_order) || 0, active: projectForm.active !== undefined ? Boolean(projectForm.active) : true };
       }
       if (projectImageFile) payload.image_url = await uploadImage(projectImageFile);
       await saveProjectMutation.mutateAsync({ id: editingProjectId, payload });
