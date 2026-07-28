@@ -141,13 +141,18 @@ export default function Admin() {
     setEditingProjectId(null);
   };
 
-  const handleSaveProject = async (e) => {
-    e.preventDefault();
+  const handleSaveProject = async (e, directPayload = null) => {
+    e?.preventDefault();
     try {
-      const tagsArray = typeof projectForm.tags === "string"
-        ? projectForm.tags.split(",").map((t) => t.trim()).filter(Boolean)
-        : projectForm.tags;
-      const payload = { title: projectForm.title, description: projectForm.description, tags: tagsArray, live_url: projectForm.live_url || null, github_url: projectForm.github_url || null, featured: Boolean(projectForm.featured), display_order: Number(projectForm.display_order) || 0 };
+      let payload;
+      if (directPayload) {
+        payload = directPayload;
+      } else {
+        const tagsArray = typeof projectForm.tags === "string"
+          ? projectForm.tags.split(",").map((t) => t.trim()).filter(Boolean)
+          : projectForm.tags;
+        payload = { title: projectForm.title, description: projectForm.description, tags: tagsArray, live_url: projectForm.live_url || null, github_url: projectForm.github_url || null, featured: Boolean(projectForm.featured), display_order: Number(projectForm.display_order) || 0 };
+      }
       if (projectImageFile) payload.image_url = await uploadImage(projectImageFile);
       await saveProjectMutation.mutateAsync({ id: editingProjectId, payload });
       resetProjectForm();
