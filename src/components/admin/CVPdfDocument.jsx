@@ -61,7 +61,7 @@ const createStyles = (t) => StyleSheet.create({
   },
   bulletItem: {
     flexDirection: "row",
-    marginBottom: 1,
+    marginBottom: 0,
     fontSize: 9,
     color: "#1f2937",
     alignItems: "flex-start",
@@ -69,11 +69,11 @@ const createStyles = (t) => StyleSheet.create({
   bulletDot: {
     width: 8,
     fontSize: 9,
-    lineHeight: 1.1,
+    lineHeight: 1.0,
   },
   bulletText: {
     flex: 1,
-    lineHeight: 1.1,
+    lineHeight: 1.0,
   },
   row: {
     flexDirection: "row",
