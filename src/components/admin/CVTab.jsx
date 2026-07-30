@@ -1,22 +1,42 @@
 import React, { useState } from "react";
 import { FileText, Download, Eye, ChevronDown, ChevronUp } from "lucide-react";
+import { PDFViewer } from "@react-pdf/renderer";
+import CVPdfDocument from "./CVPdfDocument";
 
 // ─── Print styles injected once into <head> ───────────────────────────────────
 const PRINT_CSS = `
 @media print {
   body * { visibility: hidden !important; }
   #cv-printable, #cv-printable * { visibility: visible !important; }
-  #cv-printable {
-    position: fixed !important;
-    inset: 0 !important;
-    width: 100% !important;
+  
+  /* Reset all layouts and constraints for clean printing */
+  html, body, #root, main, div, section {
+    position: static !important;
+    overflow: visible !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
     margin: 0 !important;
-    padding: 0.6in 0.7in !important;
-    box-shadow: none !important;
+    padding: 0 !important;
     border: none !important;
+    box-shadow: none !important;
+    display: block !important;
+  }
+  
+  #cv-printable {
+    display: block !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    padding: 0.6in 0.7in !important;
     background: #fff !important;
   }
   @page { margin: 0; size: A4; }
+  .cv-section {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
 }
 `;
 
@@ -125,7 +145,7 @@ function CVPreview({ profile, skills, timeline, projects, services, options, tem
 
       {/* Summary */}
       {options.showSummary && displaySummary && (
-        <div>
+        <div className="cv-section" style={{ pageBreakInside: "avoid", breakInside: "avoid" }}>
           <div style={s.header}><h2 style={s.sectionTitle}>Professional Summary</h2></div>
           <p style={s.paragraph}>
             {displaySummary}
@@ -135,7 +155,7 @@ function CVPreview({ profile, skills, timeline, projects, services, options, tem
 
       {/* Skills */}
       {options.showSkills && skills.length > 0 && (
-        <div>
+        <div className="cv-section" style={{ pageBreakInside: "avoid", breakInside: "avoid" }}>
           <div style={s.header}><h2 style={s.sectionTitle}>Technical Skills</h2></div>
           <ul style={s.bulletList}>
             {Object.entries(skillGroups).map(([cat, items]) => (
@@ -155,7 +175,7 @@ function CVPreview({ profile, skills, timeline, projects, services, options, tem
           {workItems.map((item, i) => {
             const bullets = parseBullets(item.description);
             return (
-              <div key={item.id || i} style={{ marginBottom: "12px" }}>
+              <div key={item.id || i} className="cv-section" style={{ marginBottom: "12px", pageBreakInside: "avoid", breakInside: "avoid" }}>
                 <div style={s.row}>
                   <span style={s.jobTitle}>{item.title}{item.company ? ` | ${item.company}` : ""}</span>
                   <span style={{ fontSize: "9pt", color: "#6b7280" }}>{item.year}</span>
@@ -181,7 +201,7 @@ function CVPreview({ profile, skills, timeline, projects, services, options, tem
         <div>
           <div style={s.header}><h2 style={s.sectionTitle}>Key Projects</h2></div>
           {displayProjects.map((p, i) => (
-            <div key={p.id || i} style={{ marginBottom: "10px" }}>
+            <div key={p.id || i} className="cv-section" style={{ marginBottom: "10px", pageBreakInside: "avoid", breakInside: "avoid" }}>
               <div style={s.row}>
                 <span style={{ fontWeight: "bold", fontSize: "10pt", color: "#111" }}>{p.title}</span>
                 <span style={{ fontSize: "9pt" }}>
@@ -217,14 +237,14 @@ function CVPreview({ profile, skills, timeline, projects, services, options, tem
       {options.showEducation && (
         <div>
           <div style={s.header}><h2 style={s.sectionTitle}>Education</h2></div>
-          <div style={{ marginBottom: "8px" }}>
+          <div className="cv-section" style={{ marginBottom: "8px", pageBreakInside: "avoid", breakInside: "avoid" }}>
             <div style={s.row}>
               <span style={s.jobTitle}>BSc. CSIT (Computer Science & Information Technology)</span>
               <span style={{ fontSize: "9pt", color: "#6b7280" }}>2022-2026</span>
             </div>
             <p style={{ ...s.paragraph, color: "#4b5563", marginTop: "1px" }}>Tribhuvan University, Patan multiple campus</p>
           </div>
-          <div style={{ marginBottom: "8px" }}>
+          <div className="cv-section" style={{ marginBottom: "8px", pageBreakInside: "avoid", breakInside: "avoid" }}>
             <div style={s.row}>
               <span style={s.jobTitle}>+2 Science with CS</span>
               <span style={{ fontSize: "9pt", color: "#6b7280" }}>2020-2021</span>
@@ -236,7 +256,7 @@ function CVPreview({ profile, skills, timeline, projects, services, options, tem
 
       {/* Languages */}
       {options.showLanguages && (
-        <div>
+        <div className="cv-section" style={{ pageBreakInside: "avoid", breakInside: "avoid" }}>
           <div style={s.header}><h2 style={s.sectionTitle}>Languages</h2></div>
           <p style={s.paragraph}>
             English (Fluent), Nepali (Native), Hindi (Proficient)
@@ -246,7 +266,7 @@ function CVPreview({ profile, skills, timeline, projects, services, options, tem
 
       {/* Areas of Expertise */}
       {options.showServices && services.length > 0 && (
-        <div>
+        <div className="cv-section" style={{ pageBreakInside: "avoid", breakInside: "avoid" }}>
           <div style={s.header}><h2 style={s.sectionTitle}>Areas of Expertise</h2></div>
           <p style={s.paragraph}>{services.map((sv) => sv.title).join("  •  ")}</p>
         </div>
@@ -327,10 +347,10 @@ export default function CVTab({ profile, skills = [], timeline = [], projects = 
     "w-full bg-muted/40 border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 outline-none focus:ring-2 focus:ring-primary/20 transition-all";
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6 min-h-[calc(100vh-120px)]">
+    <div className="flex flex-col lg:flex-row gap-6 lg:h-[calc(100vh-140px)] lg:overflow-hidden">
       {/* Settings */}
-      <div className="lg:w-72 xl:w-80 flex-shrink-0 space-y-4">
-        <div className="flex items-center gap-2 pb-3 border-b border-border">
+      <div className="lg:w-80 xl:w-96 flex-shrink-0 space-y-4 lg:h-full lg:overflow-y-auto pr-2 pb-6">
+        <div className="flex items-center gap-2 pb-3 border-b border-border sticky top-0 bg-background z-10">
           <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
             <FileText className="w-4 h-4 text-primary" />
           </div>
@@ -434,39 +454,25 @@ export default function CVTab({ profile, skills = [], timeline = [], projects = 
       </div>
 
       {/* CV Preview */}
-      <div className="flex-1 min-w-0">
-        <div className="sticky top-0 z-10 flex items-center justify-between gap-3 pb-3 border-b border-border mb-5 bg-background/80 backdrop-blur-sm">
+      <div className="flex-1 min-w-0 lg:h-full flex flex-col">
+        <div className="flex items-center justify-between gap-3 pb-3 border-b border-border mb-5 bg-background/80 backdrop-blur-sm w-full px-1">
           <p className="text-xs text-muted-foreground flex items-center gap-1.5">
-            <Eye className="w-3.5 h-3.5" /> Live Preview — A4
+            <Eye className="w-3.5 h-3.5" /> Live Preview — PDF Mode
           </p>
-          <button
-            onClick={() => window.print()}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-primary-foreground text-xs font-bold hover:bg-primary/90 transition-all shadow-md"
-          >
-            <Download className="w-3.5 h-3.5" /> Download as PDF
-          </button>
         </div>
 
-        <div
-          style={{
-            background: "#fff",
-            boxShadow: "0 4px 40px rgba(0,0,0,0.18)",
-            borderRadius: "4px",
-            padding: "56px 64px",
-            maxWidth: "794px",
-            margin: "0 auto",
-            minHeight: "1123px",
-          }}
-        >
-          <CVPreview
-            profile={profile}
-            skills={skills}
-            timeline={timeline}
-            projects={projects}
-            services={services}
-            options={options}
-            template={template}
-          />
+        <div className="flex-1 w-full rounded-xl overflow-hidden border border-border shadow-2xl min-h-[600px] bg-card">
+          <PDFViewer width="100%" height="100%" style={{ border: "none" }}>
+            <CVPdfDocument
+              profile={profile}
+              skills={skills}
+              timeline={timeline}
+              projects={projects}
+              services={services}
+              options={options}
+              template={template}
+            />
+          </PDFViewer>
         </div>
       </div>
     </div>
