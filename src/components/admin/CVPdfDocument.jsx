@@ -14,16 +14,16 @@ const createStyles = (t) => StyleSheet.create({
     marginBottom: 10,
   },
   name: {
+    fontFamily: "Helvetica-Bold",
     fontSize: 22,
-    fontWeight: "bold",
     color: t.nameColor || "#000000",
     lineHeight: 1.25,
     marginBottom: 4,
     textAlign: "center",
   },
   subtitle: {
+    fontFamily: "Helvetica-Bold",
     fontSize: 11,
-    fontWeight: "bold",
     color: "#374151",
     textTransform: "uppercase",
     lineHeight: 1.25,
@@ -48,8 +48,8 @@ const createStyles = (t) => StyleSheet.create({
     marginTop: 10,
   },
   sectionTitle: {
+    fontFamily: "Helvetica-Bold",
     fontSize: 10,
-    fontWeight: "bold",
     color: t.accent || "#1a56db",
     textTransform: "uppercase",
     letterSpacing: 1.2,
@@ -57,22 +57,23 @@ const createStyles = (t) => StyleSheet.create({
   },
   bulletList: {
     marginTop: 2,
+    paddingLeft: 12,
   },
   bulletItem: {
     flexDirection: "row",
-    marginBottom: 3,
+    marginBottom: 1,
     fontSize: 9,
     color: "#1f2937",
     alignItems: "flex-start",
   },
   bulletDot: {
-    width: 10,
+    width: 8,
     fontSize: 9,
-    lineHeight: 1.3,
+    lineHeight: 1.1,
   },
   bulletText: {
     flex: 1,
-    lineHeight: 1.35,
+    lineHeight: 1.1,
   },
   row: {
     flexDirection: "row",
@@ -81,7 +82,7 @@ const createStyles = (t) => StyleSheet.create({
     marginBottom: 2,
   },
   jobTitle: {
-    fontWeight: "bold",
+    fontFamily: "Helvetica-Bold",
     fontSize: 9.5,
     color: "#111111",
     lineHeight: 1.3,
@@ -192,7 +193,7 @@ export default function CVPdfDocument({ profile, skills = [], timeline = [], pro
                 <View key={cat} style={styles.bulletItem} wrap={false}>
                   <Text style={styles.bulletDot}>•</Text>
                   <Text style={styles.bulletText}>
-                    <Text style={{ fontWeight: "bold" }}>{cat}: </Text>
+                    <Text style={{ fontFamily: "Helvetica-Bold" }}>{cat}: </Text>
                     {items.map((sk) => sk.name + (sk.description ? ` (${sk.description})` : "")).join(", ")}
                   </Text>
                 </View>
@@ -262,7 +263,7 @@ export default function CVPdfDocument({ profile, skills = [], timeline = [], pro
                 })()}
                 {p.tags && p.tags.length > 0 && (
                   <Text style={[styles.paragraph, { marginTop: 2 }]}>
-                    <Text style={{ fontWeight: "bold" }}>Stack: </Text>
+                    <Text style={{ fontFamily: "Helvetica-Bold" }}>Stack: </Text>
                     {Array.isArray(p.tags) ? p.tags.join(", ") : p.tags}
                   </Text>
                 )}
