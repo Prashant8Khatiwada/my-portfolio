@@ -7,31 +7,37 @@ const createStyles = (t) => StyleSheet.create({
     fontFamily: "Helvetica",
     fontSize: 9.5,
     color: "#111111",
-    lineHeight: 1.4,
     padding: "0.5in 0.6in",
   },
   header: {
-    textAlign: "center",
-    marginBottom: 8,
+    alignItems: "center",
+    marginBottom: 10,
   },
   name: {
     fontSize: 22,
     fontWeight: "bold",
     color: t.nameColor || "#000000",
-    marginBottom: 2,
+    lineHeight: 1.25,
+    marginBottom: 4,
+    textAlign: "center",
   },
   subtitle: {
     fontSize: 11,
     fontWeight: "bold",
     color: "#374151",
     textTransform: "uppercase",
-    marginBottom: 4,
+    lineHeight: 1.25,
+    marginTop: 2,
+    marginBottom: 6,
     letterSpacing: 1,
+    textAlign: "center",
   },
   contactLine: {
     fontSize: 8.5,
     color: "#374151",
+    lineHeight: 1.3,
     marginBottom: 2,
+    textAlign: "center",
   },
   sectionHeader: {
     borderBottomWidth: 1.5,
@@ -47,6 +53,7 @@ const createStyles = (t) => StyleSheet.create({
     color: t.accent || "#1a56db",
     textTransform: "uppercase",
     letterSpacing: 1.2,
+    lineHeight: 1.3,
   },
   bulletList: {
     marginTop: 2,
@@ -61,9 +68,11 @@ const createStyles = (t) => StyleSheet.create({
   bulletDot: {
     width: 10,
     fontSize: 9,
+    lineHeight: 1.3,
   },
   bulletText: {
     flex: 1,
+    lineHeight: 1.35,
   },
   row: {
     flexDirection: "row",
@@ -75,14 +84,17 @@ const createStyles = (t) => StyleSheet.create({
     fontWeight: "bold",
     fontSize: 9.5,
     color: "#111111",
+    lineHeight: 1.3,
   },
   dateText: {
     fontSize: 8.5,
     color: "#6b7280",
+    lineHeight: 1.3,
   },
   paragraph: {
     fontSize: 9,
     color: "#1f2937",
+    lineHeight: 1.35,
     marginTop: 2,
   },
 });
