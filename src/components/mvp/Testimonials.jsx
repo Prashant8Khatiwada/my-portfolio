@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Quote } from "lucide-react";
 import { useTestimonials } from "../../hooks/useTestimonials";
+import { getTestimonialAvatar } from "../../lib/assetFallbacks";
 
 export default function Testimonials() {
   const { testimonials, loading } = useTestimonials();
@@ -152,9 +153,9 @@ export default function Testimonials() {
                               className="relative flex-shrink-0"
                             >
                               <div className="w-20 h-20 rounded-2xl overflow-hidden border-2 border-primary/40 shadow-lg">
-                                {testimonial.avatar_url ? (
+                                {getTestimonialAvatar(testimonial.name, testimonial.avatar_url) ? (
                                   <img
-                                    src={testimonial.avatar_url}
+                                    src={getTestimonialAvatar(testimonial.name, testimonial.avatar_url)}
                                     alt={testimonial.name}
                                     className="w-full h-full object-cover"
                                   />

@@ -17,6 +17,7 @@ import { useProjects } from "./hooks/useProjects";
 import { useTimeline } from "./hooks/useTimeline";
 import { useSkills } from "./hooks/useSkills";
 import { useProfile } from "./hooks/useProfile";
+import { getProjectImage } from "./lib/assetFallbacks";
 import { motion } from "framer-motion";
 import { staggerContainer } from "./lib/animations";
 import { cn } from "./lib/utils";
@@ -73,7 +74,7 @@ function App() {
     id: project.id,
     title: project.title,
     description: project.description,
-    image: project.image_url,
+    image: getProjectImage(project.title, project.image_url),
     technologies: project.tags || [],
     github: project.github_url,
     demo: project.live_url,
